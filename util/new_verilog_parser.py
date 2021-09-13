@@ -150,9 +150,10 @@ class DcParser:
                     for input in inputs:
                         if var_types.get(input, None) == 'PI':
                             key_cells[cell_name][2][1].append(input)
-                    print(key_cells)
+                    #print(key_cells)
                 if '+' in expression and '-' not in expression:
                     #print(var_name, type, width, expression)
+                    print(key_cells)
                     key_cells[cell_name] = key_cells.get(var_name, ( [], [],(None,[]) ) )
                     key_cells[cell_name][1].append(var_name)
                     inputs = expression.split('+')
