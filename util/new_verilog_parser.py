@@ -854,6 +854,7 @@ class DcParser:
         rg = g.reverse()
         internal = set()
 
+        print(temp_nodes)
         for mcell in mult_infos.keys():
             fanins = mult_infos[mcell].fanins
             fanins1 = fanins['I1']
