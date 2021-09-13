@@ -19,6 +19,7 @@ bin-release/
 
 # pickle
 *.pkl
+*.iml
 
 # verilog
 *.v
@@ -35,3 +36,5 @@ bin-release/
 *.out
 log.txt
 
+#idea
+*.xml
