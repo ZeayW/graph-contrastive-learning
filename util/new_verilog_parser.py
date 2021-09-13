@@ -876,6 +876,7 @@ class DcParser:
                         intersect = set(path) if intersect is None else set(path) & intersect
                         print('src:{},dst:{}'.format(fanin_args[0][j],fanout))
                         for path in all_path:
+                            print('aaa')
                             print(path)
                 print(i,fanout,intersect)
                 if i==5:exit()
