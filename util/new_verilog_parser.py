@@ -710,7 +710,9 @@ class DcParser:
             #print(len(inputs))
             #print(inputs)
             if len(mult_inputs)!=0 :
+                print("aaaaa",mult_inputs)
                 for fi in fanins:
+                    print(fi.portname)
                     if fi.portname in mult_inputs:
                         mult_info[mcomp][0].append((fi.argname,fi.position[1]))
 
