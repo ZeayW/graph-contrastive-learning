@@ -710,9 +710,7 @@ class DcParser:
             #print(len(inputs))
             #print(inputs)
             if len(mult_inputs)!=0 :
-                print("aaaaa",mult_inputs)
                 for fi in fanins:
-                    print(fi.position)
                     if fi.position is not None and fi.position[0] in mult_inputs:
                         mult_info[mcomp][0].add((fi.argname,fi.position[1]))
 
