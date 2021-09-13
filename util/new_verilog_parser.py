@@ -854,14 +854,13 @@ class DcParser:
         rg = g.reverse()
         internal = set()
 
-        print(temp_nodes)
         for mcell in mult_infos.keys():
             fanins = mult_infos[mcell].fanins
 
             fanins1 = fanins['I1']
             fanins2 = fanins['I2']
-            print(fanins1)
-            fanouts = mult_infos[mcell].fanouts
+
+            fanouts = mult_infos[mcell].fanouts.values()[0]
             in_nodes = None
             out_nodes = None
             forward_reachable = set()
@@ -869,7 +868,6 @@ class DcParser:
             for i,fanout in enumerate(fanouts):
                 for j in range(i+1):
                     if j < len(fanins1):
-                        print(fanins1[j])
                         print("src:{},dst:{},path:{}".format(fanins1[j],fanout,nx.shortest_path(g,fanins1[j],fanout)))
             for i in in_nodes:
                 fw = dict(nx.bfs_successors(g, i, 6))
