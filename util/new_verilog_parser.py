@@ -873,8 +873,9 @@ class DcParser:
                     if j < len(fanin_args[0]):
                         path = nx.shortest_path(g,fanin_args[0][j],fanout)[:-1]
                         intersect = set(path) if intersect is None else set(path) & intersect
-                        #print(path)
+                        print(path)
                 print(i,fanout,intersect)
+                exit()
             for i in in_nodes:
                 fw = dict(nx.bfs_successors(g, i, 6))
                 for t in fw.values():
