@@ -856,19 +856,21 @@ class DcParser:
 
         for mcell in mult_infos.keys():
             fanins = mult_infos[mcell].fanins
+            fanouts = mult_infos[mcell].fanouts
+            fanin_args,fanout_args = [],[]
+            for args in fanins.values():
+                fanin_args.append(args)
+            for args in fanouts.values():
+                fanout_args.append(args)
 
-            fanins1 = fanins['I1']
-            fanins2 = fanins['I2']
-
-            fanouts = mult_infos[mcell].fanouts.values()[0]
             in_nodes = None
             out_nodes = None
             forward_reachable = set()
             backward_reachable = set()
-            for i,fanout in enumerate(fanouts):
+            for i,fanout in enumerate(fanout_args[0]):
                 for j in range(i+1):
-                    if j < len(fanins1):
-                        print("src:{},dst:{},path:{}".format(fanins1[j],fanout,nx.shortest_path(g,fanins1[j],fanout)))
+                    if j < len(fanin_args[0]):
+                        print("src:{},dst:{},path:{}".format(fanin_args[0][j],fanout,nx.shortest_path(g,fanin_args[0][j],fanout)))
             for i in in_nodes:
                 fw = dict(nx.bfs_successors(g, i, 6))
                 for t in fw.values():
