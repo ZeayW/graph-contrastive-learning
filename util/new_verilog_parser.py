@@ -513,7 +513,7 @@ class DcParser:
 
         PIs: List[str] = []  # a list of PI nodes
         POs: List[str] = []  # a list of PO nodes
-        mult_info = {} # {mname:([(mult_input_wire,position)],[mult_output_wire,position])}
+        mult_info = {} # {mcomp:([(mult_input_wire,position)],[mult_output_wire,position])}
         nodes: List[Tuple[str, Dict[str, str]]] = [
             ("1'b0", {"type": "1'b0"}),
             ("1'b1", {"type": "1'b1"}),
@@ -578,7 +578,7 @@ class DcParser:
                         #print('aaaaadaaaaaa')
                         mult_inputs = key_cells[key_cell][2][1]
                         contain_mult = True
-                        mult_info[mname] = mult_info.get(mname, ([], []))
+                        mult_info[mcomp] = mult_info.get(mcomp, ([], []))
                     break
 
             for p in ports:
@@ -712,7 +712,7 @@ class DcParser:
             if len(mult_inputs)!=0 :
                 for fi in fanins:
                     if fi.portname in mult_inputs:
-                        mult_info[mname][0].append((fi.argname,fi.position[1]))
+                        mult_info[mcomp][0].append((fi.argname,fi.position[1]))
 
             for output,input in inputs.items():
                 for fi in input:
