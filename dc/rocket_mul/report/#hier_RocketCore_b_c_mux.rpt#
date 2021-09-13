@@ -1,0 +1,3331 @@
+Information: Updating design information... (UID-85)
+ 
+****************************************
+Report : qor
+Design : Rocket
+Version: G-2012.06-SP5
+Date   : Tue Jul 20 11:58:08 2021
+****************************************
+
+
+  Timing Path Group 'default'
+  -----------------------------------
+  Levels of Logic:              20.00
+  Critical Path Length:          2.97
+  Critical Path Slack:          -2.99
+  Critical Path Clk Period:       n/a
+  Total Negative Slack:     -10545.29
+  No. of Violating Paths:     7534.00
+  Worst Hold Violation:          0.00
+  Total Hold Violation:          0.00
+  No. of Hold Violations:        0.00
+  -----------------------------------
+
+
+  Cell Count
+  -----------------------------------
+  Hierarchical Cell Count:        122
+  Hierarchical Port Count:       5308
+  Leaf Cell Count:              21675
+  Buf/Inv Cell Count:            2411
+  CT Buf/Inv Cell Count:            0
+  Combinational Cell Count:     17580
+  Sequential Cell Count:         4095
+  Macro Count:                      0
+  -----------------------------------
+
+
+  Area
+  -----------------------------------
+  Combinational Area:    41513.151878
+  Noncombinational Area: 27074.469447
+  Buf/Inv Area:           4096.038935
+  Net Area:              21473.474857
+  -----------------------------------
+  Cell Area:             68587.621325
+  Design Area:           90061.096182
+
+
+  Design Rules
+  -----------------------------------
+  Total Number of Nets:         23783
+  Nets With Violations:             0
+  Max Trans Violations:             0
+  Max Cap Violations:               0
+  -----------------------------------
+
+
+  Hostname: linux11.cse.cuhk.edu.hk
+
+  Compile CPU Statistics
+  -----------------------------------------
+  Resource Sharing:                    9.94
+  Logic Optimization:                156.46
+  Mapping Optimization:              155.84
+  -----------------------------------------
+  Overall Compile Time:              372.16
+  Overall Compile Wall Clock Time:   380.88
+
+  --------------------------------------------------------------------
+
+  Design  WNS: 2.99  TNS: 10545.29  Number of Violating Paths: 7534
+
+
+  Design (Hold)  WNS: 0.00  TNS: 0.00  Number of Violating Paths: 0
+
+  --------------------------------------------------------------------
+
+
+1
+ 
+****************************************
+Report : resources
+Design : Rocket
+Version: G-2012.06-SP5
+Date   : Tue Jul 20 11:58:09 2021
+****************************************
+
+
+Resource Report for this hierarchy in file
+        /research/dept6/zlhe/Code/graph-detection/dc/rocket_mul/RocketCore.v
+=============================================================================
+| Cell           | Module         | Parameters | Contained Operations       |
+=============================================================================
+| add_x_5        | DW01_add       | width=40   | add_294843                 |
+| ne_x_7         | DW_cmp         | width=40   | ne_294846                  |
+| ne_x_8         | DW_cmp         | width=40   | ne_294848                  |
+| eq_x_42        | DW_cmp         | width=5    | eq_295383                  |
+| eq_x_43        | DW_cmp         | width=5    | eq_295396                  |
+| eq_x_44        | DW_cmp         | width=5    | eq_295409                  |
+| eq_x_45        | DW_cmp         | width=5    | eq_295422                  |
+| eq_x_46        | DW_cmp         | width=5    | eq_295431                  |
+| eq_x_47        | DW_cmp         | width=5    | eq_295433                  |
+| eq_x_48        | DW_cmp         | width=5    | eq_295436                  |
+| eq_x_49        | DW_cmp         | width=5    | eq_295447                  |
+| ashr_50        | DW_rightsh     | A_width=32 | srl_295457                 |
+|                |                | SH_width=5 |                            |
+| eq_x_52        | DW_cmp         | width=5    | eq_295466                  |
+| ashr_53        | DW_rightsh     | A_width=32 | srl_295471                 |
+|                |                | SH_width=5 |                            |
+| eq_x_54        | DW_cmp         | width=5    | eq_295472                  |
+| ashr_55        | DW_rightsh     | A_width=32 | srl_295478                 |
+|                |                | SH_width=5 |                            |
+| eq_x_56        | DW_cmp         | width=5    | eq_295479                  |
+| ashr_57        | DW_rightsh     | A_width=32 | srl_295494                 |
+|                |                | SH_width=5 |                            |
+| ashr_58        | DW_rightsh     | A_width=32 | srl_295496                 |
+|                |                | SH_width=5 |                            |
+| ashr_59        | DW_rightsh     | A_width=32 | srl_295499                 |
+|                |                | SH_width=5 |                            |
+| ashr_60        | DW_rightsh     | A_width=32 | srl_295502                 |
+|                |                | SH_width=5 |                            |
+| eq_x_62        | DW_cmp         | width=5    | eq_295555                  |
+| eq_x_69        | DW_cmp         | width=5    | eq_295570                  |
+| ash_83         | DW_leftsh      | A_width=32 | sll_295720                 |
+|                |                | SH_width=5 |                            |
+| ash_85         | DW_leftsh      | A_width=32 | sll_295725                 |
+|                |                | SH_width=5 |                            |
+| ash_88         | DW_leftsh      | A_width=32 | sll_295735                 |
+|                |                | SH_width=5 |                            |
+| ash_90         | DW_leftsh      | A_width=32 | sll_295740                 |
+|                |                | SH_width=5 |                            |
+| add_x_94       | DW01_add       | width=39   | add_295765                 |
+| eq_x_135       | DW_cmp         | width=5    | eq_295300 eq_295374        |
+| eq_x_136       | DW_cmp         | width=5    | eq_295302 eq_295404        |
+| eq_x_137       | DW_cmp         | width=5    | eq_295306 eq_295378        |
+| eq_x_138       | DW_cmp         | width=5    | eq_295308 eq_295406        |
+=============================================================================
+
+
+Implementation Report
+===============================================================================
+|                    |                  | Current            | Set            |
+| Cell               | Module           | Implementation     | Implementation |
+===============================================================================
+| add_x_5            | DW01_add         | apparch (area)     |                |
+| add_x_94           | DW01_add         | apparch (area)     |                |
+| ne_x_7             | DW_cmp           | apparch (area)     |                |
+| ne_x_8             | DW_cmp           | apparch (area)     |                |
+| eq_x_42            | DW_cmp           | apparch (area)     |                |
+| eq_x_43            | DW_cmp           | apparch (area)     |                |
+| eq_x_44            | DW_cmp           | apparch (area)     |                |
+| eq_x_45            | DW_cmp           | apparch (area)     |                |
+| eq_x_46            | DW_cmp           | apparch (area)     |                |
+| eq_x_47            | DW_cmp           | apparch (area)     |                |
+| eq_x_48            | DW_cmp           | apparch (area)     |                |
+| eq_x_49            | DW_cmp           | apparch (area)     |                |
+| ashr_50            | DW_rightsh       | astr (area)        |                |
+| eq_x_52            | DW_cmp           | apparch (area)     |                |
+| ashr_53            | DW_rightsh       | astr (area)        |                |
+| eq_x_54            | DW_cmp           | apparch (area)     |                |
+| ashr_55            | DW_rightsh       | astr (area)        |                |
+| eq_x_56            | DW_cmp           | apparch (area)     |                |
+| ashr_57            | DW_rightsh       | astr (area)        |                |
+| ashr_58            | DW_rightsh       | astr (area)        |                |
+| ashr_59            | DW_rightsh       | astr (area)        |                |
+| ashr_60            | DW_rightsh       | astr (area)        |                |
+| eq_x_62            | DW_cmp           | apparch (area)     |                |
+| eq_x_69            | DW_cmp           | apparch (area)     |                |
+| ash_83             | DW_leftsh        | astr (area)        |                |
+| ash_85             | DW_leftsh        | astr (area)        |                |
+| ash_88             | DW_leftsh        | astr (area)        |                |
+| ash_90             | DW_leftsh        | astr (area)        |                |
+| eq_x_135           | DW_cmp           | apparch (area)     |                |
+| eq_x_136           | DW_cmp           | apparch (area)     |                |
+| eq_x_137           | DW_cmp           | apparch (area)     |                |
+| eq_x_138           | DW_cmp           | apparch (area)     |                |
+===============================================================================
+
+
+Datapath Optimization Report
+==============================================================================
+|                            | Optimization |                                |
+| Cell                       | Mode         | Smartgen Options               |
+==============================================================================
+| add_x_5                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_94                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ne_x_7                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ne_x_8                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_42                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_43                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_44                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_45                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_46                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_47                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_48                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_49                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_50                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_52                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_53                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_54                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_55                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_56                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_57                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_58                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_59                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_60                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_62                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_69                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ash_83                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ash_85                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ash_88                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ash_90                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_135                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_136                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_137                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_138                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+==============================================================================
+
+
+No multiplexors to report
+ 
+****************************************
+Design : Rocket_DW01_add_J1_1
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : Rocket_DW01_add_J1_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_1
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_2
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_3
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_4
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_5
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_6
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_7
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_8
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_9
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_10
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_11
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_12
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_13
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_14
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_15
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_16
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_17
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_18
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_19
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_20
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_21
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_22
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_23
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_24
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_25
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_26
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_27
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_28
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_29
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_30
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_31
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_32
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_33
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_34
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_35
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_36
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_37
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_38
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_39
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_Rocket_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : MulDiv
+****************************************
+
+Resource Report for this hierarchy in file
+        /research/dept6/zlhe/Code/graph-detection/dc/rocket_mul/RocketCore.v
+=============================================================================
+| Cell           | Module         | Parameters | Contained Operations       |
+=============================================================================
+| sub_x_7        | DW01_sub       | width=65   | sub_292505                 |
+| sub_x_9        | DW01_sub       | width=64   | sub_292507                 |
+| ashr_10        | DW_rightsh     | A_width=65 | sra_292522                 |
+|                |                | SH_width=6 |                            |
+| sub_x_11       | DW01_sub       | width=6    | sub_292532                 |
+| ashr_12        | DW_rightsh     | A_width=127 | srl_292533                |
+|                |                | SH_width=6 |                            |
+| add_x_14       | DW01_inc       | width=7    | add_292537                 |
+| sub_x_110      | DW01_sub       | width=6    | sub_292701                 |
+| ash_111        | DW_leftsh      | A_width=127 | sll_292708                |
+|                |                | SH_width=6 |                            |
+| DP_OP_279J3_124_314             |            |                            |
+|                | DP_OP_279J3_124_314 |       |                            |
+=============================================================================
+
+Datapath Report for DP_OP_279J3_124_314
+==============================================================================
+| Cell                 | Contained Operations                                |
+==============================================================================
+| DP_OP_279J3_124_314  | mult_292515 add_292517                              |
+==============================================================================
+
+==============================================================================
+|       |      | Data     |       |                                          |
+| Var   | Type | Class    | Width | Expression                               |
+==============================================================================
+| I1    | PI   | Signed   | 9     |                                          |
+| I2    | PI   | Signed   | 65    |                                          |
+| I3    | PI   | Signed   | 65    |                                          |
+| T7    | IFO  | Signed   | 73    | I1 * I2                                  |
+| O1    | PO   | Signed   | 73    | T7 + I3                                  |
+==============================================================================
+
+
+Implementation Report
+===============================================================================
+|                    |                  | Current            | Set            |
+| Cell               | Module           | Implementation     | Implementation |
+===============================================================================
+| sub_x_7            | DW01_sub         | apparch (area)     |                |
+| sub_x_9            | DW01_sub         | apparch (area)     |                |
+| ashr_12            | DW_rightsh       | astr (area)        |                |
+| add_x_14           | DW01_inc         | apparch (area)     |                |
+| ash_111            | DW_leftsh        | astr (area)        |                |
+| ashr_10            | DW_rightsh       | astr (area)        |                |
+| sub_x_11           | DW01_sub         | apparch (area)     |                |
+| sub_x_110          | DW01_sub         | apparch (area)     |                |
+| DP_OP_279J3_124_314                   |                    |                |
+|                    | DP_OP_279J3_124_314 | str (area)      |                |
+===============================================================================
+
+
+Datapath Optimization Report
+==============================================================================
+|                            | Optimization |                                |
+| Cell                       | Mode         | Smartgen Options               |
+==============================================================================
+| sub_x_7                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| sub_x_9                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_12                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_14                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ash_111                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_10                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| sub_x_11                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| sub_x_110                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| DP_OP_279J3_124_314        | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+==============================================================================
+
+
+No multiplexors to report
+ 
+****************************************
+Design : MulDiv_DW01_sub_J3_3
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : MulDiv_DW01_sub_J3_2
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : MulDiv_DW_rightsh_J3_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : MulDiv_DW01_inc_J3_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : MulDiv_DW_leftsh_J3_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : MulDiv_DP_OP_279J3_124_314_J3_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_MulDiv_1
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_MulDiv_2
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_MulDiv_3
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_MulDiv_4
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_MulDiv_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : ALU
+****************************************
+
+Resource Report for this hierarchy in file
+        /research/dept6/zlhe/Code/graph-detection/dc/rocket_mul/RocketCore.v
+=============================================================================
+| Cell           | Module         | Parameters | Contained Operations       |
+=============================================================================
+| ashr_7         | DW_rightsh     | A_width=65 | sra_292140                 |
+|                |                | SH_width=6 |                            |
+| gte_x_12       | DW_cmp         | width=4    | gte_292184                 |
+| DP_OP_31J4_124_1870             |            |                            |
+|                | DP_OP_31J4_124_1870 |       |                            |
+=============================================================================
+
+Datapath Report for DP_OP_31J4_124_1870
+==============================================================================
+| Cell                 | Contained Operations                                |
+==============================================================================
+| DP_OP_31J4_124_1870  | add_292091 add_292197                               |
+==============================================================================
+
+==============================================================================
+|       |      | Data     |       |                                          |
+| Var   | Type | Class    | Width | Expression                               |
+==============================================================================
+| I1    | PI   | Unsigned | 64    |                                          |
+| I2    | PI   | Unsigned | 64    |                                          |
+| I3    | PI   | Unsigned | 1     |                                          |
+| O1    | PO   | Unsigned | 64    | I1 + I2 + I3                             |
+==============================================================================
+
+
+Implementation Report
+===============================================================================
+|                    |                  | Current            | Set            |
+| Cell               | Module           | Implementation     | Implementation |
+===============================================================================
+| ashr_7             | DW_rightsh       | astr (area)        |                |
+| gte_x_12           | DW_cmp           | apparch (area)     |                |
+| DP_OP_31J4_124_1870                   |                    |                |
+|                    | DP_OP_31J4_124_1870 | str (area,speed)                 |
+===============================================================================
+
+
+Datapath Optimization Report
+==============================================================================
+|                            | Optimization |                                |
+| Cell                       | Mode         | Smartgen Options               |
+==============================================================================
+| ashr_7                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| gte_x_12                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| DP_OP_31J4_124_1870        | area,speed   | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+==============================================================================
+
+
+No multiplexors to report
+ 
+****************************************
+Design : ALU_DP_OP_31J4_124_1870_3
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : ALU_DW_rightsh_J4_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : BreakpointUnit
+****************************************
+
+Resource Report for this hierarchy in file
+        /research/dept6/zlhe/Code/graph-detection/dc/rocket_mul/RocketCore.v
+=============================================================================
+| Cell           | Module         | Parameters | Contained Operations       |
+=============================================================================
+| ashr_1         | DW_rightsh     | A_width=4  | srl_291936                 |
+|                |                | SH_width=2 |                            |
+| gte_x_2        | DW_cmp         | width=39   | gte_291939                 |
+| eq_x_3         | DW_cmp         | width=39   | eq_291950                  |
+| gte_x_5        | DW_cmp         | width=39   | gte_291956                 |
+| eq_x_6         | DW_cmp         | width=39   | eq_291960                  |
+=============================================================================
+
+
+Implementation Report
+===============================================================================
+|                    |                  | Current            | Set            |
+| Cell               | Module           | Implementation     | Implementation |
+===============================================================================
+| gte_x_2            | DW_cmp           | apparch (area)     |                |
+| gte_x_5            | DW_cmp           | apparch (area)     |                |
+| ashr_1             | DW_rightsh       | astr (area)        |                |
+| eq_x_3             | DW_cmp           | apparch (area)     |                |
+| eq_x_6             | DW_cmp           | apparch (area)     |                |
+===============================================================================
+
+
+Datapath Optimization Report
+==============================================================================
+|                            | Optimization |                                |
+| Cell                       | Mode         | Smartgen Options               |
+==============================================================================
+| gte_x_2                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| gte_x_5                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_1                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_3                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| eq_x_6                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+==============================================================================
+
+
+No multiplexors to report
+ 
+****************************************
+Design : BreakpointUnit_DW_cmp_J4_1
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : BreakpointUnit_DW_cmp_J4_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile
+****************************************
+
+Resource Report for this hierarchy in file
+        /research/dept6/zlhe/Code/graph-detection/dc/rocket_mul/RocketCore.v
+=============================================================================
+| Cell           | Module         | Parameters | Contained Operations       |
+=============================================================================
+| add_x_366      | DW01_add       | width=4    | add_289297                 |
+| ashr_369       | DW_rightsh     | A_width=4  | srl_289309                 |
+|                |                | SH_width=2 |                            |
+| lte_x_371      | DW_cmp         | width=2    | lte_289315                 |
+| ashr_372       | DW_rightsh     | A_width=10 | srl_289317                 |
+|                |                | SH_width=8 |                            |
+| ashr_373       | DW_rightsh     | A_width=16 | srl_289319                 |
+|                |                | SH_width=8 |                            |
+| add_x_378      | DW01_add       | width=7    | add_289330                 |
+| add_x_379      | DW01_inc       | width=58   | add_289331                 |
+| add_x_380      | DW01_add       | width=7    | add_289335                 |
+| add_x_381      | DW01_inc       | width=58   | add_289336                 |
+| add_x_420      | DW01_inc       | width=30   | add_289437                 |
+| add_x_421      | DW01_inc       | width=30   | add_289442                 |
+| add_x_422      | DW01_inc       | width=30   | add_289447                 |
+| add_x_423      | DW01_inc       | width=30   | add_289452                 |
+| add_x_424      | DW01_inc       | width=30   | add_289457                 |
+| add_x_425      | DW01_inc       | width=30   | add_289462                 |
+| add_x_426      | DW01_inc       | width=30   | add_289467                 |
+| add_x_427      | DW01_inc       | width=30   | add_289472                 |
+| gt_x_430       | DW_cmp         | width=2    | gt_289603                  |
+| ashr_431       | DW_rightsh     | A_width=3  | srl_289610                 |
+|                |                | SH_width=5 |                            |
+| ashr_432       | DW_rightsh     | A_width=3  | srl_289613                 |
+|                |                | SH_width=5 |                            |
+| lt_x_433       | DW_cmp         | width=2    | lt_289619                  |
+| gte_x_434      | DW_cmp         | width=12   | gte_289914                 |
+| lt_x_435       | DW_cmp         | width=12   | lt_289915                  |
+| gte_x_436      | DW_cmp         | width=12   | gte_289917                 |
+| lt_x_437       | DW_cmp         | width=12   | lt_289918                  |
+| gte_x_438      | DW_cmp         | width=12   | gte_289929                 |
+| lte_x_439      | DW_cmp         | width=12   | lte_289930                 |
+| gte_x_440      | DW_cmp         | width=12   | gte_289932                 |
+| lte_x_441      | DW_cmp         | width=12   | lte_289933                 |
+=============================================================================
+
+
+Implementation Report
+===============================================================================
+|                    |                  | Current            | Set            |
+| Cell               | Module           | Implementation     | Implementation |
+===============================================================================
+| add_x_379          | DW01_inc         | apparch (area)     |                |
+| add_x_381          | DW01_inc         | apparch (area)     |                |
+| add_x_420          | DW01_inc         | apparch (area)     |                |
+| add_x_421          | DW01_inc         | apparch (area)     |                |
+| add_x_422          | DW01_inc         | apparch (area)     |                |
+| add_x_423          | DW01_inc         | apparch (area)     |                |
+| add_x_424          | DW01_inc         | apparch (area)     |                |
+| add_x_425          | DW01_inc         | apparch (area)     |                |
+| add_x_426          | DW01_inc         | apparch (area)     |                |
+| add_x_427          | DW01_inc         | apparch (area)     |                |
+| add_x_366          | DW01_add         | apparch (area)     |                |
+| ashr_369           | DW_rightsh       | astr (area)        |                |
+| lte_x_371          | DW_cmp           | apparch (area)     |                |
+| ashr_372           | DW_rightsh       | astr (area)        |                |
+| ashr_373           | DW_rightsh       | astr (area)        |                |
+| add_x_378          | DW01_add         | apparch (area)     |                |
+| add_x_380          | DW01_add         | apparch (area)     |                |
+| gt_x_430           | DW_cmp           | apparch (area)     |                |
+| ashr_431           | DW_rightsh       | astr (area)        |                |
+| ashr_432           | DW_rightsh       | astr (area)        |                |
+| lt_x_433           | DW_cmp           | apparch (area)     |                |
+| gte_x_434          | DW_cmp           | apparch (area)     |                |
+| lt_x_435           | DW_cmp           | apparch (area)     |                |
+| gte_x_436          | DW_cmp           | apparch (area)     |                |
+| lt_x_437           | DW_cmp           | apparch (area)     |                |
+| gte_x_438          | DW_cmp           | apparch (area)     |                |
+| lte_x_439          | DW_cmp           | apparch (area)     |                |
+| gte_x_440          | DW_cmp           | apparch (area)     |                |
+| lte_x_441          | DW_cmp           | apparch (area)     |                |
+===============================================================================
+
+
+Datapath Optimization Report
+==============================================================================
+|                            | Optimization |                                |
+| Cell                       | Mode         | Smartgen Options               |
+==============================================================================
+| add_x_379                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_381                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_420                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_421                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_422                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_423                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_424                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_425                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_426                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_427                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_366                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_369                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| lte_x_371                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_372                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_373                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_378                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_380                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| gt_x_430                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_431                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_432                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| lt_x_433                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| gte_x_434                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| lt_x_435                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| gte_x_436                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| lt_x_437                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| gte_x_438                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| lte_x_439                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| gte_x_440                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| lte_x_441                  | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+==============================================================================
+
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_0_1
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile_DW01_inc_J2_9
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile_DW01_inc_J2_8
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile_DW01_inc_J2_7
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile_DW01_inc_J2_6
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile_DW01_inc_J2_5
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile_DW01_inc_J2_4
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile_DW01_inc_J2_3
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile_DW01_inc_J2_2
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile_DW01_inc_J2_1
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : CSRFile_DW01_inc_J2_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_1
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_2
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_3
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_4
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_5
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_6
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_7
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_8
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_9
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_10
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_11
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_12
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_14
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_15
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_16
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_17
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_18
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_19
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_20
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_21
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_22
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_23
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_24
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_25
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_26
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_27
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_28
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_29
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_30
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_31
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_32
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_33
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_34
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_35
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_36
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_37
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_38
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_39
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_40
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_41
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_42
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_43
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_44
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_45
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_46
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_47
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_CSRFile_0
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : IBuf
+****************************************
+
+Resource Report for this hierarchy in file
+        /research/dept6/zlhe/Code/graph-detection/dc/rocket_mul/RocketCore.v
+=============================================================================
+| Cell           | Module         | Parameters | Contained Operations       |
+=============================================================================
+| add_x_1        | DW01_inc       | width=2    | add_287670                 |
+| sub_x_3        | DW01_sub       | width=2    | sub_287673                 |
+| add_x_5        | DW01_add       | width=2    | add_287676                 |
+| ash_6          | DW_leftsh      | A_width=2  | sll_287677                 |
+|                |                | SH_width=2 |                            |
+| sub_x_7        | DW01_dec       | width=2    | sub_287678                 |
+| ash_8          | DW_leftsh      | A_width=2  | sll_287682                 |
+|                |                | SH_width=1 |                            |
+| sub_x_9        | DW01_dec       | width=2    | sub_287683                 |
+| sub_x_12       | DW01_sub       | width=2    | sub_287688                 |
+| gte_x_13       | DW_cmp         | width=2    | gte_287689                 |
+| gte_x_14       | DW_cmp         | width=2    | gte_287691                 |
+| sub_x_15       | DW01_sub       | width=2    | sub_287692                 |
+| gte_x_16       | DW_cmp         | width=2    | gte_287693                 |
+| lt_x_18        | DW_cmp         | width=2    | lt_287698                  |
+| add_x_19       | DW01_add       | width=2    | add_287701                 |
+| ashr_20        | DW_rightsh     | A_width=64 | srl_287704                 |
+|                |                | SH_width=6 |                            |
+| add_x_21       | DW01_add       | width=2    | add_287708                 |
+| ash_24         | DW_leftsh      | A_width=95 | sll_287720_lsb_trim        |
+|                |                | SH_width=6 |                            |
+| ash_25         | DW_leftsh      | A_width=32 | sll_287723                 |
+|                |                | SH_width=5 |                            |
+| sub_x_37       | DW01_sub       | width=2    | add_287714 sub_287715      |
+| add_x_38       | DW01_add       | width=2    | add_287714 sub_287715      |
+=============================================================================
+
+
+Implementation Report
+===============================================================================
+|                    |                  | Current            | Set            |
+| Cell               | Module           | Implementation     | Implementation |
+===============================================================================
+| add_x_1            | DW01_inc         | apparch (area)     |                |
+| sub_x_3            | DW01_sub         | apparch (area)     |                |
+| add_x_5            | DW01_add         | apparch (area)     |                |
+| ash_6              | DW_leftsh        | astr (area)        |                |
+| sub_x_7            | DW01_dec         | apparch (area)     |                |
+| ash_8              | DW_leftsh        | astr (area)        |                |
+| sub_x_9            | DW01_dec         | apparch (area)     |                |
+| sub_x_12           | DW01_sub         | apparch (area)     |                |
+| gte_x_13           | DW_cmp           | apparch (area)     |                |
+| gte_x_14           | DW_cmp           | apparch (area)     |                |
+| sub_x_15           | DW01_sub         | apparch (area)     |                |
+| gte_x_16           | DW_cmp           | apparch (area)     |                |
+| lt_x_18            | DW_cmp           | apparch (area)     |                |
+| add_x_19           | DW01_add         | apparch (area)     |                |
+| ashr_20            | DW_rightsh       | astr (area)        |                |
+| add_x_21           | DW01_add         | apparch (area)     |                |
+| ash_24             | DW_leftsh        | astr (area)        |                |
+| ash_25             | DW_leftsh        | astr (power)       |                |
+| sub_x_37           | DW01_sub         | apparch (area)     |                |
+| add_x_38           | DW01_add         | apparch (area)     |                |
+===============================================================================
+
+
+Datapath Optimization Report
+==============================================================================
+|                            | Optimization |                                |
+| Cell                       | Mode         | Smartgen Options               |
+==============================================================================
+| add_x_1                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| sub_x_3                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_5                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ash_6                      | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| sub_x_7                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ash_8                      | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| sub_x_9                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| sub_x_12                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| gte_x_13                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| gte_x_14                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| sub_x_15                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| gte_x_16                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| lt_x_18                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_19                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ashr_20                    | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_21                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ash_24                     | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| ash_25                     | power        | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| sub_x_37                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+| add_x_38                   | area         | boothEncoding:on               |
+|                            |              | boothRadix8:default            |
+|                            |              | boothMuxBased:on boothCells:on |
+|                            |              | multNandBased:default          |
+|                            |              | tpOperSel:default              |
+|                            |              | 42cmprCells:default            |
+|                            |              | invOutAdderCells:default       |
+|                            |              | tpOptTree:default              |
+|                            |              | csadderCells:default           |
+|                            |              | condsumAdder:default           |
+|                            |              | muxbasedAdder:default          |
+|                            |              | invadderCells:default          |
+|                            |              | sop2posTransforms:default      |
+|                            |              | cmpSmartGen:default            |
+|                            |              | optimizeFor:default            |
+|                            |              | powerEffort:default            |
+==============================================================================
+
+
+No multiplexors to report
+ 
+****************************************
+Design : SNPS_CLOCK_GATE_HIGH_IBuf
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+ 
+****************************************
+Design : RVCExpander
+****************************************
+
+No resource sharing information to report.
+
+No implementations to report
+
+No multiplexors to report
+1
+ 
+****************************************
+Report : timing
+        -path full
+        -delay max
+        -max_paths 1
+Design : Rocket
+Version: G-2012.06-SP5
+Date   : Tue Jul 20 11:58:09 2021
+****************************************
+
+Operating Conditions: tt1p05v25c   Library: saed32lvt_tt1p05v25c
+Wire Load Model Mode: enclosed
+
+  Startpoint: io_imem_resp_bits_pc[1]
+              (input port)
+  Endpoint: ex_reg_rs_msb_0_reg[45]
+            (rising edge-triggered flip-flop)
+  Path Group: default
+  Path Type: max
+
+  Des/Clust/Port     Wire Load Model       Library
+  ------------------------------------------------
+  Rocket             70000                 saed32lvt_tt1p05v25c
+  IBuf               8000                  saed32lvt_tt1p05v25c
+
+  Point                                                   Incr       Path
+  --------------------------------------------------------------------------
+  input external delay                                    0.00       0.00 r
+  io_imem_resp_bits_pc[1] (in)                            0.00       0.00 r
+  ibuf/io_imem_bits_pc[1] (IBuf)                          0.00       0.00 r
+  ibuf/U126/Y (IBUFFX2_LVT)                               0.12       0.12 f
+  ibuf/U33/Y (NAND2X4_LVT)                                0.06       0.18 r
+  ibuf/U4/Y (MUX21X1_LVT)                                 0.09       0.27 f
+  ibuf/RVCExpander/io_in[24] (RVCExpander)                0.00       0.27 f
+  ibuf/RVCExpander/U26/Y (AO22X2_LVT)                     0.21       0.48 f
+  ibuf/RVCExpander/U71/Y (OR4X2_LVT)                      0.27       0.74 f
+  ibuf/RVCExpander/io_out_bits[24] (RVCExpander)          0.00       0.74 f
+  ibuf/io_inst_0_bits_inst_bits[24] (IBuf)                0.00       0.74 f
+  U2806/Y (OR3X2_LVT)                                     0.19       0.94 f
+  U2758/Y (OA21X1_LVT)                                    0.15       1.08 f
+  U2757/Y (NAND2X0_LVT)                                   0.09       1.18 r
+  U4520/Y (NAND3X0_LVT)                                   0.11       1.29 f
+  U4912/Y (AND3X1_LVT)                                    0.14       1.43 f
+  U5013/Y (NAND4X1_LVT)                                   0.14       1.57 r
+  U5012/Y (AO21X2_LVT)                                    0.12       1.69 r
+  U5048/Y (AND3X2_LVT)                                    0.14       1.84 r
+  U5024/Y (NBUFFX2_LVT)                                   0.20       2.04 r
+  U3028/Y (AND2X1_LVT)                                    0.14       2.18 r
+  U6025/Y (NBUFFX2_LVT)                                   0.19       2.37 r
+  U2794/Y (NAND2X0_LVT)                                   0.13       2.50 f
+  U2735/Y (NAND4X1_LVT)                                   0.12       2.62 r
+  U2723/Y (NOR2X0_LVT)                                    0.15       2.77 f
+  U4951/Y (NAND3X0_LVT)                                   0.10       2.87 r
+  ex_reg_rs_msb_0_reg[45]/D (DFFX1_LVT)                   0.10       2.97 r
+  data arrival time                                                  2.97
+
+  max_delay                                               0.00       0.00
+  library setup time                                     -0.02      -0.02
+  data required time                                                -0.02
+  --------------------------------------------------------------------------
+  data required time                                                -0.02
+  data arrival time                                                 -2.97
+  --------------------------------------------------------------------------
+  slack (VIOLATED)                                                  -2.99
+
+
+1

@@ -22,3 +22,16 @@ bin-release/
 
 # verilog
 *.v
+*.syn
+*.log
+*.mr
+*.pvl
+*.tcl
+*.swp
+*.sh
+*.svf
+*.alib
+*.rpt
+*.out
+log.txt
+
