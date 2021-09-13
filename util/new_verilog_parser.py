@@ -572,6 +572,7 @@ class DcParser:
                     key_inputs = key_cells[key_cell][0]
                     key_outputs = key_cells[key_cell][1]
                     if key_cells[key_cell][2][0] is not None:
+                        print('aaaaadaaaaaa')
                         mult_inputs = key_cells[key_cell][2][1]
                         contain_mult = True
                         mult_info[mname] = mult_info.get(mname, ([], []))
