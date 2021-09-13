@@ -751,6 +751,7 @@ class DcParser:
         for mcell,info in mult_infos.items():
             print('----{}'.format(mcell))
             temp = sorted(info.fanins.items(), key=lambda x: x[1], reverse=True)
+            print(temp)
             print('fanins:',temp)
             print('fanouts:',info.fanouts)
         print(
