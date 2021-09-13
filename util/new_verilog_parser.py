@@ -578,7 +578,7 @@ class DcParser:
                         #print('aaaaadaaaaaa')
                         mult_inputs = key_cells[key_cell][2][1]
                         contain_mult = True
-                        mult_info[mcomp] = mult_info.get(mcomp, ([], []))
+                        mult_info[mcomp] = mult_info.get(mcomp, (set(), set()))
                     break
 
             for p in ports:
@@ -607,7 +607,7 @@ class DcParser:
             #print(mfunc,mname)
             for fo in fanouts:
                 if fo.flag_mult:
-                    mult_info[mcomp][1].append((fo.argname,fo.position[1]))
+                    mult_info[mcomp][1].add((fo.argname,fo.position[1]))
                 if mfunc == "HADD":
                     if fo.portname == "SO":
                         ntype = self.hadd_name_dict["hadd_s"]
@@ -714,7 +714,7 @@ class DcParser:
                 for fi in fanins:
                     print(fi.position)
                     if fi.position is not None and fi.position[0] in mult_inputs:
-                        mult_info[mcomp][0].append((fi.argname,fi.position[1]))
+                        mult_info[mcomp][0].add((fi.argname,fi.position[1]))
 
             for output,input in inputs.items():
                 for fi in input:
