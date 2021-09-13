@@ -746,22 +746,22 @@ class DcParser:
             #                 {"is_reverted": False, "is_sequencial": "DFF" in mtype},
             #             )
             #         )
-        print('mult info')
+        #print('mult info')
 
         for mcell,info in mult_infos.items():
-            print('----{}'.format(mcell))
+            #print('----{}'.format(mcell))
             fanins = info.fanins
             for port in fanins.keys():
                 new_args = sorted(fanins[port], key=lambda x: x[1])
-                fanins[port] = new_args
+                fanins[port] = new_args.keys()
             fanouts = info.fanouts
             for port in fanouts.keys():
                 new_args = sorted(fanouts[port], key=lambda x: x[1])
-                fanouts[port] = new_args
+                fanouts[port] = new_args.keys()
             #print(fanins)
             #temp = sorted(fanins.items(), key=lambda x: x[1])
-            print('fanins:',info.fanins)
-            print('fanouts:',info.fanouts)
+            #print('fanins:',info.fanins)
+            #print('fanouts:',info.fanouts)
         print(
             "#inputs:{}, #outputs:{}".format(len(adder_inputs), len(adder_outputs)),
             flush=True,
@@ -833,16 +833,18 @@ class DcParser:
         nodes, edges = self.parse_nohier(vf, key_cells=key_cells, target_cells=target_cells, label_region=False)
         return nodes,edges
 
-    def label_mult(self,nodes,edges):
+    def label_mult(self,nodes,edges,mult_infos):
         g = nx.DiGraph()
         g.add_nodes_from(nodes)
         g.add_edges_from(edges)
         rg = g.reverse()
         internal = set()
 
-        for m in adder_in_dict:
-            in_nodes = list(adder_in_dict[m])
-            out_nodes = list(adder_out_dict[m])
+        for mcell in mult_infos.keys():
+            fanins = mult_infos[mcell].fanins
+            fanouts = mult_infos[mcell].fanouts
+            in_nodes = None
+            out_nodes = None
             forward_reachable = set()
             backward_reachable = set()
             for i in in_nodes:
