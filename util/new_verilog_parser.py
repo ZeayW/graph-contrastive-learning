@@ -160,6 +160,7 @@ class DcParser:
                     for input in inputs:
                         if var_types.get(input,None) == 'PI':
                             key_cells[cell_name][0].append(input)
+                    print(key_cells)
         print(key_cells)
                     #key_cells[cell_name][0]
                 #print(var)
