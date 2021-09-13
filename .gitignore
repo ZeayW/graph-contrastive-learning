@@ -38,3 +38,5 @@ log.txt
 
 #idea
 *.xml
+
+test.py
