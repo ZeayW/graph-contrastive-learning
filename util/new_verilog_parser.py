@@ -54,6 +54,16 @@ def parse_arg(arg,port_info,ios,wires):
         print(arg)
         assert False
 
+class MultInfo:
+    cell_name:str
+    fanins:dict
+    fanouts:dict
+
+    def __init__(self,cell_name):
+        self.cell_name = cell_name
+        self.fanins = None
+        self.fanouts = None
+
 class ModuleInfo:
     cell_name:str
     cell_type:str
@@ -513,7 +523,7 @@ class DcParser:
 
         PIs: List[str] = []  # a list of PI nodes
         POs: List[str] = []  # a list of PO nodes
-        mult_info = {} # {mcomp:([(mult_input_wire,position)],[mult_output_wire,position])}
+        mult_infos = {} # {mcomp:([(mult_input_wire,position)],[mult_output_wire,position])}
         nodes: List[Tuple[str, Dict[str, str]]] = [
             ("1'b0", {"type": "1'b0"}),
             ("1'b1", {"type": "1'b1"}),
@@ -578,7 +588,8 @@ class DcParser:
                         #print('aaaaadaaaaaa')
                         mult_inputs = key_cells[key_cell][2][1]
                         contain_mult = True
-                        mult_info[mcomp] = mult_info.get(mcomp, (set(), set()))
+
+                        mult_infos[mcomp] = mult_infos.get(mcomp, MultInfo(mcomp))
                     break
 
             for p in ports:
@@ -607,7 +618,8 @@ class DcParser:
             #print(mfunc,mname)
             for fo in fanouts:
                 if fo.flag_mult:
-                    mult_info[mcomp][1].add((fo.argname,fo.position[1]))
+                    mult_infos[mcomp].fanouts[fo.position[0]] =  mult_infos[mcomp].fanouts.get(fo.position[0],set())
+                    mult_infos[mcomp].fanouts[fo.position[0]].add((fo.argname,fo.position[1]))
                 if mfunc == "HADD":
                     if fo.portname == "SO":
                         ntype = self.hadd_name_dict["hadd_s"]
@@ -712,7 +724,8 @@ class DcParser:
             if len(mult_inputs)!=0 :
                 for fi in fanins:
                     if fi.position is not None and fi.position[0] in mult_inputs:
-                        mult_info[mcomp][0].add((fi.argname,fi.position[1]))
+                        mult_infos[mcomp].fanins[fi.position[0]] = mult_infos[mcomp].fanins.get(fi.position[0], set())
+                        mult_infos[mcomp].fanins[fi.position[0]].add((fi.argname, fi.position[1]))
 
             for output,input in inputs.items():
                 for fi in input:
@@ -733,7 +746,11 @@ class DcParser:
             #                 {"is_reverted": False, "is_sequencial": "DFF" in mtype},
             #             )
             #         )
-        print(mult_info)
+        print('mult info')
+        for mcell,info in mult_infos.items():
+            print('----{}'.format(mcell))
+            print('fanins:',info.fanins)
+            print('fanouts:',info.fanouts)
         print(
             "#inputs:{}, #outputs:{}".format(len(adder_inputs), len(adder_outputs)),
             flush=True,
