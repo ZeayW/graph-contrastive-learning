@@ -510,7 +510,7 @@ class DcParser:
 
         PIs: List[str] = []  # a list of PI nodes
         POs: List[str] = []  # a list of PO nodes
-        mult_info = {} # {name:([(mult_input_wire,position)],[mult_output_wire,position])}
+        mult_info = {} # {mname:([(mult_input_wire,position)],[mult_output_wire,position])}
         nodes: List[Tuple[str, Dict[str, str]]] = [
             ("1'b0", {"type": "1'b0"}),
             ("1'b1", {"type": "1'b1"}),
@@ -729,6 +729,7 @@ class DcParser:
             #                 {"is_reverted": False, "is_sequencial": "DFF" in mtype},
             #             )
             #         )
+        print(mult_info)
         print(
             "#inputs:{}, #outputs:{}".format(len(adder_inputs), len(adder_outputs)),
             flush=True,
