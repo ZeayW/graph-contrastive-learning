@@ -752,12 +752,18 @@ class DcParser:
             #print('----{}'.format(mcell))
             fanins = info.fanins
             for port in fanins.keys():
-                new_args = sorted(fanins[port].items(), key=lambda x: x[1])
-                fanins[port] = new_args
+                new_args = sorted(fanins[port], key=lambda x: x[1])
+                temp = []
+                for item in new_args:
+                    temp.append(item[0])
+                fanins[port] = temp
             fanouts = info.fanouts
             for port in fanouts.keys():
                 new_args = sorted(fanouts[port], key=lambda x: x[1])
-                fanouts[port] = new_args
+                temp = []
+                for item in new_args:
+                    temp.append(item[0])
+                fanouts[port] = temp
             #print(fanins)
             #temp = sorted(fanins.items(), key=lambda x: x[1])
             print('fanins:',info.fanins)
