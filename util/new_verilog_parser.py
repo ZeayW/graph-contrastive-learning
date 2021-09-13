@@ -871,11 +871,12 @@ class DcParser:
                 intersect = None
                 for j in range(i+1):
                     if j < len(fanin_args[0]):
-                        all_path = nx.all_simple_paths(g,fanin_args[0][j],fanout,cutoff=10)
-                        path = nx.shortest_path(g,fanin_args[0][j],fanout)[:-1]
-                        intersect = set(path) if intersect is None else set(path) & intersect
-                        print('src:{},dst:{}'.format(fanin_args[0][j],fanout))
-                        print(list(all_path))
+                        all_paths = nx.all_simple_paths(g,fanin_args[0][j],fanout,cutoff=10)
+                        #path = nx.shortest_path(g,fanin_args[0][j],fanout)[:-1]
+                        for path in all_paths:
+                            intersect = set(path) if intersect is None else set(path) & intersect
+                        #print('src:{},dst:{}'.format(fanin_args[0][j],fanout))
+                        #print(list(all_path))
 
                 print(i,fanout,intersect)
                 if i==5:exit()
