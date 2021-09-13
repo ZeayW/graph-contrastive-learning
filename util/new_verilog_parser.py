@@ -61,8 +61,8 @@ class MultInfo:
 
     def __init__(self,cell_name):
         self.cell_name = cell_name
-        self.fanins = None
-        self.fanouts = None
+        self.fanins = {}
+        self.fanouts = {}
 
 class ModuleInfo:
     cell_name:str
