@@ -772,6 +772,7 @@ class DcParser:
             "#inputs:{}, #outputs:{}".format(len(adder_inputs), len(adder_outputs)),
             flush=True,
         )
+        self.label_mult(nodes,edges,mult_infos)
         #print(adder_inputs)
         gate_names = set([n[0] for n in nodes])
         pis = []
@@ -848,11 +849,17 @@ class DcParser:
 
         for mcell in mult_infos.keys():
             fanins = mult_infos[mcell].fanins
+            fanins1 = fanins['I1']
+            fanins2 = fanins['I2']
             fanouts = mult_infos[mcell].fanouts
             in_nodes = None
             out_nodes = None
             forward_reachable = set()
             backward_reachable = set()
+            for i,fanout in enumerate(fanouts):
+                for j in range(i+1):
+                    if j < len(fanins1):
+                        print("src:{},dst:{},path:{}".format(fanins1[j],fanout,nx.shortest_path(g,fanins1[j],fanout)))
             for i in in_nodes:
                 fw = dict(nx.bfs_successors(g, i, 6))
                 for t in fw.values():
