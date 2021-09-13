@@ -875,6 +875,8 @@ class DcParser:
                         path = nx.shortest_path(g,fanin_args[0][j],fanout)[:-1]
                         intersect = set(path) if intersect is None else set(path) & intersect
                         print('src:{},dst:{}'.format(fanin_args[0][j],fanout))
+                        print('aaa')
+                        print(len(list(all_path)))
                         print('a',list(all_path))
                         for path in all_path:
                             print('aaa')
