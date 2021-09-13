@@ -857,9 +857,10 @@ class DcParser:
         print(temp_nodes)
         for mcell in mult_infos.keys():
             fanins = mult_infos[mcell].fanins
-            print(fanins)
+
             fanins1 = fanins['I1']
             fanins2 = fanins['I2']
+            print(fanins1)
             fanouts = mult_infos[mcell].fanouts
             in_nodes = None
             out_nodes = None
