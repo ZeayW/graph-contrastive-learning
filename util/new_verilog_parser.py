@@ -869,6 +869,7 @@ class DcParser:
             for i,fanout in enumerate(fanouts):
                 for j in range(i+1):
                     if j < len(fanins1):
+                        print(fanins1[j])
                         print("src:{},dst:{},path:{}".format(fanins1[j],fanout,nx.shortest_path(g,fanins1[j],fanout)))
             for i in in_nodes:
                 fw = dict(nx.bfs_successors(g, i, 6))
