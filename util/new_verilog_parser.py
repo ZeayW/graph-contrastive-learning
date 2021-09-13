@@ -751,9 +751,12 @@ class DcParser:
         for mcell,info in mult_infos.items():
             print('----{}'.format(mcell))
             fanins = info.fanins
-            print(fanins)
-            temp = sorted(fanins.items(), key=lambda x: x[1])
-            print('fanins:',temp)
+            for port in fanins.keys():
+                new_args = sorted(fanins[port], key=lambda x: x[1])
+                fanins[port] = new_args
+            #print(fanins)
+            #temp = sorted(fanins.items(), key=lambda x: x[1])
+            print('fanins:',fanins)
             print('fanouts:',info.fanouts)
         print(
             "#inputs:{}, #outputs:{}".format(len(adder_inputs), len(adder_outputs)),
