@@ -607,7 +607,7 @@ class DcParser:
             #print(mfunc,mname)
             for fo in fanouts:
                 if fo.flag_mult:
-                    mult_info[mname][1].append((fo.argname,fo.position[1]))
+                    mult_info[mcomp][1].append((fo.argname,fo.position[1]))
                 if mfunc == "HADD":
                     if fo.portname == "SO":
                         ntype = self.hadd_name_dict["hadd_s"]
