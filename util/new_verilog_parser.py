@@ -842,6 +842,7 @@ class DcParser:
 
     def label_mult(self,nodes,edges,mult_infos):
         g = nx.DiGraph()
+        print(nodes)
         g.add_nodes_from(nodes)
         g.add_edges_from(edges)
         rg = g.reverse()
