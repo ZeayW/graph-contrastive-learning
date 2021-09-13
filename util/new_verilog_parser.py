@@ -754,9 +754,13 @@ class DcParser:
             for port in fanins.keys():
                 new_args = sorted(fanins[port], key=lambda x: x[1])
                 fanins[port] = new_args
+            fanouts = info.fanouts
+            for port in fanouts.keys():
+                new_args = sorted(fanouts[port], key=lambda x: x[1])
+                fanouts[port] = new_args
             #print(fanins)
             #temp = sorted(fanins.items(), key=lambda x: x[1])
-            print('fanins:',fanins)
+            print('fanins:',info.fanins)
             print('fanouts:',info.fanouts)
         print(
             "#inputs:{}, #outputs:{}".format(len(adder_inputs), len(adder_outputs)),
