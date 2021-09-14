@@ -833,7 +833,7 @@ class DcParser:
                     n[1]['is_input'] = -1
                     n[1]['is_output'] = -1
         print(adder_cells)
-        print(nodes)
+        #print(nodes)
         return nodes, edges
 
     def parse(self,vfile_pair,hier_report):
