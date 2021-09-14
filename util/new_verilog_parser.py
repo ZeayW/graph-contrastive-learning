@@ -869,20 +869,20 @@ class DcParser:
             backward_reachable = set()
             for i,fanout in enumerate(fanout_args[0]):
                 intersect = None
-                for j in range(int(i/2)):
-                    if j < len(fanin_args[0]):
-                        all_paths = nx.all_simple_paths(g,fanin_args[0][j],fanout,cutoff=10)
+                for j in range(i):
+                    if j < len(fanin_args[1]):
+                        all_paths = nx.all_simple_paths(g,fanin_args[1][j],fanout,cutoff=10)
                         #path = nx.shortest_path(g,fanin_args[0][j],fanout)[:-1
 
                         for path in all_paths:
-                            if i==2:
-                                print(path)
+                            # if i==2:
+                            #     print(path)
                             intersect = set(path) if intersect is None else set(path) & intersect
                         #print('src:{},dst:{}'.format(fanin_args[0][j],fanout))
                         #print(list(all_path))
 
                 print(i,fanout,intersect)
-                if i==5:exit()
+                if i==20:exit()
             for i in in_nodes:
                 fw = dict(nx.bfs_successors(g, i, 6))
                 for t in fw.values():
