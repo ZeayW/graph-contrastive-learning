@@ -419,6 +419,7 @@ def unlabel_low(g,unlabel_threshold):
 
     mask_low = g.ndata['position'][mask_pos] <= unlabel_threshold
     print(len(g.ndata['label_o'][mask_pos][mask_low]))
+    print(g.ndata['label_o'][mask_pos][mask_low])
     g.ndata['label_o'][mask_pos][mask_low] = 0
     print(g.ndata['label_o'][mask_pos][mask_low])
 def replaceDFF(g):
