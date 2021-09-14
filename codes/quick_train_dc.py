@@ -412,8 +412,10 @@ def change_label(g,label_name,options):
     g.ndata['label_o'] = g.ndata['position']
 
 def unlabel_low(g,unlabel_threshold):
-    mask_low = (g.ndata['label_o'].squeeze(-1) ==1) & (g.ndata['position'] <= unlabel_threshold)
-    g.ndata['label_o'][mask_low] = 0
+    output_mask  = g.ndata['label_o'].squeeze(-1) ==1
+    outputs = g.ndata['label_o'][output_mask]
+    mask_low =  (g.ndata['position'][output_mask] <= unlabel_threshold)
+    outputs[mask_low] = 0
 
 def replaceDFF(g):
     ntype = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
