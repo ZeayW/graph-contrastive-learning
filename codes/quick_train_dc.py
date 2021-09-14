@@ -51,7 +51,7 @@ def oversample(g,options,in_dim):
         print("wrong label type")
         return
 
-    no_muldiv_mask = labels[labels.squeeze(-1)!=-1]
+    no_muldiv_mask = labels.squeeze(-1)!=-1
     nodes = th.tensor(range(g.num_nodes()))
     nodes = nodes[no_muldiv_mask]
     labels = labels[no_muldiv_mask]
