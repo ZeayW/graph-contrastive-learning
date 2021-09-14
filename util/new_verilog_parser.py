@@ -897,7 +897,6 @@ class DcParser:
                             path_union = path_union | set(path)
                         intersect = path_union if intersect is None else path_union & intersect
                 print(i,fanout,intersect)
-                if i==20:exit()
             for i in in_nodes:
                 fw = dict(nx.bfs_successors(g, i, 6))
                 for t in fw.values():
