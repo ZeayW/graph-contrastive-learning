@@ -511,7 +511,8 @@ def train(options):
     else:
         graph_function = get_reverse_graph
 
-    train_remove = th.tensor(range(train_g.number_of_nodes()))[train_g.ndata['label_o']==-1]
+    train_nids = th.tensor(range(train_g.number_of_nodes()))
+    train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1)==-1]
     print(train_remove,len(train_remove))
     exit()
     traindataloader = MyNodeDataLoader(
