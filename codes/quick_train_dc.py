@@ -489,7 +489,7 @@ def train(options):
     replaceDFF(val_g)
     unlabel_low(train_g, options.unlabel)
     unlabel_low(val_g, options.unlabel)
-    print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
+    print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 1]))
     print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
     train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
 
