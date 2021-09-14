@@ -512,7 +512,7 @@ def train(options):
         graph_function = get_reverse_graph
 
     train_nids = th.tensor(range(train_g.number_of_nodes()))
-    print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1)==1]))
+    print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1)==0]))
     train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1)==-1]
     print(train_remove,len(train_remove))
     exit()
