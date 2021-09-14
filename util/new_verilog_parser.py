@@ -883,10 +883,10 @@ class DcParser:
                     if k < len(fanin_args[0]):
                         all_paths = nx.all_simple_paths(g, fanin_args[0][k], fanout, cutoff=8)
                         # path = nx.shortest_path(g,fanin_args[0][j],fanout)[:-1
-                        for path in all_paths:
+                        for path in list(all_paths):
                             if i==3 and 'div_DP_OP_279J21_124_314_n1132' in path:
                                 print(path)
-                            
+
                         path_union = set()
                         for path in all_paths:
                             path_union = path_union | set(path)
