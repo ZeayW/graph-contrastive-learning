@@ -54,6 +54,8 @@ def oversample(g,options,in_dim):
     no_muldiv_mask = labels[labels.squeeze(-1)!=-1]
     nodes = th.tensor(range(g.num_nodes()))
     nodes = nodes[no_muldiv_mask]
+    labels = labels[no_muldiv_mask]
+    
     mask_pos = (labels ==1).squeeze(1)
 
     mask_neg = (labels == 0).squeeze(1)
