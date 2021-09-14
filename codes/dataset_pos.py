@@ -133,7 +133,7 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
     for n in nodes:
         nid = node2id[n[0]]
         ntype[nid][label2id[n[1]["type"]]] = 1
-
+    print('muldiv:',is_output[is_output==-1])
     src_nodes = []
     dst_nodes = []
     is_reverted = []
