@@ -937,6 +937,7 @@ def main():
             vname = v[:-2]
             vfile_pairs[vname] = vfile_pairs.get(vname, [])
             vfile_pairs[vname].append(v)
+    vfile_pairs = sorted(vfile_pairs.items(),key=lambda x:x[0])
     vfile_pairs = vfile_pairs.values()
     print(vfile_pairs)
     for vfile_pair in vfile_pairs:
