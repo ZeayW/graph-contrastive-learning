@@ -155,7 +155,7 @@ class DcParser:
                 var_types[var_name] = (type)
                 #print(var_name,type,width,expression)
                 if '*' in expression :
-                    self.muldivs.append = cell_name
+                    self.muldivs.append(cell_name)
                     key_cells[cell_name] = key_cells.get(cell_name, ( [], [],(var_name,[]) ) )
                     inputs = expression.split('*')
                     for input in inputs:
