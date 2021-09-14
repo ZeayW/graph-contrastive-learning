@@ -431,7 +431,7 @@ def train(options):
     #data_path = 'data/region/'
     #data_path = 'data/boundary/'
     data_path = options.datapath
-    
+
     train_data_file = os.path.join(data_path,'boom2.pkl')
     val_data_file = os.path.join(data_path,'rocket2.pkl')
     #split_dir = 'splits/rokcet'
@@ -442,7 +442,7 @@ def train(options):
     else:
         label_name = 'label_o'
     if options.preprocess :
-        preprocess(data_path,device,options,in_dim)
+        preprocess(data_path,device,options,options.in_dim)
         return
     print(options)
     options, model = load_model(device, options)
@@ -478,7 +478,7 @@ def train(options):
     unlabel_low(val_g, options.unlabel)
     print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) != 0]))
 
-    train_nodes,pos_count,neg_count = oversample(train_g,options,in_dim)
+    train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
 
     rates = cal_ratios(neg_count,pos_count)
     print("neg/pos rates",rates)
