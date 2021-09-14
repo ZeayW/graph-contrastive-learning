@@ -418,8 +418,8 @@ def unlabel_low(g,unlabel_threshold):
     mask_pos = g.ndata['label_o'].squeeze(-1)==1
 
     mask_low = g.ndata['position'][mask_pos] <= unlabel_threshold
-    print(len(g.ndata['label_o'][mask_low]))
-    g.ndata['label_o'][mask_low] = 0
+    print(len(g.ndata['label_o'][mask_pos][mask_low]))
+    g.ndata['label_o'][mask_pos][mask_low] = 0
 
 def replaceDFF(g):
     ntype = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
