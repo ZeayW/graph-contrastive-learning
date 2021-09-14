@@ -466,7 +466,11 @@ def train(options):
         train_g = pickle.load(f)
     with open(val_data_file,'rb') as f:
         val_g = pickle.load(f)
-
+    train_nids = th.tensor(range(train_g.number_of_nodes()))
+    print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
+    train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
+    print(train_remove, len(train_remove))
+    exit()
     #print(len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) <= 1]))
     print(val_g.ndata['ntype'].shape)
     print("num pos1", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) != 0]))
@@ -511,11 +515,7 @@ def train(options):
     else:
         graph_function = get_reverse_graph
 
-    train_nids = th.tensor(range(train_g.number_of_nodes()))
-    print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1)==0]))
-    train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1)==-1]
-    print(train_remove,len(train_remove))
-    exit()
+
     traindataloader = MyNodeDataLoader(
         False,
         train_g,
