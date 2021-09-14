@@ -96,7 +96,7 @@ def oversample(g,options,in_dim):
         neg_mask = neg_types == type
         pos_nodes_n = th.tensor(pos_nodes)[pos_mask].numpy().tolist()
         neg_nodes_n = th.tensor(neg_nodes)[neg_mask].numpy().tolist()
-        if len(pos_nodes_n) == 0: ratio = 1
+        if len(pos_nodes_n) == 0: ratio = 0
         else: ratio = len(neg_nodes_n) / len(pos_nodes_n)
         ratios.append(ratio)
         if ratio >options.os_rate : ratio = options.os_rate
