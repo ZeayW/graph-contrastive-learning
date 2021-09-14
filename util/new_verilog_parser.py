@@ -927,6 +927,8 @@ def main():
     ntype = set()
     vfile_pairs = {}
     for v in os.listdir(folder):
+        if 'ling' not in v:
+            continue
         if not v.endswith('v') or '10' in v or 'auto' in v:
             continue
         if v.startswith('hier'):
@@ -937,7 +939,6 @@ def main():
             vname = v[:-2]
             vfile_pairs[vname] = vfile_pairs.get(vname, [])
             vfile_pairs[vname].append(v)
-    vfile_pairs = sorted(vfile_pairs.items(),key=lambda x:x[0])
     vfile_pairs = vfile_pairs.values()
     print(vfile_pairs)
     for vfile_pair in vfile_pairs:
