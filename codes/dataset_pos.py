@@ -178,7 +178,7 @@ class Dataset_dc(DGLDataset):
         vfile_pairs = {}
         for i,path in enumerate(self.data_paths):
             files = os.listdir(path)
-            random.shuffle(files)
+            #random.shuffle(files)
             exclude_files = []
             for v in files:
                 if not v.endswith('v') or v.split('.')[0].endswith('d10') or 'auto' in v:
