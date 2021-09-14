@@ -721,8 +721,8 @@ class DcParser:
                     pos = re.search("\d", mtype)
                     if pos:
                         ntype = ntype[: pos.start()]
-                    # if 'DFF' in ntype :
-                    #     ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
+                    if 'DFF' in ntype :
+                        ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
                     nodes.append((fo.argname, {"type": ntype}))
                     inputs[fo.argname] = inputs.get(fo.argname,[])
                     for fi in fanins:
