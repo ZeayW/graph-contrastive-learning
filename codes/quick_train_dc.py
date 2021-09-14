@@ -38,9 +38,6 @@ def oversample(g,options,in_dim):
 
     print("total number of nodes: ", g.num_nodes())
 
-    ratio = 1
-
-    nodes = th.tensor(range(g.num_nodes()))
 
     if options.region:
         labels = g.ndata['label_ad']
@@ -53,7 +50,11 @@ def oversample(g,options,in_dim):
     else:
         print("wrong label type")
         return
-    mask_pos = (labels != 0).squeeze(1)
+
+    no_muldiv_mask = labels[labels.squeeze(-1)!=-1]
+    nodes = th.tensor(range(g.num_nodes()))
+    nodes = nodes[no_muldiv_mask]
+    mask_pos = (labels ==1).squeeze(1)
 
     mask_neg = (labels == 0).squeeze(1)
     pos_nodes = nodes[mask_pos].numpy().tolist()
@@ -467,11 +468,8 @@ def train(options):
     with open(val_data_file,'rb') as f:
         val_g = pickle.load(f)
     train_nids = th.tensor(range(train_g.number_of_nodes()))
-    val_nids = th.tensor(range(val_g.number_of_nodes()))
-    train_muldiv_mask = train_g.ndata['label_o'].squeeze(-1) == -1
-    train_muldiv_nodes = train_nids[train_muldiv_mask]
-    val_muldiv_mask = val_g.ndata['label_o'].squeeze(-1) == -1
-    val_muldiv_nodes = val_nids[val_muldiv_mask]
+
+
     #print(len(muldiv_nodes))
     #print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
     #train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
@@ -521,18 +519,10 @@ def train(options):
     else:
         graph_function = get_reverse_graph
 
-    print(len(train_nodes))
-    new_train_nodes = []
-    for node in train_nodes:
-        if node not in train_muldiv_nodes:
-            new_train_nodes.append(node)
-    print(len(new_train_nodes))
-    print(len(val_nodes))
-    new_val_nodes = []
-    for node in val__nodes:
-        if node not in val_muldiv_nodes:
-            new_val_nodes.append(node)
-    print(len(new_val_nodes))
+    val_nids = th.tensor(range(val_g.number_of_nodes()))
+    print(len(val_nids))
+    val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1)!=-1]
+    print(len(val_nids))
     traindataloader = MyNodeDataLoader(
         False,
         train_g,
@@ -548,7 +538,7 @@ def train(options):
         True,
         val_g,
         graph_function(val_g),
-        list(range(val_g.num_nodes())),
+        val_nids,
         in_sampler,
         out_sampler,
         batch_size=val_g.num_nodes(),
