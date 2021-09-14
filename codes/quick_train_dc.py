@@ -517,6 +517,10 @@ def train(options):
         out_sampler.include_dst_in_src = True
     else:
         graph_function = get_reverse_graph
+
+    train_remove = th.tensor(range(train_g.number_of_nodes()))[train_g.ndata['label_o']==-1]
+    print(train_remove,len(train_remove))
+    exit()
     traindataloader = MyNodeDataLoader(
         False,
         train_g,
