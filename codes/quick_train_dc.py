@@ -518,7 +518,7 @@ def train(options):
         out_sampler.include_dst_in_src = True
     else:
         graph_function = get_reverse_graph
-
+    print(len(train_nodes))
     val_nids = th.tensor(range(val_g.number_of_nodes()))
     print(len(val_nids))
     val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1)!=-1]
