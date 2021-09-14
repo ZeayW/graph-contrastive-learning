@@ -228,6 +228,8 @@ class DcParser:
         else:
             port_info.ptype = "fanin"
 
+        if 'div_DP_OP' in mcomp:
+            port_info.flag_mult = True
         is_target = False
         for kw in self.adder_keywords:
             if kw in mcomp :
@@ -292,8 +294,8 @@ class DcParser:
             if self.is_output_port(portname) :
                 if (len(key_inputs)!=0 or len(key_outputs)!=0) and position[0] not in key_outputs:
                     return port_info
-                if contain_mult:
-                    port_info.flag_mult = True
+                # if contain_mult:
+                #     port_info.flag_mult = True
                 port_info.is_adder_output = True
                 port_info.output_comp = mcomp
             else:
@@ -536,7 +538,7 @@ class DcParser:
         index01 = [0,0]
         adder_inputs = set()
         adder_outputs = set()
-        mult_outputs = set()
+        multdiv = set()
         top_module = None
         adder_in_dict = collections.defaultdict(set)
         adder_out_dict = collections.defaultdict(set)
@@ -600,6 +602,7 @@ class DcParser:
                     fanouts.append(port_info)
                 # else:
                 #     assert port_info.ptype == "CLK"
+
                 if port_info.is_adder_input:
                     #print(port_info.)
                     adder_inputs.add(port_info.argname)
@@ -607,6 +610,8 @@ class DcParser:
                 if port_info.is_adder_output:
                     adder_outputs.add(port_info.argname)
                     adder_out_dict[port_info.output_comp].add(port_info.argname)
+                elif port_info.flag_mult:
+                    multdiv.add(port_info.argname)
                 if positions.get(port_info.argname,None) is None:
                     positions[port_info.argname] = port_info.position
             if not fanouts:
@@ -617,9 +622,9 @@ class DcParser:
             inputs = {}
             #print(mfunc,mname)
             for fo in fanouts:
-                if fo.flag_mult:
-                    mult_infos[mcomp].fanouts[fo.position[0]] =  mult_infos[mcomp].fanouts.get(fo.position[0],set())
-                    mult_infos[mcomp].fanouts[fo.position[0]].add((fo.argname,fo.position[1]))
+                # if fo.flag_mult:
+                #     mult_infos[mcomp].fanouts[fo.position[0]] =  mult_infos[mcomp].fanouts.get(fo.position[0],set())
+                #     mult_infos[mcomp].fanouts[fo.position[0]].add((fo.argname,fo.position[1]))
                 if mfunc == "HADD":
                     if fo.portname == "SO":
                         ntype = self.hadd_name_dict["hadd_s"]
@@ -721,11 +726,11 @@ class DcParser:
                         inputs[fo.argname].append(fi.argname)
             #print(len(inputs))
             #print(inputs)
-            if len(mult_inputs)!=0 :
-                for fi in fanins:
-                    if fi.position is not None and fi.position[0] in mult_inputs:
-                        mult_infos[mcomp].fanins[fi.position[0]] = mult_infos[mcomp].fanins.get(fi.position[0], set())
-                        mult_infos[mcomp].fanins[fi.position[0]].add((fi.argname, fi.position[1]))
+            # if len(mult_inputs)!=0 :
+            #     for fi in fanins:
+            #         if fi.position is not None and fi.position[0] in mult_inputs:
+            #             mult_infos[mcomp].fanins[fi.position[0]] = mult_infos[mcomp].fanins.get(fi.position[0], set())
+            #             mult_infos[mcomp].fanins[fi.position[0]].add((fi.argname, fi.position[1]))
 
             for output,input in inputs.items():
                 for fi in input:
@@ -748,31 +753,31 @@ class DcParser:
             #         )
         #print('mult info')
 
-        for mcell,info in mult_infos.items():
-            #print('----{}'.format(mcell))
-            fanins = info.fanins
-            for port in fanins.keys():
-                new_args = sorted(fanins[port], key=lambda x: x[1])
-                temp = []
-                for item in new_args:
-                    temp.append(item[0])
-                fanins[port] = temp
-            fanouts = info.fanouts
-            for port in fanouts.keys():
-                new_args = sorted(fanouts[port], key=lambda x: x[1])
-                temp = []
-                for item in new_args:
-                    temp.append(item[0])
-                fanouts[port] = temp
+        # for mcell,info in mult_infos.items():
+        #     #print('----{}'.format(mcell))
+        #     fanins = info.fanins
+        #     for port in fanins.keys():
+        #         new_args = sorted(fanins[port], key=lambda x: x[1])
+        #         temp = []
+        #         for item in new_args:
+        #             temp.append(item[0])
+        #         fanins[port] = temp
+        #     fanouts = info.fanouts
+        #     for port in fanouts.keys():
+        #         new_args = sorted(fanouts[port], key=lambda x: x[1])
+        #         temp = []
+        #         for item in new_args:
+        #             temp.append(item[0])
+        #         fanouts[port] = temp
             #print(fanins)
             #temp = sorted(fanins.items(), key=lambda x: x[1])
-            print('fanins:',info.fanins)
-            print('fanouts:',info.fanouts)
+            #print('fanins:',info.fanins)
+            #print('fanouts:',info.fanouts)
         print(
             "#inputs:{}, #outputs:{}".format(len(adder_inputs), len(adder_outputs)),
             flush=True,
         )
-        self.label_mult(nodes,edges,mult_infos)
+        #self.label_mult(nodes,edges,mult_infos)
         #print(adder_inputs)
         gate_names = set([n[0] for n in nodes])
         pis = []
@@ -824,8 +829,11 @@ class DcParser:
                 n[1]["is_input"] = n[0] in adder_inputs
                 n[1]["is_output"] = n[0] in adder_outputs
                 n[1]["position"] = positions.get(n[0],None)
-
+                if n[0] in multdiv:
+                    n[1]['is_input'] = -1
+                    n[1]['is_output'] = -1
         print(adder_cells)
+        print(nodes)
         return nodes, edges
 
     def parse(self,vfile_pair,hier_report):
@@ -874,9 +882,7 @@ class DcParser:
                         all_paths = nx.all_simple_paths(g,fanin_args[1][j],fanout,cutoff=15)
                         all_paths = list(all_paths)
                         #path = nx.shortest_path(g,fanin_args[0][j],fanout)[:-1
-                        for path in all_paths:
-                            if i==3 and 'div_DP_OP_279J21_124_314_n1132' in path:
-                                print(path)
+
                         path_union = set()
                         for path in all_paths:
                             path_union = path_union | set(path)
