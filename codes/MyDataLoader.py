@@ -195,6 +195,8 @@ class MyNodeCollator(NodeCollator):
                items = set(items.numpy().tolist())
                while len(items) !=get_options().batch_size:
                   nid = randint(0,self.g.num_nodes())
+                  if nid not in self._dataset:
+                      continue
                   items.add(nid)
                   #print(nid)
                items = torch.tensor(list(items))
