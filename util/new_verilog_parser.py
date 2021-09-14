@@ -871,7 +871,7 @@ class DcParser:
                 intersect = None
                 for j in range(i):
                     if j < len(fanin_args[1]):
-                        all_paths = nx.all_simple_paths(g,fanin_args[1][j],fanout,cutoff=10)
+                        all_paths = nx.all_simple_paths(g,fanin_args[1][j],fanout,cutoff=5)
                         #path = nx.shortest_path(g,fanin_args[0][j],fanout)[:-1
                         path_union = set()
                         for path in all_paths:
@@ -881,7 +881,7 @@ class DcParser:
                         #print(list(all_path))
                 for k in range(i):
                     if k < len(fanin_args[0]):
-                        all_paths = nx.all_simple_paths(g, fanin_args[0][k], fanout, cutoff=10)
+                        all_paths = nx.all_simple_paths(g, fanin_args[0][k], fanout, cutoff=5)
                         # path = nx.shortest_path(g,fanin_args[0][j],fanout)[:-1
                         path_union = set()
                         for path in all_paths:
