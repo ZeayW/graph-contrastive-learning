@@ -412,10 +412,8 @@ def change_label(g,label_name,options):
     g.ndata['label_o'] = g.ndata['position']
 
 def unlabel_low(g,unlabel_threshold):
-    output_mask  = g.ndata['label_o'].squeeze(-1) ==1
-    outputs = g.ndata['label_o'][output_mask]
-    mask_low =  (g.ndata['position'][output_mask] <= unlabel_threshold)
-    outputs[mask_low] = 0
+    mask_low = g.ndata['position'] <= unlabel_threshold
+    g.ndata['label_o'][mask_low] = 0
 
 def replaceDFF(g):
     ntype = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
@@ -470,11 +468,16 @@ def train(options):
         val_g = pickle.load(f)
     train_nids = th.tensor(range(train_g.number_of_nodes()))
 
-
-
+    muldiv_mask = train_g.ndata['label_o'].squeeze(-1) == -1
+    muldiv_nodes = train_nids[muldiv_mask]
+    print(len(muldiv_nodes))
+    #print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
+    #train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
+    #print(train_remove, len(train_remove))
+    exit()
     #print(len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) <= 1]))
     print(val_g.ndata['ntype'].shape)
-    print("num pos1", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) != 0]))
+    print("num pos1", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
     # change_label(train_g,'label_o',options)
     # change_label(val_g,'label_o',options)
     replaceDFF(train_g)
@@ -485,10 +488,6 @@ def train(options):
     print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
     train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
 
-    print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
-    train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
-    print(train_remove, len(train_remove))
-    exit()
     rates = cal_ratios(neg_count,pos_count)
     print("neg/pos rates",rates)
     train_g.edata['a'] = th.ones(size=(len(train_g.edata['r']),1))
