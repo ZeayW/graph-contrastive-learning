@@ -431,14 +431,7 @@ def train(options):
     #data_path = 'data/region/'
     #data_path = 'data/boundary/'
     data_path = options.datapath
-    if 'simplify5' in data_path:
-        in_dim = 17
-    elif 'simplify2' in data_path or 'simplify4' in data_path:
-        in_dim = 18
-    elif 'simplify' in data_path and options.function:
-        in_dim = 14
-    else:
-        in_dim = options.in_dim
+    
     train_data_file = os.path.join(data_path,'boom2.pkl')
     val_data_file = os.path.join(data_path,'rocket2.pkl')
     #split_dir = 'splits/rokcet'
