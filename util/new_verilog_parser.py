@@ -127,7 +127,7 @@ class DcParser:
             self.hadd_name_dict["hadd_c"] = "AND"
             self.hadd_name_dict["fadd_s"] = "XOR"
             self.hadd_name_dict["fadd_c"] = "MAJ"
-
+        self.muldivs = []
     def is_input_port(self, port: str) -> bool:
         return not self.is_output_port(port)
 
@@ -155,6 +155,7 @@ class DcParser:
                 var_types[var_name] = (type)
                 #print(var_name,type,width,expression)
                 if '*' in expression :
+                    self.muldivs.append = cell_name
                     key_cells[cell_name] = key_cells.get(cell_name, ( [], [],(var_name,[]) ) )
                     inputs = expression.split('*')
                     for input in inputs:
@@ -228,8 +229,10 @@ class DcParser:
         else:
             port_info.ptype = "fanin"
 
-        if 'div_DP_OP' in mcomp:
-            port_info.flag_mult = True
+        for muldiv in self.muldivs:
+            if muldiv in mcomp:
+                port_info.flag_mult = True
+                break
         is_target = False
         for kw in self.adder_keywords:
             if kw in mcomp :
@@ -718,8 +721,8 @@ class DcParser:
                     pos = re.search("\d", mtype)
                     if pos:
                         ntype = ntype[: pos.start()]
-                    if 'DFF' in ntype :
-                        ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
+                    # if 'DFF' in ntype :
+                    #     ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
                     nodes.append((fo.argname, {"type": ntype}))
                     inputs[fo.argname] = inputs.get(fo.argname,[])
                     for fi in fanins:

@@ -54,9 +54,9 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
     label2id ={"1'b0": 0, "1'b1": 1, 'DFF': 2, 'DFFSSR': 3,  'DFFAS': 4,  'NAND': 5, 'NBUFF': 6, 'AND': 7,
      'IBUFF': 8, 'OR': 9, 'DELLN': 10,  'INV': 11, 'NOR': 12,  'XOR': 13, 'MUX': 14, 'XNOR': 15,
      'MAJ': 16, 'PI': 17}
-    label2id = {"1'b0": 0, "1'b1": 1, 'DFF': 2, 'DFFN': 3,  'NAND': 4, 'NBUFF': 5, 'AND': 6,
-                'IBUFF': 7, 'OR': 8, 'DELLN': 9, 'INV': 10, 'NOR': 11, 'XOR': 12, 'MUX': 13, 'XNOR': 14,
-                'MAJ': 15, 'PI': 16}
+    # label2id = {"1'b0": 0, "1'b1": 1, 'DFF': 2, 'DFFN': 3,  'NAND': 4, 'NBUFF': 5, 'AND': 6,
+    #             'IBUFF': 7, 'OR': 8, 'DELLN': 9, 'INV': 10, 'NOR': 11, 'XOR': 12, 'MUX': 13, 'XNOR': 14,
+    #             'MAJ': 15, 'PI': 16}
     # label2id ={"1'b0": 0, "1'b1": 1, 'DFF': 2, 'DFFSSR': 3, 'AO': 4, 'DFFAS': 5, 'OA': 6, 'NAND': 7, 'NBUFF': 8, 'AND': 9,
     #  'IBUFF': 10, 'OR': 11, 'DELLN': 12, 'AOI': 13, 'INV': 14, 'NOR': 15, 'OAI': 16, 'XOR': 17, 'MUX': 18, 'XNOR': 19,
     #  'MAJ': 20, 'PI': 21}
