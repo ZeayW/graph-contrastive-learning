@@ -470,11 +470,11 @@ def train(options):
 
     muldiv_mask = train_g.ndata['label_o'].squeeze(-1) == -1
     muldiv_nodes = train_nids[muldiv_mask]
-    print(len(muldiv_nodes))
+    #print(len(muldiv_nodes))
     #print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
     #train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
     #print(train_remove, len(train_remove))
-    exit()
+    #exit()
     #print(len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) <= 1]))
     print(val_g.ndata['ntype'].shape)
     print("num pos1", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
@@ -519,7 +519,12 @@ def train(options):
     else:
         graph_function = get_reverse_graph
 
-
+    print(len(train_nodes))
+    new_train_nodes = []
+    for node in train_nodes:
+        if node not in muldiv_nodes:
+            new_train_nodes.append()
+    print(len(new_train_nodes))
     traindataloader = MyNodeDataLoader(
         False,
         train_g,
