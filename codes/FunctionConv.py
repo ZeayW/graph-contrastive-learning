@@ -161,7 +161,7 @@ class FunctionConv(nn.Module):
         res = nodes.data['temp']
         for i in range(get_options().in_dim):
             index= gate_types==i
-            if len(res[index]==0):
+            if len(res[index])==0:
                 continue
             if i== 9 or i==14:     # or gate / mux gate
                 print(i,len(res[index]))
