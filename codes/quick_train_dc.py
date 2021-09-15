@@ -98,9 +98,9 @@ def oversample(g,options,in_dim):
         pos_nodes_n = th.tensor(pos_nodes)[pos_mask].numpy().tolist()
         neg_nodes_n = th.tensor(neg_nodes)[neg_mask].numpy().tolist()
 
-        if type==13:
-            train_nodes.extend(neg_nodes_n)
-            continue
+        # if type==13:
+        #     train_nodes.extend(neg_nodes_n)
+
         if len(pos_nodes_n) == 0: ratio = 0
         else: ratio = len(neg_nodes_n) / len(pos_nodes_n)
         ratios.append(ratio)
