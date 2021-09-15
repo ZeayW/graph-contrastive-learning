@@ -166,7 +166,7 @@ class FunctionConv(nn.Module):
             if i== 9 or i==14:     # or gate / mux gate
                 print(i,len(res[index]))
                 print(len(nodes.mailbox['m'][index]))
-                res[index] = nodes.mailbox['m'][index].max(1)
+                res[index] = nodes.mailbox['m'][index].max(1).values
             else:
                 res[index] = nodes.mailbox['m'][index].mean(1)
             #print(gate_inputs[index].shape,self.gate_functions[i].weight.shape)
