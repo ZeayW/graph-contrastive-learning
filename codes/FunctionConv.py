@@ -161,8 +161,8 @@ class FunctionConv(nn.Module):
         res = nodes.data['temp']
         or_mask = gate_types==9 or gate_types==11
         mean_mask = gate_types!=9 and gate_types!=11
-        res[or_mask] = nodes.mailbox['m'][or_mask].max(1).values
-        res[mean_mask] = nodes.mailbox['m'][mean_mask].max(1).values
+        if len(res[or_mask])!=0: res[or_mask] = nodes.mailbox['m'][or_mask].max(1).values
+        res[mean_mask] = nodes.mailbox['m'][mean_mask].mean(1)
         # for i in range(get_options().in_dim):
         #     index= gate_types==i
         #     if len(res[index])==0:
