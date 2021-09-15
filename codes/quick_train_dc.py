@@ -91,12 +91,16 @@ def oversample(g,options,in_dim):
     ratios = []
     for type in range(in_dim):
         # skip XOR
-        # if type!= 13:
-        #     continue
+        if type!= 13:
+            continue
         pos_mask = pos_types == type
         neg_mask = neg_types == type
         pos_nodes_n = th.tensor(pos_nodes)[pos_mask].numpy().tolist()
         neg_nodes_n = th.tensor(neg_nodes)[neg_mask].numpy().tolist()
+
+        if type==13:
+            train_nodes.extend(neg_nodes_n)
+            
         if len(pos_nodes_n) == 0: ratio = 0
         else: ratio = len(neg_nodes_n) / len(pos_nodes_n)
         ratios.append(ratio)
@@ -113,6 +117,7 @@ def oversample(g,options,in_dim):
                 shuffle(short_nodes)
                 train_nodes.extend(short_nodes[:int(short_len * min(1, ratio - 1))])
                 ratio -= 1
+
     print("ratios:",ratios)
     return train_nodes,pos_count, neg_count
 
