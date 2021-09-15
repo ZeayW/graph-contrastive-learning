@@ -488,8 +488,10 @@ def train(options):
     # change_label(val_g,'label_o',options)
     # replaceDFF(train_g)
     # replaceDFF(val_g)
-    # train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == -1] = 100
-    # val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
+
+    #train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    #val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == 0] = 100
     unlabel_low(train_g, options.unlabel)
     unlabel_low(val_g, options.unlabel)
     print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
