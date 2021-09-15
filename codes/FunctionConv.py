@@ -161,6 +161,7 @@ class FunctionConv(nn.Module):
         for i in range(get_options().in_dim):
             index= gate_types==i
             if i== 7 or i==11:     # or gate / mux gate
+                print(len(nodes.mailbox['m'][index]))
                 res[index] = nodes.mailbox['m'][index].max(1)
             else:
                 res[index] = nodes.mailbox['m'][index].mean(1)
