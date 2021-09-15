@@ -89,6 +89,7 @@ if __name__ == "__main__":
                 ax = plt.subplot(111)
                 plt.xticks(fontsize=11)
                 plt.yticks(fontsize=11)
+                print(k_list)
                 ax.set_xticks(k_list, k_list)
                 plt.ylabel(metric_names[n],fontsize=15)
                 plt.xlabel('epoch',fontsize=15)
