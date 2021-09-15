@@ -9,7 +9,8 @@ if __name__ == "__main__":
     options = get_options()
     print(options)
     save_dir = options.save_dir
-
+    if not os.path.exists(save_dir) :
+        os.makedirs(save_dir)
     train_plot_dir = os.path.join(save_dir,'train/')
     val_plot_dir = os.path.join(save_dir,'val/')
     recall_file = open(os.path.join(save_dir,'recall.txt'),'w')
