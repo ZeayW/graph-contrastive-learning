@@ -90,8 +90,8 @@ def oversample(g,options,in_dim):
     ratios = []
     for type in range(in_dim):
         # skip XOR
-        if type!= 13:
-            continue
+        # if type!= 13:
+        #     continue
         pos_mask = pos_types == type
         neg_mask = neg_types == type
         pos_nodes_n = th.tensor(pos_nodes)[pos_mask].numpy().tolist()
