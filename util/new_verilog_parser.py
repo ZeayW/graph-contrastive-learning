@@ -542,6 +542,7 @@ class DcParser:
         adder_inputs = set()
         adder_outputs = set()
         multdiv = set()
+        multdiv_outputs = set()
         top_module = None
         adder_in_dict = collections.defaultdict(set)
         adder_out_dict = collections.defaultdict(set)
@@ -613,6 +614,7 @@ class DcParser:
                 if port_info.is_adder_output:
                     adder_outputs.add(port_info.argname)
                     adder_out_dict[port_info.output_comp].add(port_info.argname)
+                    if port_info.flag_mult:multdiv_outputs.add(port_info.argname)
                 elif port_info.flag_mult:
                     multdiv.add(port_info.argname)
                 if positions.get(port_info.argname,None) is None:
@@ -721,8 +723,8 @@ class DcParser:
                     pos = re.search("\d", mtype)
                     if pos:
                         ntype = ntype[: pos.start()]
-                    if 'DFF' in ntype :
-                        ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
+                    # if 'DFF' in ntype :
+                    #     ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
                     nodes.append((fo.argname, {"type": ntype}))
                     inputs[fo.argname] = inputs.get(fo.argname,[])
                     for fi in fanins:
@@ -835,6 +837,9 @@ class DcParser:
                 if n[0] in multdiv:
                     n[1]['is_input'] = -1
                     n[1]['is_output'] = -1
+                if n[0] in multdiv_outputs:
+                    n[1]['is_output'] = 2
+        print('num muldiv outputs:',len(multdiv_outputs))
         print(adder_cells)
         #print(nodes)
         return nodes, edges
