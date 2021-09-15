@@ -90,8 +90,8 @@ def oversample(g,options,in_dim):
     ratios = []
     for type in range(in_dim):
         # skip XOR
-        if type== 13:
-            continue
+        # if type== 13:
+        #     continue
         pos_mask = pos_types == type
         neg_mask = neg_types == type
         pos_nodes_n = th.tensor(pos_nodes)[pos_mask].numpy().tolist()
@@ -486,8 +486,8 @@ def train(options):
     print("num pos1", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
     # change_label(train_g,'label_o',options)
     # change_label(val_g,'label_o',options)
-    # replaceDFF(train_g)
-    # replaceDFF(val_g)
+    replaceDFF(train_g)
+    replaceDFF(val_g)
     unlabel_low(train_g, options.unlabel)
     unlabel_low(val_g, options.unlabel)
     print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
