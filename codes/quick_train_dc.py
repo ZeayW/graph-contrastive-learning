@@ -50,6 +50,7 @@ def oversample(g,options,in_dim):
     else:
         print("wrong label type")
         return
+    lowbit_mask = g.ndata['position']<=3
 
     no_muldiv_mask = labels.squeeze(-1)!=-1
     nodes = th.tensor(range(g.num_nodes()))
@@ -419,7 +420,7 @@ def change_label(g,label_name,options):
 
 def unlabel_low(g,unlabel_threshold):
     mask_low = g.ndata['position'] <= unlabel_threshold
-    g.ndata['label_o'][mask_low] = 0
+    g.ndata['label_o'][mask_low] = -1
 
 def replaceDFF(g):
     ntype = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
@@ -474,8 +475,7 @@ def train(options):
         val_g = pickle.load(f)
     train_nids = th.tensor(range(train_g.number_of_nodes()))
 
-    train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1)==-1] = 100
-    val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
+
     #print(len(muldiv_nodes))
     #print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
     #train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
@@ -488,6 +488,8 @@ def train(options):
     # change_label(val_g,'label_o',options)
     # replaceDFF(train_g)
     # replaceDFF(val_g)
+    # train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    # val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
     unlabel_low(train_g, options.unlabel)
     unlabel_low(val_g, options.unlabel)
     print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
