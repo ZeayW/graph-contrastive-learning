@@ -157,6 +157,7 @@ class FunctionConv(nn.Module):
     def aggregate_func(self,nodes):
         print(nodes.mailbox['m'].shape,nodes.mailbox['m'])
         gate_types = nodes.data['ntype2']
+        print(gate_types)
         res = nodes.data['temp']
         for i in range(get_options().in_dim):
             index= gate_types==i
