@@ -160,7 +160,7 @@ class FunctionConv(nn.Module):
         res = nodes.data['temp']
         for i in range(get_options().in_dim):
             index= gate_types==i
-            if i== 7 or i==11:     # or gate / mux gate
+            if i== 9 or i==14:     # or gate / mux gate
                 print(i,len(res[index]))
                 print(len(nodes.mailbox['m'][index]))
                 res[index] = nodes.mailbox['m'][index].max(1)
