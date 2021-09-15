@@ -161,9 +161,9 @@ class FunctionConv(nn.Module):
         for i in range(get_options().in_dim):
             index= gate_types==i
             if i== 7 or i==11:     # or gate / mux gate
-                res[index] = nodes.mailbox['m'][index].max(0)
+                res[index] = nodes.mailbox['m'][index].max(1)
             else:
-                res[index] = nodes.mailbox['m'][index].mean(0)
+                res[index] = nodes.mailbox['m'][index].mean(1)
             #print(gate_inputs[index].shape,self.gate_functions[i].weight.shape)
             #res[index] = self.gate_functions[i](gate_inputs[index])
             #res[index] = torch.matmul(gate_inputs[index],self.gate_functions[i])
