@@ -95,7 +95,8 @@ if __name__ == "__main__":
                 plt.legend(model_names, loc='lower left', bbox_to_anchor=(0.77, 0.2))
                 #plt.savefig(os.path.join(save_dir,m+'/'+metric_names[n]+'.png'))
 
-
+            if not os.path.exists(os.path.join(save_dir, m)):
+                os.makedirs(os.path.join(save_dir, m))
             plt.savefig(os.path.join(save_dir, m + '/' + metric_names[n] + '.png'))
             plt.legend(model_names, loc='lower left', bbox_to_anchor=(0.77, 0.2))
             plt.show()
