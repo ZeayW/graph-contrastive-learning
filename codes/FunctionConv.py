@@ -159,20 +159,24 @@ class FunctionConv(nn.Module):
         gate_types = nodes.data['ntype2']
         #print(gate_types[gate_types==9])
         res = nodes.data['temp']
-        for i in range(get_options().in_dim):
-            index= gate_types==i
-            if len(res[index])==0:
-                continue
-            if i== 9 or i==14:     # or gate / mux gate
-                #print(i,len(res[index]))
-                #print(len(nodes.mailbox['m'][index]))
-                res[index] = nodes.mailbox['m'][index].max(1).values
-            else:
-                res[index] = nodes.mailbox['m'][index].mean(1)
-            #print(gate_inputs[index].shape,self.gate_functions[i].weight.shape)
-            #res[index] = self.gate_functions[i](gate_inputs[index])
-            #res[index] = torch.matmul(gate_inputs[index],self.gate_functions[i])
-        #print(res.shape,res)
+        or_mask = gate_types==9 or gate_types==11
+        mean_mask = gate_types!=9 and gate_types!=11
+        res[or_mask] = nodes.mailbox['m'][or_mask].max(1).values
+        res[mean_mask] = nodes.mailbox['m'][mean_mask].max(1).values
+        # for i in range(get_options().in_dim):
+        #     index= gate_types==i
+        #     if len(res[index])==0:
+        #         continue
+        #     if i== 9 or i==14:     # or gate / mux gate
+        #         #print(i,len(res[index]))
+        #         #print(len(nodes.mailbox['m'][index]))
+        #         res[index] = nodes.mailbox['m'][index].max(1).values
+        #     else:
+        #         res[index] = nodes.mailbox['m'][index].mean(1)
+        #     #print(gate_inputs[index].shape,self.gate_functions[i].weight.shape)
+        #     #res[index] = self.gate_functions[i](gate_inputs[index])
+        #     #res[index] = torch.matmul(gate_inputs[index],self.gate_functions[i])
+        # #print(res.shape,res)
         return {'neigh':res}
     def gate_function(self,node):
         print(node.data)
