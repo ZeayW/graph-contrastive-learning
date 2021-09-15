@@ -100,7 +100,7 @@ def oversample(g,options,in_dim):
 
         if type==13:
             train_nodes.extend(neg_nodes_n)
-            
+
         if len(pos_nodes_n) == 0: ratio = 0
         else: ratio = len(neg_nodes_n) / len(pos_nodes_n)
         ratios.append(ratio)
@@ -425,7 +425,7 @@ def change_label(g,label_name,options):
 
 def unlabel_low(g,unlabel_threshold):
     mask_low = g.ndata['position'] <= unlabel_threshold
-    g.ndata['label_o'][mask_low] = -1
+    g.ndata['label_o'][mask_low] = 0
 
 def replaceDFF(g):
     ntype = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
@@ -496,8 +496,8 @@ def train(options):
 
     #train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == -1] = 100
     #val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
-    train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == 0] = 100
-    val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == 0] = 100
+    #train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == 0] = 100
+    #val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == 0] = 100
     unlabel_low(train_g, options.unlabel)
     unlabel_low(val_g, options.unlabel)
     print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
