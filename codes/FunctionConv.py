@@ -155,19 +155,20 @@ class FunctionConv(nn.Module):
         return {'rst':res}
 
     def aggregate_func(self,nodes):
-        print(nodes.mailbox['h'])
+        print(nodes.mailbox['m'].shape,nodes.mailbox['m'])
         gate_types = nodes.data['ntype2']
         res = nodes.data['temp']
         for i in range(get_options().in_dim):
             index= gate_types==i
             if i== 7 or i==11:     # or gate / mux gate
-                pass
+                res[index] = nodes.mailbox['m'][index].max(0)
             else:
-                pass
+                res[index] = nodes.mailbox['m'][index].mean(0)
             #print(gate_inputs[index].shape,self.gate_functions[i].weight.shape)
             #res[index] = self.gate_functions[i](gate_inputs[index])
             #res[index] = torch.matmul(gate_inputs[index],self.gate_functions[i])
-        return {'n': nodes.mailbox['h'].sum(1)}
+        print(res.shape,res)
+        return {'neigh':res}
     def gate_function(self,node):
         print(node.data)
         print(len(node.data['ntype']))
@@ -221,7 +222,8 @@ class FunctionConv(nn.Module):
             #print(graph)
             #print('num dst nodes:',graph.number_of_dst_nodes())
             #print(graph.srcdata['h'].shape,graph.srcdata['h'])
-            graph.update_all(fn.copy_src('h', 'm'), fn.mean('m', 'neigh'),self.apply_nodes_func)
+            #graph.update_all(fn.copy_src('h', 'm'), fn.mean('m', 'neigh'),self.apply_nodes_func)
+            graph.update_all(fn.copy_src('h', 'm'), self.aggregate_func, self.apply_nodes_func)
             #graph.apply_nodes(self.gate_function, ntype='_N')
             #update2 = 1000*(time()-s2)
             #print(time()-start)
