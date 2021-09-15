@@ -100,7 +100,7 @@ def oversample(g,options,in_dim):
 
         if type==13:
             train_nodes.extend(neg_nodes_n)
-
+            continue
         if len(pos_nodes_n) == 0: ratio = 0
         else: ratio = len(neg_nodes_n) / len(pos_nodes_n)
         ratios.append(ratio)
