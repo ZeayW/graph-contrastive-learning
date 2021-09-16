@@ -170,8 +170,8 @@ class DcParser:
                     adder_cells[cell_name] = adder_cells.get(cell_name, ( [], [],(var_name,[]) ) )
                     inputs = expression.split('*')
                     for input in inputs:
-                        if var_types.get(input, None) == 'PI':
-                            adder_cells[cell_name][2][1].append(input)
+                        adder_cells[cell_name][2][1].append(input)
+                        adder_cells[cell_name][0].append(input)
                     #print(adder_cells)
                 if '+' in expression and '-' not in expression:
                     #print(var_name, type, width, expression)
@@ -339,14 +339,13 @@ class DcParser:
                     return port_info
                 if cell_type == 'add':
                     port_info.is_adder_input = True
-                    if len(mult_inputs)!=0 and position[0] in key_inputs:
-                        print('mul1',position[0])
-                        port_info.is_muldiv_input1 = True
-                    elif position[0] in mult_inputs:
+                    if len(mult_inputs) != 0 and position[0] in mult_inputs:
                         print('mul2', position[0])
                         port_info.is_muldiv_input2 = True
-                    if len(mult_inputs)!=0:
-                        print(position[0])
+                    elif len(mult_inputs)!=0 and position[0] in key_inputs:
+                        print('mul1',position[0])
+                        port_info.is_muldiv_input1 = True
+
                 elif cell_type == 'sub':
                     if len(key_inputs)!=0:
                         sub_position = 0
