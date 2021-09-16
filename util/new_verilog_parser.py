@@ -743,9 +743,7 @@ class DcParser:
                     if ntype == 'IBUFF' or ('DFF' in ntype and fo.portname=='QN'):
                         ntype = 'INV'
 
-                    if buff_replace.get(fo.argname,None) is not None:
-                        if 'DFF' in ntype:
-                            print(ntype,fo.portname)
+                    if buff_replace.get(fo.argname,None) is None:
                         nodes.append((fo.argname, {"type": ntype}))
             #print(len(inputs))
             #print(inputs)
