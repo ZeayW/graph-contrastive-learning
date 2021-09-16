@@ -671,6 +671,7 @@ class DcParser:
                     if adder_cells[key_cell][2][0] is not None:
                         #print('aaaaadaaaaaa')
                         mult_inputs = adder_cells[key_cell][2][1]
+                        print('mul_inputs',mult_inputs)
                         contain_mult = True
 
                         mult_infos[mcomp] = mult_infos.get(mcomp, MultInfo(mcomp))
