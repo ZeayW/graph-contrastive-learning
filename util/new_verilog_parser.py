@@ -543,6 +543,7 @@ class DcParser:
         adder_outputs = set()
         multdiv = set()
         multdiv_outputs = set()
+        buff_replace = {}
         top_module = None
         adder_in_dict = collections.defaultdict(set)
         adder_out_dict = collections.defaultdict(set)
@@ -570,6 +571,7 @@ class DcParser:
             ports = instance.portlist
             mtype = mcell[0 : mcell.rfind("X")]  # e.g. AND2
             mfunc = mtype  # e.g. AND
+
             # pos = re.search("\d", mtype)
             # if pos:
             #     mfunc = mtype[: pos.start()]
@@ -719,12 +721,16 @@ class DcParser:
                 #         inputs[h_node_name].append(fi.argname)
                 #     # edges.append((h_node_name,fo.argname,
                 #     #               {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
+                elif ntype=='NBUFF':
+                    buff_replace[fo.argname] = fanins[0].argname
                 else:
                     pos = re.search("\d", mtype)
                     if pos:
                         ntype = ntype[: pos.start()]
                     # if 'DFF' in ntype :
                     #     ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
+                    if ntype == 'IBUFF':
+                        ntype = 'INV'
                     nodes.append((fo.argname, {"type": ntype}))
                     inputs[fo.argname] = inputs.get(fo.argname,[])
                     for fi in fanins:
@@ -778,6 +784,13 @@ class DcParser:
             #temp = sorted(fanins.items(), key=lambda x: x[1])
             #print('fanins:',info.fanins)
             #print('fanouts:',info.fanouts)
+        new_edges = []
+        for edge in edges:
+            if buff_replace.get(edge[0],None) is not None:
+                new_edges.append((buff_replace[edge[0]],edge[1],edge[2]) )
+            else:
+                new_edges.append(edges)
+        edges = new_edges
         print(
             "#inputs:{}, #outputs:{}".format(len(adder_inputs), len(adder_outputs)),
             flush=True,
