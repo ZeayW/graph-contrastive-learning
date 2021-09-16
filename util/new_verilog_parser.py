@@ -737,8 +737,8 @@ class DcParser:
                             continue
                         if ntype == 'NBUFF' or ('DFF' in ntype and fo.portname=='Q'):
                             buff_replace[fo.argname] = fi.argname
-
-                        inputs[fo.argname].append(fi.argname)
+                        else:
+                            inputs[fo.argname].append(fi.argname)
 
                     if ntype == 'IBUFF' or ('DFF' in ntype and fo.portname=='QN'):
                         ntype = 'INV'
