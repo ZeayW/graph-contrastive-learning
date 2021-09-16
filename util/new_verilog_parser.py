@@ -83,6 +83,11 @@ class PortInfo:
     argcomp: str
     is_adder_input: bool
     is_adder_output: bool
+    is_sub_input1: bool
+    is_sub_input2: bool
+    is_muldiv_input1: bool
+    is_muldiv_input2: bool
+    is_sub_output: bool
     input_comp: str
     output_comp: str
     arg_list: list
@@ -97,6 +102,11 @@ class PortInfo:
         self.argcomp = argcomp
         self.is_adder_input = False
         self.is_adder_output = False
+        self.is_sub_input1 = False
+        self.is_sub_input2 = False
+        self.is_muldiv_input1 = False
+        self.is_muldiv_input2 = False
+        self.is_sub_output = False
         self.arg_list = []
         self.position = None
         self.flag_update = False
@@ -104,11 +114,11 @@ class PortInfo:
         self.flag_mult = False
 class DcParser:
     def __init__(
-        self, top_module: str, hier_keywords:List[str],adder_keywords: List[str], hadd_type: str = "hadd"
+        self, top_module: str,adder_keywords: List[str], sub_keywords: List[str], hadd_type: str = "hadd"
     ):
         self.top_module = top_module
         self.adder_keywords = adder_keywords
-        self.hier_keywords = hier_keywords
+        self.sub_keywords = sub_keywords
         assert hadd_type in ("hadd", "hadd_s", "xor")
         self.hadd_type = hadd_type  # treat hadd sum as either "hadd", "hadd_s", "xor"
         self.hadd_name_dict = {}
@@ -140,7 +150,8 @@ class DcParser:
         cells  = text.split('Datapath Report for')
         print('number of cells',len(cells))
         cells = cells[1:]
-        key_cells = {}
+        adder_cells = {}
+        sub_cells = {}
         for cell in cells:
             cell = cell.split('Implementation Report')[0]
             cell = cell[:cell.rfind('\n==============================================================================')]
@@ -156,28 +167,37 @@ class DcParser:
                 #print(var_name,type,width,expression)
                 if '*' in expression :
                     self.muldivs.append(cell_name)
-                    key_cells[cell_name] = key_cells.get(cell_name, ( [], [],(var_name,[]) ) )
+                    adder_cells[cell_name] = adder_cells.get(cell_name, ( [], [],(var_name,[]) ) )
                     inputs = expression.split('*')
                     for input in inputs:
                         if var_types.get(input, None) == 'PI':
-                            key_cells[cell_name][2][1].append(input)
-                    #print(key_cells)
+                            adder_cells[cell_name][2][1].append(input)
+                    #print(adder_cells)
                 if '+' in expression and '-' not in expression:
                     #print(var_name, type, width, expression)
-                    #print(key_cells)
-                    key_cells[cell_name] = key_cells.get(cell_name, ( [], [],(None,[]) ) )
-                    key_cells[cell_name][1].append(var_name)
+                    #print(adder_cells)
+                    adder_cells[cell_name] = adder_cells.get(cell_name, ( [], [],(None,[]) ) )
+                    adder_cells[cell_name][1].append(var_name)
                     inputs = expression.split('+')
                     for input in inputs:
                         if var_types.get(input,None) == 'PI':
-                            key_cells[cell_name][0].append(input)
-                    #print(key_cells)
-        print(key_cells)
-                    #key_cells[cell_name][0]
+                            adder_cells[cell_name][0].append(input)
+                if '-' in expression and '+' not in expression:
+                    sub_cells[cell_name] = sub_cells.get(cell_name, ([], [], (None, [])))
+                    if var_types.get(var_name)=='PO':
+                        sub_cells[cell_name][1].append(var_name)
+                    inputs = expression.split('+')
+                    for input in inputs:
+                        if var_types.get(input, None) == 'PI':
+                            sub_cells[cell_name][0].append(input)
+                    #print(adder_cells)
+        print('adders:',adder_cells)
+        print("sub:",sub_cells)
+                    #adder_cells[cell_name][0]
                 #print(var)
             #print(vars)
 
-        return key_cells
+        return adder_cells,sub_cells
     def parse_port_hier(
         self, ios:dict,wires:dict, port: pyverilog.vparser.parser.Portlist,
     ) -> PortInfo:
@@ -195,7 +215,7 @@ class DcParser:
         return port_info
 
     def parse_port(
-        self, mcomp: str,target_cells: list,port: pyverilog.vparser.parser.Portlist,index01:list,key_inputs:list,key_outputs:list,contain_mult:bool
+        self, mcomp: str,target_cells: list,port: pyverilog.vparser.parser.Portlist,index01:list,key_inputs:list,key_outputs:list,mult_inputs:list,contain_mult:bool
     ) -> PortInfo:
         portname, argname = port.portname, port.argname
         if type(argname) == pyverilog.vparser.ast.Partselect:
@@ -238,7 +258,11 @@ class DcParser:
             if kw in mcomp :
                 is_target = True
                 break
-        if len(key_inputs)!=0 or len(key_outputs)!=0:
+        for kw in self.sub_keywords:
+            if kw in mcomp :
+                is_target = True
+                break
+        if len(key_inputs)!=0 or len(key_outputs)!=0 or len(mult_inputs)!=0:
             is_target = True
         if is_target and mcomp != argcomp:
             module_ports = None
@@ -248,9 +272,11 @@ class DcParser:
             #         break
             # for cases that instance_name is not unique, e.g, have several add_x_1，each is instance of different cell,
             # in theses cases, mcomp contains both cell information and instance information
+            cell_type = None
             for module_info in target_cells:
                 if module_info.instance_name.lower() in mcomp.lower():
                     module_ports = module_info.ports
+                    cell_type = module_info.cell_type
                     break
             if module_ports is None:
                 print('module_ports is none', mcomp, portname, argname)
@@ -295,17 +321,43 @@ class DcParser:
             port_info.position = position
 
             if self.is_output_port(portname) :
+
                 if (len(key_inputs)!=0 or len(key_outputs)!=0) and position[0] not in key_outputs:
                     return port_info
                 # if contain_mult:
                 #     port_info.flag_mult = True
-                port_info.is_adder_output = True
+                if cell_type == 'add':
+                    port_info.is_adder_output = True
+                elif cell_type == 'sub':
+                    port_info.is_sub_output = True
+                else:
+                    print(cell_type)
+                    assert  False
+
                 port_info.output_comp = mcomp
             else:
                 if (len(key_inputs)!=0 or len(key_outputs)!=0) and position[0] not in key_inputs:
                     # print(argname)
                     return port_info
-                port_info.is_adder_input = True
+                if cell_type == 'add':
+                    port_info.is_adder_input = True
+                    if port_info.argname in key_inputs:
+                        port_info.is_muldiv_input1 = True
+                    elif port_info.argname in mult_inputs:
+                        port_info.is_muldiv_input2 = True
+                elif cell_type == 'sub':
+                    sub_position = 0
+                    for i,input in enumerate(key_inputs):
+                        if input == position[0]:
+                            sub_position = i
+                            break
+                    if sub_position == 0:
+                        port_info.is_sub_input1 = True
+                    else:
+                        port_info.is_sub_input2 = True
+                else:
+                    print(cell_type)
+                    assert False
                 port_info.input_comp = mcomp
 
         elif is_target and argcomp != mcomp:
@@ -317,7 +369,7 @@ class DcParser:
         #if 'add_x' in mcomp or 'alu_DP_OP' in mcomp: print(position)
         return port_info
 
-    def parse_hier(self, fname,key_cells):
+    def parse_hier(self, fname,adder_cells,sub_cells):
         """ parse dc generated verilog """
         target_cells = {}
         ast, directives = parse([fname])
@@ -377,18 +429,25 @@ class DcParser:
                 if mcell.startswith("SNPS_CLOCK") or mcell.startswith("PlusArgTimeout"):
                     continue
 
-                is_target = False
+                is_adder = False
+                is_sub =  False
                 for key_word in self.adder_keywords:
                     if key_word in mcomp:
-                        is_target = True
+                        is_adder = True
                         break
-                if key_cells.get(mname,None) is not None:
-                    is_target = True
-
-                if is_target:
+                for key_word in self.sub_keywords:
+                    if key_word in mcomp:
+                        is_sub = True
+                        break
+                if adder_cells.get(mname,None) is not None:
+                    is_adder = True
+                if sub_cells.get(mname, None) is not None:
+                    is_sub = True
+                if is_adder or is_sub:
                     print(mname)
                     # cell_name = mcell.lower()
-                    cell_type = mcell.split('_')[0]
+                    cell_type = 'add' if is_adder else 'sub'
+                    #cell_type = mcell.split('_')[0]
                     index = mcell.split('_')[1]
                     # if re.match('\d+',index) is not None:
                     #     cell_type = "{}_{}".format(index,cell_type)
@@ -522,9 +581,9 @@ class DcParser:
         # exit()
         return target_cells
 
-    def parse_nohier(self, fname, key_cells,target_cells,label_region=False):
+    def parse_nohier(self, fname, adder_cells,sub_cells,target_cells,label_region=False):
         """ parse dc generated verilog """
-        adder_cells = set()
+        #adder_cells = set()
 
         PIs: List[str] = []  # a list of PI nodes
         POs: List[str] = []  # a list of PO nodes
@@ -541,12 +600,19 @@ class DcParser:
         index01 = [0,0]
         adder_inputs = set()
         adder_outputs = set()
+        sub_inputs1 = set()
+        sub_inputs2 = set()
+        sub_outputs = set()
         multdiv = set()
+        muldiv_inputs1 = set()
+        muldiv_inputs2 = set()
         multdiv_outputs = set()
         buff_replace = {}
         top_module = None
-        adder_in_dict = collections.defaultdict(set)
-        adder_out_dict = collections.defaultdict(set)
+        # adder_in_dict = collections.defaultdict(set)
+        # adder_out_dict = collections.defaultdict(set)
+        # sub_in_dict = collections.defaultdict(set)
+        # sub_out_dict = collections.defaultdict(set)
         positions = {}
         pi_positions = {}
         for module in ast.description.definitions:
@@ -580,28 +646,32 @@ class DcParser:
                 continue
             fanins: List[PortInfo] = []
             fanouts: List[PortInfo] = []
-            if 'add_x' in mcomp or 'alu_DP_OP' in mcomp:
+            # if 'add_x' in mcomp or 'alu_DP_OP' in mcomp:
                 #print("\n",mcell,mname)
-                adder_cells.add(mcell)
+                #adder_cells.add(mcell)
            # exit()
             key_inputs,key_outputs = [],[]
             mult_inputs = []
             contain_mult = False
-            # key_cells: { ([],[],(None,[]))}
-            for key_cell in key_cells.keys():
+            # adder_cells: { ([],[],(None,[]))}
+            for key_cell in adder_cells.keys():
                 if key_cell in mcomp:
-                    key_inputs = key_cells[key_cell][0]
-                    key_outputs = key_cells[key_cell][1]
-                    if key_cells[key_cell][2][0] is not None:
+                    key_inputs = adder_cells[key_cell][0]
+                    key_outputs = adder_cells[key_cell][1]
+                    if adder_cells[key_cell][2][0] is not None:
                         #print('aaaaadaaaaaa')
-                        mult_inputs = key_cells[key_cell][2][1]
+                        mult_inputs = adder_cells[key_cell][2][1]
                         contain_mult = True
 
                         mult_infos[mcomp] = mult_infos.get(mcomp, MultInfo(mcomp))
                     break
-
+            for key_cell in sub_cells.keys():
+                if key_cell in mcomp:
+                    key_inputs = sub_cells[key_cell][0]
+                    key_outputs = sub_cells[key_cell][1]
+                    break
             for p in ports:
-                port_info = self.parse_port(mcomp, target_cells,p,index01,key_inputs,key_outputs,contain_mult)
+                port_info = self.parse_port(mcomp, target_cells,p,index01,key_inputs,key_outputs,mult_inputs,contain_mult)
                 if port_info.ptype == "fanin":
                     fanins.append(port_info)
                 elif port_info.ptype == "fanout":
@@ -612,11 +682,27 @@ class DcParser:
                 if port_info.is_adder_input:
                     #print(port_info.)
                     adder_inputs.add(port_info.argname)
-                    adder_in_dict[port_info.input_comp].add(port_info.argname)
+                    #adder_in_dict[port_info.input_comp].add(port_info.argname)
                 if port_info.is_adder_output:
                     adder_outputs.add(port_info.argname)
-                    adder_out_dict[port_info.output_comp].add(port_info.argname)
+                    #adder_out_dict[port_info.output_comp].add(port_info.argname)
                     if port_info.flag_mult:multdiv_outputs.add(port_info.argname)
+                if port_info.is_muldiv_input1:
+                    muldiv_inputs1.add(port_info.argname)
+                if port_info.is_muldiv_input2:
+                    muldiv_inputs2.add(port_info.argname)
+                if port_info.is_sub_input1:
+                    #print(port_info.)
+                    sub_inputs1.add(port_info.argname)
+                    #sub_in_dict[port_info.input_comp].add(port_info.argname)
+                if port_info.is_sub_input2:
+                    #print(port_info.)
+                    sub_inputs2.add(port_info.argname)
+                    #sub_in_dict[port_info.input_comp].add(port_info.argname)
+                if port_info.is_sub_output:
+                    sub_outputs.add(port_info.argname)
+                    #sub_out_dict[port_info.output_comp].add(port_info.argname)
+
                 elif port_info.flag_mult:
                     multdiv.add(port_info.argname)
                 if positions.get(port_info.argname,None) is None:
@@ -733,14 +819,16 @@ class DcParser:
                     inputs[fo.argname] = inputs.get(fo.argname,[])
                     for fi in fanins:
                         # dff ignore SET/RESET/CLOCK
-                        if 'DFF' in ntype and fi.portname!='D':
-                            continue
-                        if ntype == 'NBUFF' or ('DFF' in ntype and fo.portname=='Q'):
+                        # if 'DFF' in ntype and fi.portname!='D':
+                        #     continue
+                        #if ntype == 'NBUFF' or ('DFF' in ntype and fo.portname=='Q'):
+                        if ntype == 'NBUFF':
                             buff_replace[fo.argname] = fi.argname
                         else:
                             inputs[fo.argname].append(fi.argname)
 
-                    if ntype == 'IBUFF' or ('DFF' in ntype and fo.portname=='QN'):
+                    #if ntype == 'IBUFF' or ('DFF' in ntype and fo.portname=='QN'):
+                    if ntype == 'IBUFF':
                         ntype = 'INV'
 
                     if buff_replace.get(fo.argname,None) is None:
@@ -863,10 +951,27 @@ class DcParser:
                 if n[0] in multdiv:
                     n[1]['is_input'] = -1
                     n[1]['is_output'] = -1
-                if n[0] in multdiv_outputs:
+                elif n[0] in multdiv_outputs:
                     n[1]['is_output'] = 2
-        print('num muldiv outputs:',len(multdiv_outputs))
-        print(adder_cells)
+                elif n[0] in muldiv_inputs1:
+                    n[1]['is_input'] = 2
+                elif n[0] in muldiv_inputs2:
+                    n[1]['is_input'] = 3
+                elif n[0] in sub_inputs1:
+                    n[1]['is_input'] = 4
+                elif n[0] in sub_inputs2:
+                    n[1]['is_input'] = 5
+                elif n[0] in sub_outputs:
+                    n[1]['is_output'] = 3
+
+        print('num muldiv inputs1:', len(muldiv_inputs1))
+        print('num muldiv inputs2:', len(muldiv_inputs2))
+        print('num muldiv outputs:', len(multdiv_outputs))
+
+        print('num sub inputs1:', len(sub_inputs1))
+        print('num sub inputs2:', len(sub_inputs2))
+        print('num sub outputs:', len(sub_outputs))
+        #print(adder_cells)
         #print(nodes)
         return nodes, edges
 
@@ -875,11 +980,11 @@ class DcParser:
         # if 'hybrid' not in vf:
         #     continue
         # parser = DcParser("BoomCore", ["alu_DP_OP", "add_x"])
-        key_cells = self.parse_report(hier_report)
+        adder_cells,sub_cells = self.parse_report(hier_report)
         # exit()
-        target_cells = self.parse_hier(hier_vf, key_cells)
+        target_cells = self.parse_hier(hier_vf, adder_cells,sub_cells)
 
-        nodes, edges = self.parse_nohier(vf, key_cells=key_cells, target_cells=target_cells, label_region=False)
+        nodes, edges = self.parse_nohier(vf, adder_cells=adder_cells, sub_cells=sub_cells,target_cells=target_cells, label_region=False)
         return nodes,edges
 
     def label_mult(self,nodes,edges,mult_infos):
@@ -991,12 +1096,12 @@ def main():
         vf = os.path.join(folder, vf)
         print("parsing {}...".format(hier_vf))
         # parser = DcParser("BoomCore", ["alu_DP_OP", "add_x"])
-        parser = DcParser("Rocket", hier_keywords=["add","inc"],adder_keywords=['add_x','alu_DP_OP','div_DP_OP'],hadd_type="xor")
-        key_cells = parser.parse_report(hier_report)
+        parser = DcParser("Rocket", adder_keywords=['add_x','alu_DP_OP','div_DP_OP'],sub_keywords=['sub_x'],hadd_type="xor")
+        adder_cells,sub_cells = parser.parse_report(hier_report)
         #exit()
-        target_cells = parser.parse_hier(hier_vf,key_cells)
+        target_cells = parser.parse_hier(hier_vf,adder_cells,sub_cells)
 
-        nodes, edges = parser.parse_nohier(vf, key_cells=key_cells,target_cells=target_cells,label_region=False)
+        nodes, edges = parser.parse_nohier(vf, adder_cells=adder_cells,sub_cells=sub_cells,target_cells=target_cells,label_region=False)
         print("nodes {}, edges {}".format(len(nodes), len(edges)))
         for n in nodes:
             ntype.add(n[1]["type"])
