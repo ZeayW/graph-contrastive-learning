@@ -54,10 +54,11 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
     label2id ={"1'b0": 0, "1'b1": 1, 'DFF': 2, 'DFFSSR': 3,  'DFFAS': 4,  'NAND': 5, 'NBUFF': 6, 'AND': 7,
      'IBUFF': 8, 'OR': 9, 'DELLN': 10,  'INV': 11, 'NOR': 12,  'XOR': 13, 'MUX': 14, 'XNOR': 15,
      'MAJ': 16, 'PI': 17}
+    # simplify9
     label2id = {"1'b0": 0, "1'b1": 1, 'DFF': 2, 'DFFSSR': 3, 'DFFAS': 4, 'NAND': 5, 'AND': 6,
                  'OR': 7, 'DELLN': 8, 'INV': 9, 'NOR': 10, 'XOR': 11, 'MUX': 12, 'XNOR': 13,
                 'MAJ': 14, 'PI': 15}
-    # simpligy
+    # simplify10
     label2id = {"1'b0": 0, "1'b1": 1,  'NAND': 2, 'AND': 3,
                 'OR': 4, 'DELLN': 5, 'INV': 6, 'NOR': 7, 'XOR': 8, 'MUX': 9, 'XNOR': 10,
                 'MAJ': 11, 'PI': 12}

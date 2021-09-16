@@ -762,7 +762,7 @@ class DcParser:
                         )
                     )
 
-            print(buff_replace)
+            print(len(buff_replace))
             # for fi in inputs:
             #     for fo in fanouts:
             #         edges.append(
