@@ -356,12 +356,12 @@ class DcParser:
                         else:
                             port_info.is_sub_input2 = True
                     else:
-                        if 'A' in port_info.portname :
+                        if position[0] == port_info.portname :
                             port_info.is_sub_input1 = True
-                        elif 'B' in port_info.portname :
+                        elif position[0] == port_info.portname :
                             port_info.is_sub_input2 = True
                         else:
-                            print(port_info.portname)
+                            print(position[0] ,port_info.portname)
                             assert False
                 else:
                     print(cell_type)
