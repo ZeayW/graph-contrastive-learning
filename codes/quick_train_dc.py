@@ -51,12 +51,13 @@ def oversample(g,options,in_dim):
         print("wrong label type")
         return
     lowbit_mask = g.ndata['position']<=3
-
+    # unlabel the nodes in muldiv
     no_muldiv_mask = labels.squeeze(-1)!=-1
     nodes = th.tensor(range(g.num_nodes()))
     nodes = nodes[no_muldiv_mask]
     labels = labels[no_muldiv_mask]
     print(len(nodes))
+
     mask_pos = (labels ==1).squeeze(1)
 
     mask_neg = (labels == 0).squeeze(1)
@@ -494,8 +495,8 @@ def train(options):
     # replaceDFF(train_g)
     # replaceDFF(val_g)
 
-    # train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == -1] = 100
-    # val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
     #train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == 0] = 100
     #val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == 0] = 100
 
@@ -505,8 +506,8 @@ def train(options):
     # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # predict muldiv
-    train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 1] = 0
-    val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 1] = 0
+    # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 1] = 0
+    # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 1] = 0
     train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = 1
     val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
     print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
