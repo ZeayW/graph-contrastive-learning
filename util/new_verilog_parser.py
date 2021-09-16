@@ -339,9 +339,9 @@ class DcParser:
                     return port_info
                 if cell_type == 'add':
                     port_info.is_adder_input = True
-                    if port_info.argname in key_inputs:
+                    if position[0] in key_inputs:
                         port_info.is_muldiv_input1 = True
-                    elif port_info.argname in mult_inputs:
+                    elif position[0] in mult_inputs:
                         port_info.is_muldiv_input2 = True
                 elif cell_type == 'sub':
                     if len(key_inputs)!=0:
