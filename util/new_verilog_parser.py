@@ -789,7 +789,7 @@ class DcParser:
             if buff_replace.get(edge[0],None) is not None:
                 new_edges.append((buff_replace[edge[0]],edge[1],edge[2]) )
             else:
-                new_edges.append(edges)
+                new_edges.append(edge)
         edges = new_edges
         print(
             "#inputs:{}, #outputs:{}".format(len(adder_inputs), len(adder_outputs)),
