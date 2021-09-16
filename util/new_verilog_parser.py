@@ -356,9 +356,9 @@ class DcParser:
                         else:
                             port_info.is_sub_input2 = True
                     else:
-                        if port_info.portname =='A':
+                        if 'A' in port_info.portname :
                             port_info.is_sub_input1 = True
-                        elif port_info.portname =='B':
+                        elif 'B' in port_info.portname :
                             port_info.is_sub_input2 = True
                         else:
                             print(port_info.portname)
