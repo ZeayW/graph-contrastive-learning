@@ -345,6 +345,8 @@ class DcParser:
                     elif position[0] in mult_inputs:
                         print('mul2', position[0])
                         port_info.is_muldiv_input2 = True
+                    if len(mult_inputs)!=0:
+                        print(position[0])
                 elif cell_type == 'sub':
                     if len(key_inputs)!=0:
                         sub_position = 0
@@ -671,7 +673,7 @@ class DcParser:
                     if adder_cells[key_cell][2][0] is not None:
                         #print('aaaaadaaaaaa')
                         mult_inputs = adder_cells[key_cell][2][1]
-                        print('mul_inputs',mult_inputs)
+                        #print('mul_inputs',mult_inputs)
                         contain_mult = True
 
                         mult_infos[mcomp] = mult_infos.get(mcomp, MultInfo(mcomp))
