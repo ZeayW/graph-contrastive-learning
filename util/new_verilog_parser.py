@@ -742,6 +742,8 @@ class DcParser:
 
                     if ntype == 'IBUFF' or ('DFF' in ntype and fo.portname=='QN'):
                         ntype = 'INV'
+                    if 'DFF' in ntype:
+                        print(ntype,fo.portname)
                     nodes.append((fo.argname, {"type": ntype}))
             #print(len(inputs))
             #print(inputs)
@@ -794,7 +796,7 @@ class DcParser:
             #temp = sorted(fanins.items(), key=lambda x: x[1])
             #print('fanins:',info.fanins)
             #print('fanouts:',info.fanouts)
-        print(len(buff_replace))
+        print('num of nbuff/dff_q:',len(buff_replace))
         new_edges = []
         for edge in edges:
             if buff_replace.get(edge[0],None) is not None:
