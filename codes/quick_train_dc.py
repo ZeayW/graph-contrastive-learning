@@ -706,8 +706,8 @@ def train(options):
         if Train_precision != 0 or Train_recall != 0:
             Train_F1_score = 2 * Train_recall * Train_precision / (Train_recall + Train_precision)
 
-        if is_FuncGCN1:
-            print(model.GCN1.conv.gate_functions[13].weight)
+        # if is_FuncGCN1:
+        #     print(model.GCN1.conv.gate_functions[13].weight)
         print("epoch[{:d}]".format(epoch))
         print("training runtime: ",runtime)
         print("  train:")
