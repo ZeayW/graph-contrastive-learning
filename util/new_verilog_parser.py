@@ -365,7 +365,7 @@ class DcParser:
                             port_info.is_sub_input2 = True
                         else:
                             print(mcomp,position[0],port_info.portname)
-                            assert False
+                            return port_info
                 else:
                     print(cell_type)
                     assert False
