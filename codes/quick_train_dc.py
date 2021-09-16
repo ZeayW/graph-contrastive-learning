@@ -494,8 +494,8 @@ def train(options):
     # replaceDFF(train_g)
     # replaceDFF(val_g)
 
-    #train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == -1] = 100
-    #val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
     #train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == 0] = 100
     #val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == 0] = 100
 
