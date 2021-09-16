@@ -177,7 +177,7 @@ class Dataset_dc(DGLDataset):
         self.label2id =label2id
         self.data_paths = data_paths
         self.report_folders = report_folders
-        self.parser = DcParser(top_module,hier_keywords=["MulDiv_DP_OP","ALU_DP_OP", "add","inc"],adder_keywords=['add_x','alu_DP_OP','div_DP_OP'],hadd_type="xor")
+        self.parser = DcParser(top_module,adder_keywords=['add_x','alu_DP_OP','div_DP_OP'],sub_keywords=['sub_x'],hadd_type="xor")
         super(Dataset_dc, self).__init__(name="dac")
         # self.alpha = Parameter(th.tensor([1]))
 
