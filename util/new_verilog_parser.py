@@ -762,7 +762,7 @@ class DcParser:
                         )
                     )
 
-            print(len(buff_replace))
+
             # for fi in inputs:
             #     for fo in fanouts:
             #         edges.append(
@@ -794,6 +794,7 @@ class DcParser:
             #temp = sorted(fanins.items(), key=lambda x: x[1])
             #print('fanins:',info.fanins)
             #print('fanouts:',info.fanouts)
+        print(len(buff_replace))
         new_edges = []
         for edge in edges:
             if buff_replace.get(edge[0],None) is not None:
