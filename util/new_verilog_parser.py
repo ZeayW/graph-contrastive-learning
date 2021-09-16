@@ -721,20 +721,28 @@ class DcParser:
                 #         inputs[h_node_name].append(fi.argname)
                 #     # edges.append((h_node_name,fo.argname,
                 #     #               {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
-                elif ntype=='NBUFF':
-                    buff_replace[fo.argname] = fanins[0].argname
+
                 else:
+
                     pos = re.search("\d", mtype)
                     if pos:
                         ntype = ntype[: pos.start()]
                     # if 'DFF' in ntype :
                     #     ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
-                    if ntype == 'IBUFF':
-                        ntype = 'INV'
-                    nodes.append((fo.argname, {"type": ntype}))
+
                     inputs[fo.argname] = inputs.get(fo.argname,[])
                     for fi in fanins:
+                        # dff ignore SET/RESET/CLOCK
+                        if 'DFF' in ntype and fi.portname!='D':
+                            continue
+                        if ntype == 'NBUFF' or ('DFF' in ntype and fo.portname=='Q'):
+                            buff_replace[fo.argname] = fi.argname
+
                         inputs[fo.argname].append(fi.argname)
+
+                    if ntype == 'IBUFF' or ('DFF' in ntype and fo.portname=='QN'):
+                        ntype = 'INV'
+                    nodes.append((fo.argname, {"type": ntype}))
             #print(len(inputs))
             #print(inputs)
             # if len(mult_inputs)!=0 :
@@ -744,6 +752,7 @@ class DcParser:
             #             mult_infos[mcomp].fanins[fi.position[0]].add((fi.argname, fi.position[1]))
 
             for output,input in inputs.items():
+
                 for fi in input:
                     edges.append(
                         (
@@ -753,6 +762,7 @@ class DcParser:
                         )
                     )
 
+            print(buff_replace)
             # for fi in inputs:
             #     for fo in fanouts:
             #         edges.append(
