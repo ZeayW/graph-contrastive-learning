@@ -180,16 +180,14 @@ class DcParser:
                     adder_cells[cell_name][1].append(var_name)
                     inputs = expression.split('+')
                     for input in inputs:
-                        if var_types.get(input,None) == 'PI':
-                            adder_cells[cell_name][0].append(input)
+                        adder_cells[cell_name][0].append(input)
                 if '-' in expression and '+' not in expression:
                     sub_cells[cell_name] = sub_cells.get(cell_name, ([], [], (None, [])))
                     if var_types.get(var_name)=='PO':
                         sub_cells[cell_name][1].append(var_name)
                     inputs = expression.split('+')
                     for input in inputs:
-                        if var_types.get(input, None) == 'PI':
-                            sub_cells[cell_name][0].append(input)
+                        sub_cells[cell_name][0].append(input)
                     #print(adder_cells)
         print('adders:',adder_cells)
         print("sub:",sub_cells)
@@ -346,15 +344,24 @@ class DcParser:
                     elif port_info.argname in mult_inputs:
                         port_info.is_muldiv_input2 = True
                 elif cell_type == 'sub':
-                    sub_position = 0
-                    for i,input in enumerate(key_inputs):
-                        if input == position[0]:
-                            sub_position = i
-                            break
-                    if sub_position == 0:
-                        port_info.is_sub_input1 = True
+                    if len(key_inputs)!=0:
+                        sub_position = 0
+                        for i,input in enumerate(key_inputs):
+                            print(input,position[0])
+                            if input == position[0]:
+                                sub_position = i
+                                break
+                        if sub_position == 0:
+                            port_info.is_sub_input1 = True
+                        else:
+                            port_info.is_sub_input2 = True
                     else:
-                        port_info.is_sub_input2 = True
+                        if port_info.portname =='A':
+                            port_info.is_sub_input1 = True
+                        elif port_info.portname =='B':
+                            port_info.is_sub_input2 = True
+                        else:
+                            assert False
                 else:
                     print(cell_type)
                     assert False
