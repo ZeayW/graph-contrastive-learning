@@ -505,8 +505,8 @@ def train(options):
     # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # predict muldiv
-    train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 1] = 0
-    val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 1] = 0
+    # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 1] = 0
+    # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 1] = 0
     train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = 1
     val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
     print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
