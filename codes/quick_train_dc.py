@@ -534,8 +534,8 @@ def train(options):
     else:
         train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = 0
         val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 0
-        train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 3] = 1
-        val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 3] = 1
+        # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 3] = 1
+        # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 3] = 1
 
     print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
     print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
