@@ -967,17 +967,17 @@ class DcParser:
                 if n[0] in multdiv:
                     n[1]['is_input'] = -1
                     n[1]['is_output'] = -1
-                elif n[0] in multdiv_outputs:
+                if n[0] in multdiv_outputs:
                     n[1]['is_output'] = 2
-                elif n[0] in muldiv_inputs1:
+                if n[0] in muldiv_inputs1:
                     n[1]['is_input'] = 2
-                elif n[0] in muldiv_inputs2:
+                if n[0] in muldiv_inputs2:
                     n[1]['is_input'] = 3
-                elif n[0] in sub_inputs1:
+                if n[0] in sub_inputs1:
                     n[1]['is_input'] = 4
-                elif n[0] in sub_inputs2:
+                if n[0] in sub_inputs2:
                     n[1]['is_input'] = 5
-                elif n[0] in sub_outputs:
+                if n[0] in sub_outputs:
                     n[1]['is_output'] = 3
 
         print('num muldiv inputs1:', len(muldiv_inputs1))

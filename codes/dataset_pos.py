@@ -143,6 +143,11 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
         ntype[nid][label2id[n[1]["type"]]] = 1
     print('muldiv:',len(is_output[is_output==-1]))
     print('muldiv_outputs:',len(is_output[is_output==2]))
+    print('muldiv_inputs1:', len(is_input[is_input == 2]))
+    print('muldiv_inputs2:', len(is_input[is_input == 3]))
+    print('sub_outputs:', len(is_output[is_output == 3]))
+    print('sub_inputs2:', len(is_input[is_input == 4]))
+    print('sub_inputs2:', len(is_input[is_input == 5]))
     print('pos:',len(is_output[is_output==1]))
     print('neg:', len(is_output[is_output == 0]))
     src_nodes = []
