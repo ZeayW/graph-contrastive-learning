@@ -310,7 +310,10 @@ class DcParser:
                 # print(module_ports)
                 # position = False
                 pos = argname.split('_')[-1]
-                position = ('E', int(pos))
+                if re.match('\d+$',pos) is None:
+                    position = 0
+                else:
+                    position = ('E', int(pos))
                 # print('output', argname)
                 # if position > 100:
                 #     assert False
