@@ -173,22 +173,22 @@ class DcParser:
                     dp_target_cells[cell_name] = dp_target_cells.get(cell_name, ( 'muldiv',{}, {}) )
                     inputs = expression.split('*')
                     for input in inputs:
-                        dp_target_cells[cell_name][0][input] = 2
+                        dp_target_cells[cell_name][1][input] = 2
                     #print(adder_cells)
                 if '+' in expression and '-' not in expression:
                     #print(var_name, type, width, expression)
                     #print(adder_cells)
                     dp_target_cells[cell_name] = dp_target_cells.get(cell_name, ('add', {}, {}))
-                    dp_target_cells[cell_name][1][var_name] = 1
+                    dp_target_cells[cell_name][2][var_name] = 1
                     inputs = expression.split('+')
                     for input in inputs:
-                        dp_target_cells[cell_name][0][input] = 1
+                        dp_target_cells[cell_name][1][input] = 1
                 if '-' in expression and '+' not in expression:
                     dp_target_cells[cell_name] = dp_target_cells.get(cell_name, ('sub', {}, {}))
-                    dp_target_cells[cell_name][1][var_name] = 1
+                    dp_target_cells[cell_name][2][var_name] = 1
                     inputs = expression.split('-')
                     for i,input in enumerate(inputs):
-                        dp_target_cells[cell_name][0][input] = 1 if i==0 else 2
+                        dp_target_cells[cell_name][1][input] = 1 if i==0 else 2
                     #print(adder_cells)
         print('dp_target_cells',dp_target_cells)
                     #adder_cells[cell_name][0]
@@ -665,8 +665,8 @@ class DcParser:
             # adder_cells: { ([],[],(None,[]))}
             for dp_cell in dp_target_cells.keys():
                 if dp_cell in mcomp:
-                    dp_inputs = dp_target_cells[dp_cell][0]
-                    dp_outputs = dp_target_cells[dp_cell][1]
+                    dp_inputs = dp_target_cells[dp_cell][1]
+                    dp_outputs = dp_target_cells[dp_cell][2]
                     break
 
             for p in ports:
