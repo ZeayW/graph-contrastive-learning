@@ -323,7 +323,8 @@ class DcParser:
             port_info.position = position
 
             if self.is_output_port(portname) :
-
+                if len(dp_outputs) != 0 and position[0] not in dp_outputs.keys():
+                    return port_info
                 # if contain_mult:
                 #     port_info.flag_mult = True
                 if cell_type == 'add':
@@ -338,7 +339,8 @@ class DcParser:
 
                 port_info.output_comp = mcomp
             else:
-
+                if len(dp_inputs) != 0 and position[0] not in dp_inputs.keys():
+                    return port_info
                 if cell_type == 'add':
                     port_info.is_adder_input = True
 
@@ -351,8 +353,8 @@ class DcParser:
 
                 elif cell_type == 'sub':
                     if len(dp_inputs)!=0:
-                        if dp_inputs.get(position[0],None) is None:
-                            print(mcomp,position[0],dp_inputs)
+                        # if dp_inputs.get(position[0],None) is None:
+                        #     print(mcomp,position[0],dp_inputs)
                         sub_position = dp_inputs[position[0]]
                         if sub_position == 1:
                             port_info.is_sub_input1 = True
