@@ -986,7 +986,7 @@ class DcParser:
         print('num muldiv outputs:', len(multdiv_outputs))
         count = 0
         for n in nodes:
-            if n[1]['is_input'] == 2:
+            if n[1]['is_input'] == 3:
                 count += 1
                 print(count,n[0])
 
