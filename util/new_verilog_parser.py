@@ -437,7 +437,7 @@ class DcParser:
 
                 if mcell.startswith("SNPS_CLOCK") or mcell.startswith("PlusArgTimeout"):
                     continue
-
+                is_target =  False
                 for key_word in self.adder_keywords:
                     if key_word in mcomp:
                         cell_type = 'add'
