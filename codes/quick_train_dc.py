@@ -506,7 +506,17 @@ def train(options):
     # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # predict muldiv
-    print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1)==2]))
+    is_output = train_g.ndata['label_o']
+    is_input = train_g.ndata['label_i']
+    print('muldiv:', len(is_output[is_output == -1]))
+    print('muldiv_outputs:', len(is_output[is_output == 2]))
+    print('muldiv_inputs1:', len(is_input[is_input == 2]))
+    print('muldiv_inputs2:', len(is_input[is_input == 3]))
+    print('sub_outputs:', len(is_output[is_output == 3]))
+    print('sub_inputs2:', len(is_input[is_input == 4]))
+    print('sub_inputs2:', len(is_input[is_input == 5]))
+    print('pos:', len(is_output[is_output == 1]))
+    print('neg:', len(is_output[is_output == 0]))
     if options.muldiv:
         train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) ==1] = 0
         val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) ==1] = 0
