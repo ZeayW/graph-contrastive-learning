@@ -506,6 +506,7 @@ def train(options):
     # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # predict muldiv
+    print(len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1)==2]))
     if options.muldiv:
         train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) ==1] = 0
         val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) ==1] = 0
