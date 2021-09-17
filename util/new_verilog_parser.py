@@ -275,7 +275,6 @@ class DcParser:
                 if module_info.instance_name.lower() in mcomp.lower():
                     module_ports = module_info.ports
                     cell_type = module_info.cell_type
-                    print(cell_type)
                     break
             if module_ports is None:
                 print('module_ports is none', mcomp, portname, argname)
