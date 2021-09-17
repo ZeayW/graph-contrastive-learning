@@ -985,7 +985,8 @@ class DcParser:
                     n[1]['is_sub_input'] = 2
                 else:
                     n[1]['is_sub_input'] = 0
-
+                if n[0] in adder_outputs:
+                    print(n[1]['is_adder_output'])
 
         print('num_adder inputs')
         print('num muldiv inputs1:', len(muldiv_inputs1))
