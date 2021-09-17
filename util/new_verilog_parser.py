@@ -85,6 +85,7 @@ class PortInfo:
     is_adder_output: bool
     is_sub_input1: bool
     is_sub_input2: bool
+    is_muldiv_output:bool
     is_muldiv_input1: bool
     is_muldiv_input2: bool
     is_sub_output: bool
@@ -150,8 +151,8 @@ class DcParser:
         cells  = text.split('Datapath Report for')
         print('number of cells',len(cells))
         cells = cells[1:]
-        adder_cells = {}
-        sub_cells = {}
+        dp_target_cells = {}
+
         for cell in cells:
             cell = cell.split('Implementation Report')[0]
             cell = cell[:cell.rfind('\n==============================================================================')]
@@ -160,42 +161,41 @@ class DcParser:
             vars = vars.split('\n')[1:]
             #print(cell_name,len(vars))
             var_types = {}
+            flag_mul = False
             for var in vars:
                 var = var.replace(' ','')
                 _,var_name,type,data_class,width,expression,_ =var.split('|')
                 var_types[var_name] = (type)
                 #print(var_name,type,width,expression)
                 if '*' in expression :
+                    flag_mul = True
                     self.muldivs.append(cell_name)
-                    adder_cells[cell_name] = adder_cells.get(cell_name, ( [], [],(var_name,[]) ) )
+                    dp_target_cells[cell_name] = dp_target_cells.get(cell_name, ( 'muldiv',{}, {}) )
                     inputs = expression.split('*')
                     for input in inputs:
-                        adder_cells[cell_name][2][1].append(input)
-                        adder_cells[cell_name][0].append(input)
+                        dp_target_cells[cell_name][0][input] = 2
                     #print(adder_cells)
                 if '+' in expression and '-' not in expression:
                     #print(var_name, type, width, expression)
                     #print(adder_cells)
-                    adder_cells[cell_name] = adder_cells.get(cell_name, ( [], [],(None,[]) ) )
-                    adder_cells[cell_name][1].append(var_name)
+                    dp_target_cells[cell_name] = dp_target_cells.get(cell_name, ('add', {}, {}))
+                    dp_target_cells[cell_name][1][var_name] = 1
                     inputs = expression.split('+')
                     for input in inputs:
-                        adder_cells[cell_name][0].append(input)
+                        dp_target_cells[cell_name][0][input] = 1
                 if '-' in expression and '+' not in expression:
-                    sub_cells[cell_name] = sub_cells.get(cell_name, ([], [], (None, [])))
-                    if var_types.get(var_name)=='PO':
-                        sub_cells[cell_name][1].append(var_name)
-                    inputs = expression.split('+')
-                    for input in inputs:
-                        sub_cells[cell_name][0].append(input)
+                    dp_target_cells[cell_name] = dp_target_cells.get(cell_name, ('sub', {}, {}))
+                    dp_target_cells[cell_name][1][var_name] = 1
+                    inputs = expression.split('-')
+                    for i,input in enumerate(inputs):
+                        dp_target_cells[cell_name][0][input] = 1 if i==0 else 2
                     #print(adder_cells)
-        print('adders:',adder_cells)
-        print("sub:",sub_cells)
+        print('dp_target_cells',dp_target_cells)
                     #adder_cells[cell_name][0]
                 #print(var)
             #print(vars)
-        print(adder_cells)
-        return adder_cells,sub_cells
+
+        return dp_target_cells
     def parse_port_hier(
         self, ios:dict,wires:dict, port: pyverilog.vparser.parser.Portlist,
     ) -> PortInfo:
@@ -213,7 +213,7 @@ class DcParser:
         return port_info
 
     def parse_port(
-        self, mcomp: str,target_cells: list,port: pyverilog.vparser.parser.Portlist,index01:list,key_inputs:list,key_outputs:list,mult_inputs:list,contain_mult:bool
+        self, mcomp: str,target_cells: list,port: pyverilog.vparser.parser.Portlist,index01:list,dp_inputs:list,dp_outputs:list
     ) -> PortInfo:
         portname, argname = port.portname, port.argname
         if type(argname) == pyverilog.vparser.ast.Partselect:
@@ -260,7 +260,7 @@ class DcParser:
             if kw in mcomp :
                 is_target = True
                 break
-        if len(key_inputs)!=0 or len(key_outputs)!=0 or len(mult_inputs)!=0:
+        if len(dp_inputs)!=0 or len(dp_outputs)!=0:
             is_target = True
         if is_target and mcomp != argcomp:
             module_ports = None
@@ -323,45 +323,39 @@ class DcParser:
 
             if self.is_output_port(portname) :
 
-                if (len(key_inputs)!=0 or len(key_outputs)!=0) and position[0] not in key_outputs:
-                    print(cell_type,mcomp,position[0])
-                    return port_info
                 # if contain_mult:
                 #     port_info.flag_mult = True
                 if cell_type == 'add':
                     port_info.is_adder_output = True
                 elif cell_type == 'sub':
                     port_info.is_sub_output = True
+                elif cell_type == 'muldiv':
+                    port_info.is_muldiv_output = True
                 else:
                     print(cell_type)
                     assert  False
 
                 port_info.output_comp = mcomp
             else:
-                if (len(key_inputs)!=0 or len(key_outputs)!=0) and position[0] not in key_inputs:
-                    # print(argname)
-                    return port_info
+
                 if cell_type == 'add':
                     port_info.is_adder_input = True
-                    if len(mult_inputs) != 0 and position[0] in mult_inputs:
-                        #print('mul2', position[0])
-                        port_info.is_muldiv_input2 = True
-                    elif len(mult_inputs)!=0 and position[0] in key_inputs:
-                        #print('mul1',position[0])
-                        port_info.is_muldiv_input1 = True
+
+                    # if len(mult_inputs) != 0 and position[0] in mult_inputs:
+                    #     #print('mul2', position[0])
+                    #     port_info.is_muldiv_input2 = True
+                    # elif len(mult_inputs)!=0 and position[0] in key_inputs:
+                    #     #print('mul1',position[0])
+                    #     port_info.is_muldiv_input1 = True
 
                 elif cell_type == 'sub':
-                    if len(key_inputs)!=0:
-                        sub_position = 0
-                        for i,input in enumerate(key_inputs):
-                            print(input,position[0])
-                            if input == position[0]:
-                                sub_position = i
-                                break
-                        if sub_position == 0:
+                    if len(dp_inputs)!=0:
+                        sub_position = dp_inputs[position[0]]
+                        if sub_position == 1:
                             port_info.is_sub_input1 = True
                         else:
                             port_info.is_sub_input2 = True
+
                     else:
                         if position[0] == 'A' :
                             port_info.is_sub_input1 = True
@@ -384,7 +378,7 @@ class DcParser:
         #if 'add_x' in mcomp or 'alu_DP_OP' in mcomp: print(position)
         return port_info
 
-    def parse_hier(self, fname,adder_cells,sub_cells):
+    def parse_hier(self, fname,dp_target_cells):
         """ parse dc generated verilog """
         target_cells = {}
         ast, directives = parse([fname])
@@ -444,24 +438,24 @@ class DcParser:
                 if mcell.startswith("SNPS_CLOCK") or mcell.startswith("PlusArgTimeout"):
                     continue
 
-                is_adder = False
-                is_sub =  False
                 for key_word in self.adder_keywords:
                     if key_word in mcomp:
-                        is_adder = True
+                        cell_type = 'add'
+                        is_target = True
                         break
                 for key_word in self.sub_keywords:
                     if key_word in mcomp:
-                        is_sub = True
+                        cell_type = 'sub'
+                        is_target = True
                         break
-                if adder_cells.get(mname,None) is not None:
-                    is_adder = True
-                if sub_cells.get(mname, None) is not None:
-                    is_sub = True
-                if is_adder or is_sub:
+                if dp_target_cells.get(mname,None) is not None:
+                    cell_type = dp_target_cells[mname][0]
+                    is_target = True
+
+                if is_target:
                     print(mname)
                     # cell_name = mcell.lower()
-                    cell_type = 'add' if is_adder else 'sub'
+
                     #cell_type = mcell.split('_')[0]
                     index = mcell.split('_')[1]
                     # if re.match('\d+',index) is not None:
@@ -591,13 +585,13 @@ class DcParser:
         # exit()
         # print(args_to_update[self.top_module])
         target_cells = target_cells[self.top_module]
-        # for cell in target_cells:
-        #     print(cell.cell_type,cell.cell_name, cell.instance_name,cell.ports)
+        for cell in target_cells:
+            print(cell.cell_type,cell.cell_name, cell.instance_name,cell.ports)
         # exit()
 
         return target_cells
 
-    def parse_nohier(self, fname, adder_cells,sub_cells,target_cells,label_region=False):
+    def parse_nohier(self, fname,dp_target_cells,target_cells,label_region=False):
         """ parse dc generated verilog """
         #adder_cells = set()
 
@@ -666,29 +660,17 @@ class DcParser:
                 #print("\n",mcell,mname)
                 #adder_cells.add(mcell)
            # exit()
-            key_inputs,key_outputs = [],[]
-            mult_inputs = []
-            contain_mult = False
-            # adder_cells: { ([],[],(None,[]))}
-            for key_cell in adder_cells.keys():
-                if key_cell in mcomp:
-                    key_inputs = adder_cells[key_cell][0]
-                    key_outputs = adder_cells[key_cell][1]
-                    if adder_cells[key_cell][2][0] is not None:
-                        #print('aaaaadaaaaaa')
-                        mult_inputs = adder_cells[key_cell][2][1]
-                        #print('mul_inputs',mult_inputs)
-                        contain_mult = True
+            dp_inputs,dp_outputs = [],[]
 
-                        mult_infos[mcomp] = mult_infos.get(mcomp, MultInfo(mcomp))
+            # adder_cells: { ([],[],(None,[]))}
+            for dp_cell in dp_target_cells.keys():
+                if dp_cell in mcomp:
+                    dp_inputs = dp_target_cells[dp_cell][0]
+                    dp_outputs = dp_target_cells[dp_cell][1]
                     break
-            for key_cell in sub_cells.keys():
-                if key_cell in mcomp:
-                    key_inputs = sub_cells[key_cell][0]
-                    key_outputs = sub_cells[key_cell][1]
-                    break
+
             for p in ports:
-                port_info = self.parse_port(mcomp, target_cells,p,index01,key_inputs,key_outputs,mult_inputs,contain_mult)
+                port_info = self.parse_port(mcomp, target_cells,p,index01,dp_inputs,dp_outputs)
                 if port_info.ptype == "fanin":
                     fanins.append(port_info)
                 elif port_info.ptype == "fanout":
@@ -1006,11 +988,11 @@ class DcParser:
         # if 'hybrid' not in vf:
         #     continue
         # parser = DcParser("BoomCore", ["alu_DP_OP", "add_x"])
-        adder_cells,sub_cells = self.parse_report(hier_report)
+        dp_target_cells = self.parse_report(hier_report)
         # exit()
-        target_cells = self.parse_hier(hier_vf, adder_cells,sub_cells)
+        target_cells = self.parse_hier(hier_vf, dp_target_cells)
 
-        nodes, edges = self.parse_nohier(vf, adder_cells=adder_cells, sub_cells=sub_cells,target_cells=target_cells, label_region=False)
+        nodes, edges = self.parse_nohier(vf, dp_target_cells=dp_target_cells,target_cells=target_cells, label_region=False)
         return nodes,edges
 
     def label_mult(self,nodes,edges,mult_infos):
