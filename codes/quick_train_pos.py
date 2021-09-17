@@ -360,7 +360,7 @@ def train(options):
     device = th.device("cuda:"+str(options.gpu) if th.cuda.is_available() else "cpu")
     # Dump the preprocessing result to save time!
     #data_path = 'data/region/'
-    data_path = '../data/simplify13/'
+    data_path = '../data/simplify14/'
     train_data_file = os.path.join(data_path,'boom2.pkl')
     val_data_file = os.path.join(data_path,'rocket2.pkl')
     #split_dir = 'splits/rokcet'
