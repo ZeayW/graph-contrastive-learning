@@ -481,7 +481,15 @@ def train(options):
         val_g = pickle.load(f)
     train_nids = th.tensor(range(train_g.number_of_nodes()))
 
+    if options.muldiv:
+        label_name = 'mul_o'
+    elif options.sub:
+        label_name = 'sub_o'
+    else:
+        label_name = 'adder_o'
 
+    train_g.ndata['label_o'] = train_g.ndata[label_name]
+    val_g.ndata['label_o'] = val_g.ndata[label_name]
     #print(len(muldiv_nodes))
     #print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
     #train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
@@ -506,29 +514,19 @@ def train(options):
     # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # predict muldiv
-    is_output = train_g.ndata['label_o']
-    is_input = train_g.ndata['label_i']
-    print('muldiv:', len(is_output[is_output == -1]))
-    print('muldiv_outputs:', len(is_output[is_output == 2]))
-    print('muldiv_inputs1:', len(is_input[is_input == 2]))
-    print('muldiv_inputs2:', len(is_input[is_input == 3]))
-    print('sub_outputs:', len(is_output[is_output == 3]))
-    print('sub_inputs2:', len(is_input[is_input == 4]))
-    print('sub_inputs2:', len(is_input[is_input == 5]))
-    print('pos:', len(is_output[is_output == 1]))
-    print('neg:', len(is_output[is_output == 0]))
-    if options.muldiv:
-        label_name = 'mul_o'
-    elif options.sub:
-        label_name = 'sub_o'
-    else:
-        label_name = 'adder_o'
 
-    train_g.ndata['label_o'] = train_g.ndata[label_name]
-    val_g.ndata['label_o'] = val_g.ndata[label_name]
-    
+    #print('muldiv:', len(is_output[is_output == -1]))
+    print('muldiv_outputs:', len(train_g.ndata['mul_o'][train_g.ndata['mul_o'] ==1]))
+    print('muldiv_inputs1:', len(train_g.ndata['mul_i'][train_g.ndata['mul_i'] == 1]))
+    print('muldiv_inputs2:', len(train_g.ndata['mul_i'][train_g.ndata['mul_i'] == 2]))
+    print('sub_outputs:', len(train_g.ndata['sub_o'][train_g.ndata['sub_o'] == 1]))
+    print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 1]))
+    print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 2]))
+    print('adder_outputs:', len(train_g.ndata['adder_o'][train_g.ndata['adder_o'] == 1]))
+    print('adder_inputs:', len(train_g.ndata['adder_i'][train_g.ndata['adder_i'] == 1]))
+
     print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
-    print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
+
     train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
 
     rates = cal_ratios(neg_count,pos_count)
