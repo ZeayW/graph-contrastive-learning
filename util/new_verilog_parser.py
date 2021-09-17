@@ -351,6 +351,8 @@ class DcParser:
 
                 elif cell_type == 'sub':
                     if len(dp_inputs)!=0:
+                        if dp_inputs.get(position[0],None) is None:
+                            print(mcomp,position[0],dp_inputs)
                         sub_position = dp_inputs[position[0]]
                         if sub_position == 1:
                             port_info.is_sub_input1 = True
