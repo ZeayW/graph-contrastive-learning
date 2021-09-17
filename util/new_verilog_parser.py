@@ -194,7 +194,7 @@ class DcParser:
                     #adder_cells[cell_name][0]
                 #print(var)
             #print(vars)
-
+        print(adder_cells)
         return adder_cells,sub_cells
     def parse_port_hier(
         self, ios:dict,wires:dict, port: pyverilog.vparser.parser.Portlist,
@@ -591,8 +591,8 @@ class DcParser:
         # exit()
         # print(args_to_update[self.top_module])
         target_cells = target_cells[self.top_module]
-        for cell in target_cells:
-            print(cell.cell_type,cell.cell_name, cell.instance_name,cell.ports)
+        # for cell in target_cells:
+        #     print(cell.cell_type,cell.cell_name, cell.instance_name,cell.ports)
         # exit()
 
         return target_cells
