@@ -364,6 +364,22 @@ class DcParser:
                         else:
                             print(mcomp,position[0],port_info.portname)
                             return port_info
+                elif cell_type == 'muldiv':
+                    if len(dp_inputs)!=0:
+                        sub_position = dp_inputs[position[0]]
+                        if sub_position == 1:
+                            port_info.is_muldiv_input1 = True
+                        else:
+                            port_info.is_muldiv_input2 = True
+
+                    else:
+                        if position[0] in ('I1','I2') :
+                            port_info.is_muldiv_input2 = True
+                        elif position[0] == 'I3' :
+                            port_info.is_muldiv_input1 = True
+                        else:
+                            print(mcomp,position[0],port_info.portname)
+                            return port_info
                 else:
                     print(cell_type)
                     assert False
