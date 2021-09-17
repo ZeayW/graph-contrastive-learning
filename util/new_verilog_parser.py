@@ -105,6 +105,7 @@ class PortInfo:
         self.is_adder_output = False
         self.is_sub_input1 = False
         self.is_sub_input2 = False
+        self.is_muldiv_output =  False
         self.is_muldiv_input1 = False
         self.is_muldiv_input2 = False
         self.is_sub_output = False
