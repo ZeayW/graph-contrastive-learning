@@ -844,14 +844,14 @@ class DcParser:
                         #     continue
                         #if ntype == 'NBUFF' or ('DFF' in ntype and fo.portname=='Q'):
 
-                        if ntype == 'NBUFF':
-                            buff_replace[fo.argname] = fi.argname
-                        else:
-                            inputs[fo.argname].append(fi.argname)
+                        # if ntype == 'NBUFF':
+                        #     buff_replace[fo.argname] = fi.argname
+                        # else:
+                        inputs[fo.argname].append(fi.argname)
 
                     #if ntype == 'IBUFF' or ('DFF' in ntype and fo.portname=='QN'):
-                    if ntype == 'IBUFF':
-                        ntype = 'INV'
+                    # if ntype == 'IBUFF':
+                    #     ntype = 'INV'
 
                     if buff_replace.get(fo.argname,None) is None:
                         nodes.append((fo.argname, {"type": ntype}))
