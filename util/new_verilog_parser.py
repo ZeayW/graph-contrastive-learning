@@ -602,8 +602,8 @@ class DcParser:
         # exit()
         # print(args_to_update[self.top_module])
         target_cells = target_cells[self.top_module]
-        for cell in target_cells:
-            print(cell.cell_type,cell.cell_name, cell.instance_name,cell.ports)
+        # for cell in target_cells:
+        #     print(cell.cell_type,cell.cell_name, cell.instance_name,cell.ports)
         # exit()
 
         return target_cells
@@ -985,8 +985,6 @@ class DcParser:
                     n[1]['is_sub_input'] = 2
                 else:
                     n[1]['is_sub_input'] = 0
-                if n[0] in adder_outputs:
-                    print(n[1]['is_adder_output'])
 
         print('num adder inputs:', len(adder_inputs))
         print('num adder outputs:', len(adder_outputs))
