@@ -971,8 +971,6 @@ class DcParser:
                 if n[0] in multdiv_outputs:
                     n[1]['is_output'] = 2
                 if n[0] in muldiv_inputs1:
-                    count += 1
-                    print(count,n[0])
                     n[1]['is_input'] = 2
                 if n[0] in muldiv_inputs2:
                     n[1]['is_input'] = 3
@@ -986,7 +984,12 @@ class DcParser:
         print('num muldiv inputs1:', len(muldiv_inputs1))
         print('num muldiv inputs2:', len(muldiv_inputs2))
         print('num muldiv outputs:', len(multdiv_outputs))
-
+        count = 0
+        for n in nodes:
+            if nodes[1]['is_input'] == 2:
+                count += 1
+                print(count,n[0])
+        
         print('num sub inputs1:', len(sub_inputs1))
         print('num sub inputs2:', len(sub_inputs2))
         print('num sub outputs:', len(sub_outputs))
