@@ -116,8 +116,12 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
             node2id[n[0]] = nid
     #print("num_nodes:{}".format(len(node2id)))
     is_adder = th.zeros((len(node2id), 1), dtype=th.long)
-    is_input = th.zeros((len(node2id), 1), dtype=th.long)
-    is_output = th.zeros((len(node2id), 1), dtype=th.long)
+    is_adder_input = th.zeros((len(node2id), 1), dtype=th.long)
+    is_adder_output = th.zeros((len(node2id), 1), dtype=th.long)
+    is_mul_input = th.zeros((len(node2id), 1), dtype=th.long)
+    is_mul_output = th.zeros((len(node2id), 1), dtype=th.long)
+    is_sub_input = th.zeros((len(node2id), 1), dtype=th.long)
+    is_sub_output = th.zeros((len(node2id), 1), dtype=th.long)
     position = th.zeros((len(node2id), 1), dtype=th.long)
     for n in nodes:
         nid = node2id[n[0]]
@@ -128,8 +132,12 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
         if get_options().region:
             is_adder[nid][0] = n[1]['is_adder']
         else:
-            is_input[nid][0] = n[1]["is_input"]
-            is_output[nid][0] = n[1]["is_output"]
+            is_adder_input[nid][0] = n[1]["is_adder_input"]
+            is_adder_output[nid][0] = n[1]["is_adder_output"]
+            is_mul_input[nid][0] = n[1]["is_mul_input"]
+            is_mul_output[nid][0] = n[1]["is_mul_output"]
+            is_sub_input[nid][0] = n[1]["is_sub_input"]
+            is_sub_output[nid][0] = n[1]["is_sub_output"]
             if n[1]["position"] is not None:
                 # if n[1]['is_input']:
                 #     print('input',n[1]["position"])
@@ -142,15 +150,16 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
     for n in nodes:
         nid = node2id[n[0]]
         ntype[nid][label2id[n[1]["type"]]] = 1
-    print('muldiv:',len(is_output[is_output==-1]))
-    print('muldiv_outputs:',len(is_output[is_output==2]))
-    print('muldiv_inputs1:', len(is_input[is_input == 2]))
-    print('muldiv_inputs2:', len(is_input[is_input == 3]))
-    print('sub_outputs:', len(is_output[is_output == 3]))
-    print('sub_inputs2:', len(is_input[is_input == 4]))
-    print('sub_inputs2:', len(is_input[is_input == 5]))
-    print('pos:',len(is_output[is_output==1]))
-    print('neg:', len(is_output[is_output == 0]))
+
+    print('muldiv_outputs:',len(is_mul_output[is_mul_output==1]))
+    print('muldiv_inputs1:', len(is_mul_input[is_mul_input == 1]))
+    print('muldiv_inputs2:', len(is_mul_input[is_mul_input == 2]))
+    print('sub_outputs:', len(is_sub_output[is_sub_output == 1]))
+    print('sub_inputs1:', len(is_sub_input[is_sub_input == 1]))
+    print('sub_inputs2:', len(is_sub_input[is_sub_input == 2]))
+    print('adder_outputs:', len(is_adder_output[is_adder_output == 1]))
+    print('adder_inputs1:', len(is_adder_input[is_adder_input == 1]))
+
     src_nodes = []
     dst_nodes = []
     is_reverted = []
@@ -168,13 +177,18 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
     if get_options().region:
         graph.ndata["label_ad"] = is_adder
     else:
-        graph.ndata["label_i"] = is_input
-        graph.ndata["label_o"] = is_output
+        graph.ndata['adder_i'] = is_adder_input
+        graph.ndata['adder_o'] = is_adder_output
+        graph.ndata['mul_i'] = is_mul_input
+        graph.ndata['mul_o'] = is_mul_output
+        graph.ndata['sub_i'] = is_sub_input
+        graph.ndata['sub_o'] = is_sub_output
+
     graph.edata["r"] = th.FloatTensor(is_reverted)
     graph.ndata['position'] = position
 
-    print("input position:",position.squeeze(1)[is_input.squeeze(1) == True])
-    print("output position:",position.squeeze(1)[is_output.squeeze(1) == True])
+    print("adder input position:",position.squeeze(1)[is_adder_input.squeeze(1) == True])
+    print("adder output position:",position.squeeze(1)[is_adder_output.squeeze(1) == True])
     return graph
 
 

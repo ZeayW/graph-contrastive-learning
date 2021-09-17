@@ -962,37 +962,34 @@ class DcParser:
         else:
             count = 0
             for n in nodes:
-                n[1]["is_input"] = n[0] in adder_inputs
-                n[1]["is_output"] = n[0] in adder_outputs
+                n[1]["is_adder_input"] = n[0] in adder_inputs
+                n[1]["is_adder_output"] = n[0] in adder_outputs
                 n[1]["position"] = positions.get(n[0],None)
                 if n[0] in multdiv:
-                    n[1]['is_input'] = -1
-                    n[1]['is_output'] = -1
-                if n[0] in multdiv_outputs:
-                    n[1]['is_output'] = 2
+                    n[1]['is_adder_input'] = -1
+                    n[1]['is_adder_output'] = -1
+                n[1]['is_mul_output'] = n[0] in multdiv_outputs
                 if n[0] in muldiv_inputs1:
-                    count += 1
-                    print(count,n[0])
-                    n[1]['is_input'] = 2
-                if n[0] in muldiv_inputs2:
-                    n[1]['is_input'] = 3
+                    n[1]['is_mul_input'] = 1
+                elif n[0] in muldiv_inputs2:
+                    n[1]['is_mul_input'] = 2
+                else:
+                    n[1]['is_mul_input'] = 0
+
+                n[1]['is_sub_output'] = n[0] in sub_outputs
                 if n[0] in sub_inputs1:
-                    n[1]['is_input'] = 4
-                if n[0] in sub_inputs2:
-                    n[1]['is_input'] = 5
-                if n[0] in sub_outputs:
-                    n[1]['is_output'] = 3
-                if n[0] in adder_outputs:
-                    print(n[1]['is_output'])
+                    n[1]['is_sub_input'] = 1
+                elif n[0] in sub_inputs2:
+                    n[1]['is_sub_input'] = 2
+                else:
+                    n[1]['is_sub_input'] = 0
+
+
         print('num_adder inputs')
         print('num muldiv inputs1:', len(muldiv_inputs1))
         print('num muldiv inputs2:', len(muldiv_inputs2))
         print('num muldiv outputs:', len(multdiv_outputs))
-        count = 0
-        for n in nodes:
-            if n[1]['is_input'] == 3:
-                count += 1
-                print(count,n[0])
+
 
         print('num sub inputs1:', len(sub_inputs1))
         print('num sub inputs2:', len(sub_inputs2))
