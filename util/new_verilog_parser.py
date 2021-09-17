@@ -591,9 +591,10 @@ class DcParser:
         # exit()
         # print(args_to_update[self.top_module])
         target_cells = target_cells[self.top_module]
-        # for cell in target_cells:
-        #     print(cell.cell_name, cell.instance_name,cell.ports)
+        for cell in target_cells:
+            print(cell.cell_type,cell.cell_name, cell.instance_name,cell.ports)
         # exit()
+
         return target_cells
 
     def parse_nohier(self, fname, adder_cells,sub_cells,target_cells,label_region=False):
