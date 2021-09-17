@@ -960,6 +960,7 @@ class DcParser:
                 n[1]["is_adder"] = n[0] in internal
 
         else:
+            count = 0
             for n in nodes:
                 n[1]["is_input"] = n[0] in adder_inputs
                 n[1]["is_output"] = n[0] in adder_outputs
@@ -970,7 +971,8 @@ class DcParser:
                 if n[0] in multdiv_outputs:
                     n[1]['is_output'] = 2
                 if n[0] in muldiv_inputs1:
-                    print('aaa')
+                    count += 1
+                    print(count,n[0])
                     n[1]['is_input'] = 2
                 if n[0] in muldiv_inputs2:
                     n[1]['is_input'] = 3
