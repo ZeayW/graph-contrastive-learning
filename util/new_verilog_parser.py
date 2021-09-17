@@ -701,7 +701,8 @@ class DcParser:
                 if port_info.is_adder_output:
                     adder_outputs.add(port_info.argname)
                     #adder_out_dict[port_info.output_comp].add(port_info.argname)
-                    if port_info.flag_mult:multdiv_outputs.add(port_info.argname)
+                if port_info.is_muldiv_output:
+                    multdiv_outputs.add(port_info.argname)
                 if port_info.is_muldiv_input1:
                     muldiv_inputs1.add(port_info.argname)
                 if port_info.is_muldiv_input2:
@@ -718,7 +719,7 @@ class DcParser:
                     sub_outputs.add(port_info.argname)
                     #sub_out_dict[port_info.output_comp].add(port_info.argname)
 
-                elif port_info.flag_mult:
+                if port_info.flag_mult:
                     multdiv.add(port_info.argname)
                 if positions.get(port_info.argname,None) is None:
                     positions[port_info.argname] = port_info.position
