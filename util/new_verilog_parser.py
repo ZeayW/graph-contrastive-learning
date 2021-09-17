@@ -970,6 +970,7 @@ class DcParser:
                 if n[0] in multdiv_outputs:
                     n[1]['is_output'] = 2
                 if n[0] in muldiv_inputs1:
+                    print('aaa')
                     n[1]['is_input'] = 2
                 if n[0] in muldiv_inputs2:
                     n[1]['is_input'] = 3
