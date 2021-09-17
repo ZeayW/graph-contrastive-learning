@@ -488,8 +488,24 @@ def train(options):
     else:
         label_name = 'adder_o'
 
+
     train_g.ndata['label_o'] = train_g.ndata[label_name]
     val_g.ndata['label_o'] = val_g.ndata[label_name]
+    mask_sub_train = train_g.ndata['sub_o']>0
+    mask_sub_val = val_g.ndata['sub_o'] > 0
+    mask_mul_train = train_g.ndata['mul_o'] > 0
+    mask_mul_val = val_g.ndata['mul_o'] > 0
+    if options.add ==1:
+        train_g.ndata['label_o'][mask_mul_train] = 1
+        val_g.ndata['label_o'][mask_mul_val] = 1
+    elif options.add == 2:
+        train_g.ndata['label_o'][mask_sub_train] = 1
+        val_g.ndata['label_o'][mask_sub_val] = 1
+    elif options.add == 3:
+        train_g.ndata['label_o'][mask_mul_train] = 1
+        val_g.ndata['label_o'][mask_mul_val] = 1
+        train_g.ndata['label_o'][mask_sub_train] = 1
+        val_g.ndata['label_o'][mask_sub_val] = 1
     #print(len(muldiv_nodes))
     #print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
     #train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
