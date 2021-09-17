@@ -836,7 +836,7 @@ class DcParser:
                         # dff ignore SET/RESET/CLOCK
                         # if 'DFF' in ntype and fi.portname!='D':
                         #     continue
-                        if ntype == 'NBUFF' or ('DFF' in ntype and fo.portname=='Q'):
+                        #if ntype == 'NBUFF' or ('DFF' in ntype and fo.portname=='Q'):
                         if ntype == 'NBUFF':
                             buff_replace[fo.argname] = fi.argname
                         else:
