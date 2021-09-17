@@ -324,7 +324,7 @@ class DcParser:
             if self.is_output_port(portname) :
 
                 if (len(key_inputs)!=0 or len(key_outputs)!=0) and position[0] not in key_outputs:
-                    print(position[0])
+                    print(cell_type,mcomp,position[0])
                     return port_info
                 # if contain_mult:
                 #     port_info.flag_mult = True
