@@ -966,11 +966,13 @@ class DcParser:
                 n[1]["is_output"] = n[0] in adder_outputs
                 n[1]["position"] = positions.get(n[0],None)
                 if n[0] in multdiv:
-                    #n[1]['is_input'] = -1
+                    n[1]['is_input'] = -1
                     n[1]['is_output'] = -1
                 if n[0] in multdiv_outputs:
                     n[1]['is_output'] = 2
                 if n[0] in muldiv_inputs1:
+                    count += 1
+                    print(count,n[0])
                     n[1]['is_input'] = 2
                 if n[0] in muldiv_inputs2:
                     n[1]['is_input'] = 3
