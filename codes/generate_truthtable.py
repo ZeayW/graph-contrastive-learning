@@ -26,12 +26,12 @@ for i in range(1,pow(2,pow(2,num_input))-1):
     if not os.path.exists(save_path):
         os.makedirs(save_path)
     with open(os.path.join(save_path,'{}.v'.format(i)),'w') as f:
-        f.write('module {}(\n')
+        f.write('module i{}_v{}(\n'.format(num_input,i))
         f.write('input [{}:0] I,\n')
         f.write('output reg O\n')
         f.write(');\n')
         f.write('always@(*)\n\tcase(I)\n')
         for j in range(pow(2,num_input)):
-            f.write("2'b{}: O = {};\n".format(bin(j)[2:],truthValue[j]))
+            f.write("\t\t2'b{}: O = {};\n".format(bin(j)[2:],truthValue[j]))
         f.write('\tendcase\n')
         f.write('endmodule\n')
