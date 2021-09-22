@@ -27,6 +27,7 @@ for i in range(1,pow(2,pow(2,num_input))-1):
         os.makedirs(save_path)
     with open(os.path.join(save_path,'{}.v'.format(i)),'w') as f:
         f.write('module i{}_v{}(\n'.format(num_input,i))
+        f.write('input [{}:0] I,\n'.format(num_input-1))
         f.write('output reg O\n')
         f.write(');\n')
         f.write('always@(*)\n\tcase(I)\n')
