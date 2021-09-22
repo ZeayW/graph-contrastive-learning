@@ -18,7 +18,7 @@ num_input = get_options().num_input
 save_dir = get_options().save_dir
 
 for i in range(1,pow(2,pow(2,num_input))-1):
-    truthValue = bin(i)
+    truthValue = bin(i)[2:]
     print(truthValue,len(truthValue))
     save_path = os.path.join(save_dir,'i{}'.format(num_input))
     if not os.path.exists(save_path):
@@ -30,6 +30,6 @@ for i in range(1,pow(2,pow(2,num_input))-1):
         f.write(');\n')
         f.write('always@(*)\n\tcase(I)\n')
         for j in range(pow(2,num_input)):
-            f.write("2'b{}: O = {};\n".format(bin(j),truthValue[j]))
+            f.write("2'b{}: O = {};\n".format(bin(j)[2:],truthValue[j]))
         f.write('\tendcase\n')
         f.write('endmodule\n')
