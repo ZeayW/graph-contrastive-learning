@@ -19,10 +19,10 @@ save_dir = get_options().save_dir
 
 for i in range(1,pow(2,pow(2,num_input))-1):
     truthValue = bin(i)
-    save_path = os.path.join(save_dir,'i{}/{}.v'.format(num_input,i))
+    save_path = os.path.join(save_dir,'i{}'.format(num_input))
     if not os.path.exists(save_path):
         os.makedirs(save_path)
-    with open(save_path,'w') as f:
+    with open(os.path.join(save_path,'{}.v'.format(i)),'w') as f:
         f.write('module {}(\n')
         f.write('input [{}:0] I,\n')
         f.write('output reg O\n')
