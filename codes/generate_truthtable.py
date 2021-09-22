@@ -19,6 +19,7 @@ save_dir = get_options().save_dir
 
 for i in range(1,pow(2,pow(2,num_input))-1):
     truthValue = bin(i)
+    print(truthValue,len(truthValue))
     save_path = os.path.join(save_dir,'i{}'.format(num_input))
     if not os.path.exists(save_path):
         os.makedirs(save_path)
