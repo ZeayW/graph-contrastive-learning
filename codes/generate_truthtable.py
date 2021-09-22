@@ -1,4 +1,4 @@
-from codes.generate_options import get_options
+from generate_options import get_options
 import os
 # module tb1(
 # input [1:0] I,
