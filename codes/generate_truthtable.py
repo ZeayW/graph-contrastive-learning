@@ -19,6 +19,8 @@ save_dir = get_options().save_dir
 
 for i in range(1,pow(2,pow(2,num_input))-1):
     truthValue = bin(i)[2:]
+    while len(truthValue)<pow(2,num_input):
+        truthValue = '0'+truthValue
     print(truthValue,len(truthValue))
     save_path = os.path.join(save_dir,'i{}'.format(num_input))
     if not os.path.exists(save_path):
