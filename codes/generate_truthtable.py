@@ -76,7 +76,6 @@ res = full_array(range(3),[])
 
 visited = {}
 
-num_input = 3
 equal_arrays = get_equal_arrays(num_input)
 #print(equal_arrays)
 
