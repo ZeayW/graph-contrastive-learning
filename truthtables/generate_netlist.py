@@ -2,7 +2,7 @@ import sys
 
 sys.path.append("..")
 import os
-from codes.generate_options import get_options
+from generate_options import get_options
 os.system('source /opt2/synopsys/setup.sh')
 options = get_options()
 data_dir = os.path.join(options.save_dir,'i{}'.format(options.num_input))
