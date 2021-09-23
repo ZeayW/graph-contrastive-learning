@@ -111,6 +111,6 @@ for i in range(1,pow(2,pow(2,num_input))-1):
         f.write(');\n')
         f.write('always@(*)\n\tcase(I)\n')
         for j in range(pow(2,num_input)):
-            f.write("\t\t2'b{}: O = {};\n".format(bin(j)[2:],truthValue[j]))
+            f.write("\t\t{}'b{}: O = {};\n".format(num_input,bin(j)[2:],truthValue[j]))
         f.write('\tendcase\n')
         f.write('endmodule\n')
