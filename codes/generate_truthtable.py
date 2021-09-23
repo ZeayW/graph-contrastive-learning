@@ -87,6 +87,7 @@ for i in range(1,pow(2,pow(2,num_input))-1):
     truthValue = bin(i)[2:]
     while len(truthValue)<pow(2,num_input):
         truthValue = '0'+truthValue
+    # deal with symmetrical equivalences
     postive_postions = []
     for j in range(len(truthValue)):
         if truthValue[j]=='1':
@@ -97,6 +98,8 @@ for i in range(1,pow(2,pow(2,num_input))-1):
         for position in postive_postions:
             equal_value += pow(2,pow(2,num_input)-1-array[position])
             visited[equal_value] = True
+    # deal with complementary
+    visited[pow(2,pow(2,num_input))-1-i] = True
 
     print(truthValue,len(truthValue))
     save_path = os.path.join(save_dir,'i{}'.format(num_input))
