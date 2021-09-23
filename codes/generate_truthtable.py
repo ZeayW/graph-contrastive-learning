@@ -81,7 +81,7 @@ equal_arrays = get_equal_arrays(num_input)
 #print(equal_arrays)
 
 for i in range(1,pow(2,pow(2,num_input))-1):
-    if visited.get(i,None):
+    if visited.get(i,False):
         continue
     visited[i] = True
     truthValue = bin(i)[2:]
