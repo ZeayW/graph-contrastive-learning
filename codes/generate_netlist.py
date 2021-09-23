@@ -11,7 +11,7 @@ for vf in os.listdir(data_dir):
     with open(tcl_file,'r') as f:
         lines = f.readlines()
     lines[2] = "set numInput \"{}\"\n".format(options.num_input)
-    lines[3] = "set value \"{}\"\n".format(vf.split(['.'])[0])
+    lines[3] = "set value \"{}\"\n".format(vf.split('.')[0])
     print(lines)
     exit()
     with open(tcl_file,'w') as f:
