@@ -10,8 +10,8 @@ for vf in os.listdir(data_dir):
         continue
     with open(tcl_file,'r') as f:
         lines = f.readlines()
-    lines[2] = "set numInput \"{}\"".format(options.num_input)
-    lines[3] = "set value \"{}\"".format(vf.split(['.'][0]))
+    lines[2] = "set numInput \"{}\"\n".format(options.num_input)
+    lines[3] = "set value \"{}\"\n".format(vf.split(['.'])[0])
     with open(tcl_file,'w') as f:
         f.writelines(lines)
     os.system('dc_shell-xg-t -f {}'.format(tcl_file))
