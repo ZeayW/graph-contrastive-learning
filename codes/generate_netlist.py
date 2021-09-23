@@ -12,6 +12,8 @@ for vf in os.listdir(data_dir):
         lines = f.readlines()
     lines[2] = "set numInput \"{}\"\n".format(options.num_input)
     lines[3] = "set value \"{}\"\n".format(vf.split(['.'])[0])
+    print(lines)
+    exit()
     with open(tcl_file,'w') as f:
         f.writelines(lines)
     os.system('dc_shell-xg-t -f {}'.format(tcl_file))
