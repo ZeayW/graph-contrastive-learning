@@ -705,13 +705,13 @@ def random_replace(g,nid,id2type,edge2port):
         for sucessor in sucessors:
             if id2type[sucessor] == 'INV':
                 print('\t\tsuc remove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
-                remove_adjacent_inv(g, new_nodes[replace_cell.output_link][0], sucessor)
+                remove_adjacent_inv(g, new_nodes[replace_cell.output_link][0], sucessor,edge2port)
     for port,fanin in fanins.items():
         if id2type[fanin] == 'INV':
             pi = replace_cell.input_links[port][0][0]
             if new_nodes.get(pi,None) is not None and new_nodes[pi][1]['ntype'] == 'INV':
                 print('\t\tpre remove:({},{})'.format(fanin, new_nodes[pi][0]))
-                remove_adjacent_inv(g, fanin, new_nodes[pi][0])
+                remove_adjacent_inv(g, fanin, new_nodes[pi][0],edge2port)
     return nid
 
 # and(and,and) = and
