@@ -664,7 +664,12 @@ def random_replace(g,nid,id2type,edge2port):
     print('fanins:',fanins)
     if int(ntype[-1])!= len(fanins):
         print(ntype[-1],fanins)
-    assert int(ntype[-1])== len(fanins)
+    if ntype == 'MUX2':
+        assert len(fanins)==3
+    elif ntype == 'MUX4':
+        assert len(fanins)==6
+    else:
+        assert int(ntype[-1])== len(fanins)
     # fanins = sorted(fanins.items())
     # predecessors = {}
     # for fanin in fanins:
