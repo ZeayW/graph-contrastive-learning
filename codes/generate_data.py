@@ -92,8 +92,6 @@ class DcParser:
         POs: List[str] = []  # a list of PO nodes
         mult_infos = {}  # {mcomp:([(mult_input_wire,position)],[mult_output_wire,position])}
         nodes: List[Tuple[str, Dict[str, str]]] = [
-            ("1'b0", {"type": "1'b0"}),
-            ("1'b1", {"type": "1'b1"}),
         ]  # a list of (node, {"type": type})
         edges: List[
             Tuple[str, str, Dict[str, bool]]
