@@ -718,6 +718,8 @@ def random_replace(g,nid,id2type,edge2port):
             if new_nodes.get(pi,None) is not None and new_nodes[pi][1]['ntype'] == 'INV':
                 print('\t\tpre remove:({},{})'.format(fanin, new_nodes[pi][0]))
                 remove_adjacent_inv(g, fanin, new_nodes[pi][0],edge2port)
+    print('nodes:', list(g.nodes.items()))
+    print('edges:', list(g.edges.items()))
     return nid
 
 # and(and,and) = and
