@@ -777,7 +777,7 @@ def  main():
     for vf in os.listdir(datapath):
         if not vf.endswith('.v'):
             continue
-        value = vf.split('.')[0]
+        value = vf.split('_')[2][1:]
         parser = DcParser('i{}_v{}'.format(options.num_input,value))
         output_nid,nodes,edges = parser.parse(os.path.join(datapath,vf))
 
