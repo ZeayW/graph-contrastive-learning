@@ -173,7 +173,7 @@ class DcParser:
 
                     num_inputs = ntype[re.search('\d', ntype).start():]
                     ntype1 = 'AND2' if 'AO' in ntype else 'OR2'
-                    ntype2 = 'OR{}'.format(len(num_input)) if 'AO' in ntype else 'AND{}'.format(len(num_input))
+                    ntype2 = 'OR{}'.format(len(num_inputs)) if 'AO' in ntype else 'AND{}'.format(len(num_inputs))
                     if 'I' in ntype:
                         output_name = '{}_i'.format(fo.argname)
                         nodes.append((output_name, {"type": ntype2}))
