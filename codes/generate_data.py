@@ -707,9 +707,7 @@ def random_replace(g,nid,id2type,edge2port):
     for sucessor in sucessors:
         new_edge = (new_nodes[replace_cell.output_link][0], sucessor)
         g.add_edge(new_edge[0],new_edge[1])
-        edge2port[new_edge] = edge2port.get(new_edge,[])
-        for port in edge2port[(rand_nid,sucessor)]:
-            edge2port[new_edge].append(port)
+        edge2port[new_edge] = edge2port[(rand_nid,sucessor)]
     for port,fanin in fanins.items():
         for pi in replace_cell.input_links[port]:
             new_edge = (fanin, new_nodes[pi[0]][0])
