@@ -317,7 +317,7 @@ class Cell:
 equal_replaces['AND2'] = [
     # AND = NOR(INV,INV)
     Cell(
-        nodes = {'o':(1,{'ntype':'NOR'}),
+        nodes = {'o':(1,{'ntype':'NOR2'}),
                  'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o')],
         output_link= 'o',
@@ -326,7 +326,7 @@ equal_replaces['AND2'] = [
     # AND = INV(NAND)
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'NAND'})},
+                 'i1':(2,{'ntype':'NAND2'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1']]
@@ -335,7 +335,7 @@ equal_replaces['AND2'] = [
 equal_replaces['AND3'] = [
     # AND = NOR(INV,INV)
     Cell(
-        nodes = {'o':(1,{'ntype':'NOR'}),
+        nodes = {'o':(1,{'ntype':'NOR3'}),
                  'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o'),('i3','o')],
         output_link= 'o',
@@ -344,7 +344,7 @@ equal_replaces['AND3'] = [
     # AND = INV(NAND)
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'NAND'})},
+                 'i1':(2,{'ntype':'NAND3'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1'],['i1']]
@@ -353,7 +353,7 @@ equal_replaces['AND3'] = [
 equal_replaces['AND4'] = [
     # AND = NOR(INV,INV)
     Cell(
-        nodes = {'o':(1,{'ntype':'NOR'}),
+        nodes = {'o':(1,{'ntype':'NOR4'}),
                  'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'}),'i4':(5,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o'),('i3','o'),('i4','o')],
         output_link= 'o',
@@ -362,7 +362,7 @@ equal_replaces['AND4'] = [
     # AND = INV(NAND)
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'NAND'})},
+                 'i1':(2,{'ntype':'NAND4'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1'],['i1'],['i1']]
@@ -372,7 +372,7 @@ equal_replaces['AND4'] = [
 equal_replaces['NAND2'] = [
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'AND'})},
+                 'i1':(2,{'ntype':'AND2'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1']]
@@ -381,7 +381,7 @@ equal_replaces['NAND2'] = [
 equal_replaces['NAND3'] = [
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'AND'})},
+                 'i1':(2,{'ntype':'AND3'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1'],['i1']]
@@ -390,7 +390,7 @@ equal_replaces['NAND3'] = [
 equal_replaces['NAND4'] = [
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'AND'})},
+                 'i1':(2,{'ntype':'AND4'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1'],['i1'],['i1']]
@@ -400,7 +400,7 @@ equal_replaces['NAND4'] = [
 equal_replaces['OR2'] = [
     # OR = NAND(INV,INV)
     Cell(
-        nodes = {'o':(1,{'ntype':'NAND'}),'i1':(2,{'ntype':'INV'}),
+        nodes = {'o':(1,{'ntype':'NAND2'}),'i1':(2,{'ntype':'INV'}),
                  'i2':(3,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o')],
         output_link= 'o',
@@ -409,7 +409,7 @@ equal_replaces['OR2'] = [
     # OR = INV(NOR)
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'NOR'})},
+                 'i1':(2,{'ntype':'NOR2'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1']]
@@ -417,8 +417,8 @@ equal_replaces['OR2'] = [
 
     # a+b = a +a'b
     Cell(
-        nodes = {'o':(1,{'ntype':'OR'}),
-                 'w1':(2,{'ntype':'AND'}),
+        nodes = {'o':(1,{'ntype':'OR2'}),
+                 'w1':(2,{'ntype':'AND2'}),
                  'i1':(2,{'ntype':'INV'}),
                  },
         edges = [('w1','o'),('i1','w1')],
@@ -430,7 +430,7 @@ equal_replaces['OR2'] = [
 equal_replaces['OR3'] = [
     # OR = NAND(INV,INV)
     Cell(
-        nodes = {'o':(1,{'ntype':'NAND'}),'i1':(2,{'ntype':'INV'}),
+        nodes = {'o':(1,{'ntype':'NAND3'}),'i1':(2,{'ntype':'INV'}),
                  'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o'),('i3','o')],
         output_link= 'o',
@@ -439,7 +439,7 @@ equal_replaces['OR3'] = [
     # OR = INV(NOR)
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'NOR'})},
+                 'i1':(2,{'ntype':'NOR3'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1'],['i1']]
@@ -447,10 +447,10 @@ equal_replaces['OR3'] = [
 
     # a+b+c =  a + a'(b+c)
     Cell(
-        nodes = {'o':(1,{'ntype':'OR'}),
-                 'w1':(2,{'ntype':'AND'}),
+        nodes = {'o':(1,{'ntype':'OR2'}),
+                 'w1':(2,{'ntype':'AND2'}),
                  'i1':(2,{'ntype':'INV'}),
-                 'i2':(2,{'ntype':'OR'})},
+                 'i2':(2,{'ntype':'OR2'})},
         edges = [('w1','o'),('i1','w1'),('i2','w1')],
         output_link= 'o',
         input_links= [['o','i1'],['i2'],['i2']]
@@ -460,7 +460,7 @@ equal_replaces['OR3'] = [
 equal_replaces['OR4'] = [
     # OR = NAND(INV,INV)
     Cell(
-        nodes = {'o':(1,{'ntype':'NAND'}),'i1':(2,{'ntype':'INV'}),
+        nodes = {'o':(1,{'ntype':'NAND4'}),'i1':(2,{'ntype':'INV'}),
                  'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'}),'i4':(5,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o'),('i3','o'),('i4','o')],
         output_link= 'o',
@@ -469,7 +469,7 @@ equal_replaces['OR4'] = [
     # OR = INV(NOR)
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'NOR'})},
+                 'i1':(2,{'ntype':'NOR4'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1'],['i1'],['i1']]
@@ -477,10 +477,10 @@ equal_replaces['OR4'] = [
 
     # a+b+c+d = a+a'(b+c+d)
     Cell(
-        nodes = {'o':(1,{'ntype':'OR'}),
-                 'w1':(2,{'ntype':'AND'}),
+        nodes = {'o':(1,{'ntype':'OR2'}),
+                 'w1':(2,{'ntype':'AND2'}),
                  'i1':(2,{'ntype':'INV'}),
-                 'i2':(2,{'ntype':'OR'})},
+                 'i2':(2,{'ntype':'OR3'})},
         edges = [('w1','o'),('i1','w1'),('i2','w1')],
         output_link= 'o',
         input_links= [['o','i1'],['i2'],['i2'],['i2']]
@@ -491,7 +491,7 @@ equal_replaces['NOR2'] = [
 
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'OR'})},
+                 'i1':(2,{'ntype':'OR2'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1']]
@@ -502,7 +502,7 @@ equal_replaces['NOR3'] = [
 
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'OR'})},
+                 'i1':(2,{'ntype':'OR3'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1'],['i1']]
@@ -513,7 +513,7 @@ equal_replaces['NOR4'] = [
 
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
-                 'i1':(2,{'ntype':'OR'})},
+                 'i1':(2,{'ntype':'OR4'})},
         edges = [('i1','o')],
         output_link= 'o',
         input_links= [['i1'],['i1'],['i1'],['i1']]
@@ -523,8 +523,8 @@ equal_replaces['NOR4'] = [
 equal_replaces['XOR2'] = [
     # NOR(x1,x2) = OR( AND(x1,INV(x2)), AND(INV(x1),x2) )
     Cell(
-        nodes = {'o':(1,{'ntype':'OR'}),
-                 'w1':(2,{'ntype':'AND'}),'w2':(3,{'ntype':'AND'}),
+        nodes = {'o':(1,{'ntype':'OR2'}),
+                 'w1':(2,{'ntype':'AND2'}),'w2':(3,{'ntype':'AND2'}),
                  'i1':(4,{'ntype':'INV'}),'i2':(5,{'ntype':'INV'})},
         edges = [('w1','o'),('w2','o'),('i1','w1'),('i2','w2')],
         output_link= 'o',
@@ -533,7 +533,7 @@ equal_replaces['XOR2'] = [
     # XOR = INV(XNOR)
     Cell(
         nodes={'o': (1, {'ntype': 'INV'}),
-               'i1': (2, {'ntype': 'XNOR'})},
+               'i1': (2, {'ntype': 'XNOR2'})},
         edges=[('i1', 'o')],
         output_link='o',
         input_links=[['i1'], ['i1']]
@@ -543,8 +543,8 @@ equal_replaces['XOR2'] = [
 equal_replaces['XOR3'] = [
     # NOR(x1,x2) = OR( AND(x1,INV(x2)), AND(INV(x1),x2) )
     Cell(
-        nodes = {'o':(1,{'ntype':'OR'}),
-                 'w1':(2,{'ntype':'AND'}),'w2':(3,{'ntype':'AND'}),'w3':(4,{'ntype':'AND'}),'w4':(5,{'ntype':'AND'}),
+        nodes = {'o':(1,{'ntype':'OR4'}),
+                 'w1':(2,{'ntype':'AND3'}),'w2':(3,{'ntype':'AND3'}),'w3':(4,{'ntype':'AND3'}),'w4':(5,{'ntype':'AND3'}),
                  'i1':(6,{'ntype':'INV'}),'i2':(7,{'ntype':'INV'}),'i3':(8,{'ntype':'INV'})},
         edges = [('w1','o'),('w2','o'),('w3','o'),('w4','o'),('i1','w1'),('i1','w2'),('i2','w2'),('i2','w3'),('i3','w1'),('i3','w3')],
         output_link= 'o',
@@ -553,7 +553,7 @@ equal_replaces['XOR3'] = [
     # XOR = INV(XNOR)
     Cell(
         nodes={'o': (1, {'ntype': 'INV'}),
-               'i1': (2, {'ntype': 'XNOR'})},
+               'i1': (2, {'ntype': 'XNOR3'})},
         edges=[('i1', 'o')],
         output_link='o',
         input_links=[['i1'], ['i1'],['i1']]
@@ -564,7 +564,7 @@ equal_replaces['XNOR2'] = [
     # XNOR = INV(XOR)
     Cell(
         nodes={'o': (1, {'ntype': 'INV'}),
-               'i1': (2, {'ntype': 'XOR'})},
+               'i1': (2, {'ntype': 'XOR2'})},
         edges=[('i1', 'o')],
         output_link='o',
         input_links=[['i1'], ['i1']]
@@ -575,7 +575,7 @@ equal_replaces['XNOR3'] = [
     # XNOR = INV(XOR)
     Cell(
         nodes={'o': (1, {'ntype': 'INV'}),
-               'i1': (2, {'ntype': 'XOR'})},
+               'i1': (2, {'ntype': 'XOR3'})},
         edges=[('i1', 'o')],
         output_link='o',
         input_links=[['i1'], ['i1'],['i1']]
@@ -586,8 +586,8 @@ equal_replaces['XNOR3'] = [
 equal_replaces['MAJ'] = [
     # XNOR = INV(XOR)
     Cell(
-        nodes={'o': (1, {'ntype': 'OR'}),
-               'i1': (2, {'ntype': 'AND'}),'i2': (3, {'ntype': 'AND'}),'i3': (4, {'ntype': 'AND'})
+        nodes={'o': (1, {'ntype': 'OR3'}),
+               'i1': (2, {'ntype': 'AND2'}),'i2': (3, {'ntype': 'AND2'}),'i3': (4, {'ntype': 'AND2'})
                },
         edges=[('i1', 'o'),('i2', 'o'),('i3', 'o')],
         output_link='o',
@@ -598,8 +598,8 @@ equal_replaces['MAJ'] = [
 equal_replaces['MUX2'] = [
     # mux2 = s'a+sb
     Cell(
-        nodes = {'o':(1,{'ntype':'OR'}),
-                 'w1':(2,{'ntype':'AND'}),'w2':(3,{'ntype':'AND'}),
+        nodes = {'o':(1,{'ntype':'OR2'}),
+                 'w1':(2,{'ntype':'AND2'}),'w2':(3,{'ntype':'AND2'}),
                  'i1':(4,{'ntype':'INV'})
                  },
         edges= [('w1','o'),('w2','o'),('i1','w1')],
@@ -611,8 +611,8 @@ equal_replaces['MUX2'] = [
 equal_replaces['MUX4'] = [
     # mux4 = s1's0'a + s1's0b + s1s0'c + s1s0d
     Cell(
-        nodes = {'o':(1,{'ntype':'OR'}),
-                 'w1':(2,{'ntype':'AND'}),'w2':(3,{'ntype':'AND'}),'w3':(4,{'ntype':'AND'}),'w4':(5,{'ntype':'AND'}),
+        nodes = {'o':(1,{'ntype':'OR4'}),
+                 'w1':(2,{'ntype':'AND3'}),'w2':(3,{'ntype':'AND3'}),'w3':(4,{'ntype':'AND3'}),'w4':(5,{'ntype':'AND3'}),
                  'i1':(6,{'ntype':'INV'}),'i2':(7,{'ntype':'INV'})
                  },
         edges= [('w1','o'),('w2','o'),('w3','o'),('w4','o'),('i1','w1'),('i2','w1'),('i1','w2'),('i2','w3')],
