@@ -799,7 +799,7 @@ def  main():
         nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
         plt.show()
         for n in nodes:
-            id2type[n[0]]=n[1]['ntype']
+            id2type[n[0]]=n[1]['type']
         for edge in edges:
             edge2port[(edge[0],edge[1])] = edge[2]['port']
         print(id2type)
