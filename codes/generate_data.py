@@ -280,9 +280,11 @@ class DcParser:
                 nid += 1
         for edge in edges:
             new_edges.append(
-                node2id[edge[0]],
-                node2id[edge[1]],
-                edge[2]
+                (
+                    node2id[edge[0]],
+                    node2id[edge[1]],
+                    edge[2]
+                )
             )
         return output_nid,new_nodes,new_edges
         #return output_node,nodes, edges
