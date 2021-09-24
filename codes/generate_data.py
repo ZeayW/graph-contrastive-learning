@@ -782,6 +782,7 @@ def  main():
             print('empty...')
             continue
         print("original nodes:", nodes)
+        print("original edges:", edges)
         id2type = {}
         edge2port = {}
         # nodes = [(1,{'ntype':'PI'}),(2,{'ntype':'PI'}),(3,{'ntype':'AND'}),(4,{'ntype':'PI'}),(5,{'ntype':'PI'}),
@@ -808,6 +809,7 @@ def  main():
             nid = random_replace(g, nid,id2type,edge2port)
             # print(ntype,replace_cell.nodes,replace_cell.edges)
         print('modified nodes:',list(g.nodes.items()))
+        print('modified edges:',list(g.edges.items()))
         nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
         plt.show()
 
