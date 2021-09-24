@@ -109,7 +109,6 @@ class DcParser:
                 top_module = module
                 break
         assert top_module is not None, "top module {} not found".format(self.top_module)
-        print(len(top_module.items))
 
         for item in top_module.items:
             if type(item) != pyverilog.vparser.ast.InstanceList:
@@ -644,7 +643,7 @@ def random_replace(g,nid,id2type,edge2port):
     rand_idx = random.randint(0, g.number_of_nodes() - 1)
     rand_nid = list(g.nodes.keys())[rand_idx]
     ntype = id2type[rand_nid]
-    print('rand_nid', rand_nid,'ntype',ntype)
+    print('\treplaced_node', rand_nid,ntype)
     if ntype == 'PI' or ntype == 'INV':
         return nid
     sucessors = list(g.successors(rand_nid))
@@ -673,7 +672,6 @@ def random_replace(g,nid,id2type,edge2port):
         else:
             new_nodes[var] = (nid, nd[1])
             nid += 1
-    print(new_nodes)
 
     # replace the original gate with new gates
     g.add_nodes_from(new_nodes.values())
@@ -689,7 +687,6 @@ def random_replace(g,nid,id2type,edge2port):
     for j, predecessor in enumerate(predecessors):
         for pi in replace_cell.input_links[j]:
             g.add_edge(predecessor, new_nodes[pi][0])
-    print(rand_nid, ntype)
 
     # remove adjacent INVs
     if new_nodes[replace_cell.output_link][1]['ntype'] == 'INV':
@@ -784,7 +781,7 @@ def  main():
         if len(nodes)==0:
             print('empty...')
             continue
-        print("nodes:", nodes)
+        print("original nodes:", nodes)
         id2type = {}
         edge2port = {}
         # nodes = [(1,{'ntype':'PI'}),(2,{'ntype':'PI'}),(3,{'ntype':'AND'}),(4,{'ntype':'PI'}),(5,{'ntype':'PI'}),
@@ -802,14 +799,15 @@ def  main():
             id2type[n[0]]=n[1]['type']
         for edge in edges:
             edge2port[(edge[0],edge[1])] = edge[2]['port']
-        print(id2type)
-        print(edge2port)
+        # print(id2type)
+        # print(edge2port)
 
         num_nodes = g.number_of_nodes()
         nid = num_nodes + 1
         for i in range(5):
             nid = random_replace(g, nid,id2type,edge2port)
             # print(ntype,replace_cell.nodes,replace_cell.edges)
+        print('modified nodes:',g.nodes)
         nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
         plt.show()
 
