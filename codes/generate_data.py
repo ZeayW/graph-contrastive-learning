@@ -236,8 +236,12 @@ class DcParser:
                         ntype = ntype[: pos.start()+1]
 
                     inputs[fo.argname] = inputs.get(fo.argname, [])
-                    for fi in fanins:
-                        inputs[fo.argname].append((fi.argname,fi.portname))
+                    if mfunc in ('HADD','FADD'):
+                        for i,fi in enumerate(fanins):
+                            inputs[fo.argname].append((fi.argname, 'A{}'.format(i+1)))
+                    else:
+                        for fi in fanins:
+                            inputs[fo.argname].append((fi.argname,fi.portname))
 
                     nodes.append((fo.argname, {"type": ntype}))
 
@@ -589,7 +593,7 @@ equal_replaces['MAJ'] = [
                },
         edges=[('i1', 'o','A1'),('i2', 'o','A2'),('i3', 'o','A3')],
         output_link='o',
-        input_links={'A1':[('i1','A1'),('i3','A3')], 'A1':[('i1','A2'),('i2','A1')],'A1':[('i2','A2'),('i3','A2')]}
+        input_links={'A1':[('i1','A1'),('i3','A3')], 'A2':[('i1','A2'),('i2','A1')],'A3':[('i2','A2'),('i3','A2')]}
     )
 ]
 
