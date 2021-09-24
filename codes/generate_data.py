@@ -662,7 +662,7 @@ def random_replace(g,nid,id2type,edge2port):
     num_fanin = len(predecessors)
 
     g.remove_node(rand_nid)
-    replaces = equal_replaces[ntype]
+    replaces = equal_replaces['{}{}'.format(ntype,num_fanin)]
     rand_index = random.randint(0, len(replaces) - 1)
     replace_cell = replaces[rand_index]
     nodes = replace_cell.nodes
