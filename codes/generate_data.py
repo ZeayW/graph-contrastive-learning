@@ -639,9 +639,12 @@ def remove_adjacent_inv(g,n1,n2,edge2port):
     g.remove_node(n1)
     g.remove_node(n2)
     for suc in sucs:
-        g.add_edge(pre, suc)
+        new_edge = (pre, suc)
+        g.add_edge(new_edge[0], new_edge[1])
         print('port4', edge2port[(n2,suc)])
-        edge2port[(pre,suc)] = edge2port[(n2,suc)]
+        edge2port[new_edge] = edge2port.get(new_edge, [])
+        edge2port[new_edge].append(edge2port[(n2,suc)])
+
 def random_replace(g,nid,id2type,edge2port):
     rand_idx = random.randint(0, g.number_of_nodes() - 1)
     rand_nid = list(g.nodes.keys())[rand_idx]
@@ -693,19 +696,25 @@ def random_replace(g,nid,id2type,edge2port):
         id2type[node[0]] = node[1]['ntype']
 
     for edge in replace_cell.edges:
-        g.add_edge(new_nodes[edge[0]][0], new_nodes[edge[1]][0])
+        new_edge = (new_nodes[edge[0]][0], new_nodes[edge[1]][0])
+        g.add_edge(new_edge[0], new_edge[1])
         print('port1', edge[2])
-        edge2port[(new_nodes[edge[0]][0], new_nodes[edge[1]][0])] = edge[2]
+        edge2port[new_edge] = edge2port.get(new_edge, [])
+        edge2port[new_edge].append(edge[2])
     # link PI/PO
     for sucessor in sucessors:
-        g.add_edge(new_nodes[replace_cell.output_link][0], sucessor)
+        new_edge = (new_nodes[replace_cell.output_link][0], sucessor)
+        g.add_edge(new_edge[0],new_edge[1])
         print('port2', edge2port[(rand_nid,sucessor)])
-        edge2port[(new_nodes[replace_cell.output_link][0], sucessor)] = edge2port[(rand_nid,sucessor)]
+        edge2port[new_edge] = edge2port.get(new_edge,[])
+        edge2port[new_edge].append(edge2port[(rand_nid,sucessor)])
     for port,fanin in fanins.items():
         for pi in replace_cell.input_links[port]:
-            g.add_edge(fanin, new_nodes[pi[0]][0])
+            new_edge = (fanin, new_nodes[pi[0]][0])
+            g.add_edge(new_edge[0],new_edge[1])
             print('port3',pi[1])
-            edge2port[(fanin, new_nodes[pi[0]][0])] = pi[1]
+            edge2port[new_edge] = edge2port.get(new_edge, [])
+            edge2port[new_edge].append(pi[1])
     # remove adjacent INVs
     if new_nodes[replace_cell.output_link][1]['ntype'] == 'INV':
         for sucessor in sucessors:
