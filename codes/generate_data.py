@@ -43,7 +43,7 @@ class DcParser:
     ):
         self.top_module = top_module
         self.hadd_name_dict = {}
-        self.hadd_name_dict["hadd_s"] = "XOR"
+        self.hadd_name_dict["hadd_s"] = "XOR2"
         self.hadd_name_dict["hadd_c"] = "AND2"
         self.hadd_name_dict["fadd_s"] = "XOR3"
         self.hadd_name_dict["fadd_c"] = "MAJ"
