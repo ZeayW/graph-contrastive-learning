@@ -640,6 +640,7 @@ def remove_adjacent_inv(g,n1,n2,edge2port):
     g.remove_node(n2)
     for suc in sucs:
         g.add_edge(pre, suc)
+        print('port4', edge2port[(n2,suc)])
         edge2port[(pre,suc)] = edge2port[(n2,suc)]
 def random_replace(g,nid,id2type,edge2port):
     rand_idx = random.randint(0, g.number_of_nodes() - 1)
