@@ -321,7 +321,7 @@ equal_replaces['AND2'] = [
                  'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o')],
         output_link= 'o',
-        input_links= [['i1'],['i2']]
+        input_links= {'A1':['i1'],'A2':['i2']}
     ),
     # AND = INV(NAND)
     Cell(
@@ -329,7 +329,7 @@ equal_replaces['AND2'] = [
                  'i1':(2,{'ntype':'NAND2'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1']}
     )
 ]
 equal_replaces['AND3'] = [
@@ -339,7 +339,7 @@ equal_replaces['AND3'] = [
                  'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o'),('i3','o')],
         output_link= 'o',
-        input_links= [['i1'],['i2'],['i3']]
+        input_links= {'A1':['i1'],'A2':['i2'],'A3':['i3']}
     ),
     # AND = INV(NAND)
     Cell(
@@ -347,7 +347,7 @@ equal_replaces['AND3'] = [
                  'i1':(2,{'ntype':'NAND3'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1'],'A3':['i1']}
     )
 ]
 equal_replaces['AND4'] = [
@@ -357,7 +357,7 @@ equal_replaces['AND4'] = [
                  'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'}),'i4':(5,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o'),('i3','o'),('i4','o')],
         output_link= 'o',
-        input_links= [['i1'],['i2'],['i3'],['i4']]
+        input_links= {'A1':['i1'],'A2':['i2'],'A3':['i3'],'A4':['i4']}
     ),
     # AND = INV(NAND)
     Cell(
@@ -365,7 +365,7 @@ equal_replaces['AND4'] = [
                  'i1':(2,{'ntype':'NAND4'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1'],['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1'],'A3':['i1'],'A4':['i1']}
     )
 ]
 
@@ -375,7 +375,7 @@ equal_replaces['NAND2'] = [
                  'i1':(2,{'ntype':'AND2'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1']}
     )
 ]
 equal_replaces['NAND3'] = [
@@ -384,7 +384,7 @@ equal_replaces['NAND3'] = [
                  'i1':(2,{'ntype':'AND3'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1'],'A3':['i1']}
     )
 ]
 equal_replaces['NAND4'] = [
@@ -393,7 +393,7 @@ equal_replaces['NAND4'] = [
                  'i1':(2,{'ntype':'AND4'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1'],['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1'],'A3':['i1'],'A4':['i1']}
     )
 ]
 
@@ -404,7 +404,7 @@ equal_replaces['OR2'] = [
                  'i2':(3,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o')],
         output_link= 'o',
-        input_links= [['i1'],['i2']],
+        input_links= {'A1':['i1'],'A2':['i2']},
     ),
     # OR = INV(NOR)
     Cell(
@@ -412,7 +412,7 @@ equal_replaces['OR2'] = [
                  'i1':(2,{'ntype':'NOR2'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1']}
     ),
 
     # a+b = a +a'b
@@ -423,7 +423,7 @@ equal_replaces['OR2'] = [
                  },
         edges = [('w1','o'),('i1','w1')],
         output_link= 'o',
-        input_links= [['o','i1'],['w1']]
+        input_links= {'A1':['o','i1'],'A2':['w1']}
     )
 ]
 
@@ -434,7 +434,7 @@ equal_replaces['OR3'] = [
                  'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o'),('i3','o')],
         output_link= 'o',
-        input_links= [['i1'],['i2'],['i3']],
+        input_links= {'A1':['i1'],'A2':['i2'],'A3':['i3']},
     ),
     # OR = INV(NOR)
     Cell(
@@ -442,7 +442,7 @@ equal_replaces['OR3'] = [
                  'i1':(2,{'ntype':'NOR3'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1'],'A3':['i1']}
     ),
 
     # a+b+c =  a + a'(b+c)
@@ -453,7 +453,7 @@ equal_replaces['OR3'] = [
                  'i2':(2,{'ntype':'OR2'})},
         edges = [('w1','o'),('i1','w1'),('i2','w1')],
         output_link= 'o',
-        input_links= [['o','i1'],['i2'],['i2']]
+        input_links= {'A1':['o','i1'],'A2':['i2'],'A3':['i2']}
     )
 ]
 
@@ -464,7 +464,7 @@ equal_replaces['OR4'] = [
                  'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'}),'i4':(5,{'ntype':'INV'})},
         edges = [('i1','o'),('i2','o'),('i3','o'),('i4','o')],
         output_link= 'o',
-        input_links= [['i1'],['i2'],['i3'],['i4']],
+        input_links= {'A1':['i1'],'A2':['i2'],'A3':['i3'],'A4':['i4']},
     ),
     # OR = INV(NOR)
     Cell(
@@ -472,7 +472,7 @@ equal_replaces['OR4'] = [
                  'i1':(2,{'ntype':'NOR4'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1'],['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1'],'A3':['i1'],'A4':['i1']}
     ),
 
     # a+b+c+d = a+a'(b+c+d)
@@ -483,7 +483,7 @@ equal_replaces['OR4'] = [
                  'i2':(2,{'ntype':'OR3'})},
         edges = [('w1','o'),('i1','w1'),('i2','w1')],
         output_link= 'o',
-        input_links= [['o','i1'],['i2'],['i2'],['i2']]
+        input_links= {'A1':['o','i1'],'A2':['i2'],'A3':['i2'],'A4':['i2']}
     )
 ]
 
@@ -494,7 +494,7 @@ equal_replaces['NOR2'] = [
                  'i1':(2,{'ntype':'OR2'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1']}
     )
 ]
 
@@ -505,7 +505,7 @@ equal_replaces['NOR3'] = [
                  'i1':(2,{'ntype':'OR3'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1'],'A3':['i1']}
     )
 ]
 
@@ -516,7 +516,7 @@ equal_replaces['NOR4'] = [
                  'i1':(2,{'ntype':'OR4'})},
         edges = [('i1','o')],
         output_link= 'o',
-        input_links= [['i1'],['i1'],['i1'],['i1']]
+        input_links= {'A1':['i1'],'A2':['i1'],'A3':['i1'],'A4':['i1']}
     )
 ]
 
@@ -528,7 +528,7 @@ equal_replaces['XOR2'] = [
                  'i1':(4,{'ntype':'INV'}),'i2':(5,{'ntype':'INV'})},
         edges = [('w1','o'),('w2','o'),('i1','w1'),('i2','w2')],
         output_link= 'o',
-        input_links= [['w2','i1'],['w1','i2']]
+        input_links= {'A1':['w2','i1'],'A2':['w1','i2']}
     ),
     # XOR = INV(XNOR)
     Cell(
@@ -536,7 +536,7 @@ equal_replaces['XOR2'] = [
                'i1': (2, {'ntype': 'XNOR2'})},
         edges=[('i1', 'o')],
         output_link='o',
-        input_links=[['i1'], ['i1']]
+        input_links={'A1':['i1'], 'A2':['i1']}
     )
 ]
 
@@ -548,7 +548,7 @@ equal_replaces['XOR3'] = [
                  'i1':(6,{'ntype':'INV'}),'i2':(7,{'ntype':'INV'}),'i3':(8,{'ntype':'INV'})},
         edges = [('w1','o'),('w2','o'),('w3','o'),('w4','o'),('i1','w1'),('i1','w2'),('i2','w2'),('i2','w3'),('i3','w1'),('i3','w3')],
         output_link= 'o',
-        input_links= [['i1','w3','w4'],['i2','w1','w4'],['i3','w2','w4']]
+        input_links= {'A1':['i1','w3','w4'],'A2':['i2','w1','w4'],'A3':['i3','w2','w4']}
     ),
     # XOR = INV(XNOR)
     Cell(
@@ -556,7 +556,7 @@ equal_replaces['XOR3'] = [
                'i1': (2, {'ntype': 'XNOR3'})},
         edges=[('i1', 'o')],
         output_link='o',
-        input_links=[['i1'], ['i1'],['i1']]
+        input_links={'A1':['i1'], 'A2':['i1'],'A3':['i1']}
     )
 ]
 
@@ -567,7 +567,7 @@ equal_replaces['XNOR2'] = [
                'i1': (2, {'ntype': 'XOR2'})},
         edges=[('i1', 'o')],
         output_link='o',
-        input_links=[['i1'], ['i1']]
+        input_links={'A1':['i1'], 'A2':['i1']}
     )
 ]
 
@@ -578,7 +578,7 @@ equal_replaces['XNOR3'] = [
                'i1': (2, {'ntype': 'XOR3'})},
         edges=[('i1', 'o')],
         output_link='o',
-        input_links=[['i1'], ['i1'],['i1']]
+        input_links={'A1':['i1'], 'A2':['i1'],'A3':['i1']}
     )
 ]
 
@@ -591,7 +591,7 @@ equal_replaces['MAJ'] = [
                },
         edges=[('i1', 'o'),('i2', 'o'),('i3', 'o')],
         output_link='o',
-        input_links=[['i1','i3'], ['i1','i2'],['i2','i3']]
+        input_links={'A1':['i1','i3'], 'A1':['i1','i2'],'A1':['i2','i3']}
     )
 ]
 
@@ -604,7 +604,7 @@ equal_replaces['MUX2'] = [
                  },
         edges= [('w1','o'),('w2','o'),('i1','w1')],
         output_link = 'o',
-        input_links = [['w1'],['w2'],['i1','w2']]
+        input_links = {'A1':['w1'],'A2':['w2'],'S0':['i1','w2']}
     )
 ]
 
@@ -617,7 +617,7 @@ equal_replaces['MUX4'] = [
                  },
         edges= [('w1','o'),('w2','o'),('w3','o'),('w4','o'),('i1','w1'),('i2','w1'),('i1','w2'),('i2','w3')],
         output_link = 'o',
-        input_links = [['w1'],['w2'],['w3'],['w4'],['i1','w3','w4'],['i2','w2','w4']]
+        input_links = {'A1':['w1'],'A2':['w2'],'A3':['w3'],'A4':['w4'],'S1':['i1','w3','w4'],'S0':['i2','w2','w4']}
     )
 ]
 
@@ -648,15 +648,24 @@ def random_replace(g,nid,id2type,edge2port):
         return nid
     sucessors = list(g.successors(rand_nid))
     predecessors = list(g.predecessors(rand_nid))
-    if ntype == 'MUX':
-        fanins = {}
-        for predecessor in predecessors:
-            port = edge2port[(predecessor,rand_nid)]
+    fanins = {}
+    for predecessor in predecessors:
+        ports = edge2port[(predecessor, rand_nid)]
+        for port in ports:
             fanins[port] = predecessor
-        fanins = sorted(fanins.items())
-        predecessors = []
-        for fanin in fanins:
-            predecessors.append(fanin[1])
+    # fanins = sorted(fanins.items())
+    # predecessors = {}
+    # for fanin in fanins:
+    #     predecessors.append(fanin[1])
+    # if ntype == 'MUX':
+    #     fanins = {}
+    #     for predecessor in predecessors:
+    #         port = edge2port[(predecessor,rand_nid)]
+    #         fanins[port] = predecessor
+    #     fanins = sorted(fanins.items())
+    #     predecessors = []
+    #     for fanin in fanins:
+    #         predecessors.append(fanin[1])
 
     num_fanin = len(predecessors)
 
@@ -798,7 +807,8 @@ def  main():
         for n in nodes:
             id2type[n[0]]=n[1]['type']
         for edge in edges:
-            edge2port[(edge[0],edge[1])] = edge[2]['port']
+            edge2port[(edge[0],edge[1])] = edge2port.get((edge[0],edge[1]),[])
+            edge2port[(edge[0],edge[1])].append(edge[2]['port'])
         # print(id2type)
         # print(edge2port)
 
