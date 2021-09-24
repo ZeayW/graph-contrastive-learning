@@ -687,7 +687,7 @@ def random_replace(g,nid,id2type,edge2port):
     for j, predecessor in enumerate(predecessors):
         for pi in replace_cell.input_links[j]:
             g.add_edge(predecessor, new_nodes[pi][0])
-
+    print(sucessors)
     # remove adjacent INVs
     if new_nodes[replace_cell.output_link][1]['ntype'] == 'INV':
         print(sucessors)
