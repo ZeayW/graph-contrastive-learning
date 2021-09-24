@@ -807,7 +807,7 @@ def  main():
         for i in range(5):
             nid = random_replace(g, nid,id2type,edge2port)
             # print(ntype,replace_cell.nodes,replace_cell.edges)
-        print('modified nodes:',list(g.nodes))
+        print('modified nodes:',list(g.nodes.items()))
         nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
         plt.show()
 
