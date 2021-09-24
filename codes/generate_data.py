@@ -781,9 +781,10 @@ def  main():
         value = vf.split('_')[2][1:]
         parser = DcParser('i{}_v{}'.format(options.num_input,value))
         output_nid,nodes,edges = parser.parse(os.path.join(datapath,vf))
-        print("nodes:",nodes)
         if len(nodes)==0:
+            print('empty...')
             continue
+        print("nodes:", nodes)
         id2type = {}
         edge2port = {}
         # nodes = [(1,{'ntype':'PI'}),(2,{'ntype':'PI'}),(3,{'ntype':'AND'}),(4,{'ntype':'PI'}),(5,{'ntype':'PI'}),
