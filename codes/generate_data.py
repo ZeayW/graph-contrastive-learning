@@ -693,14 +693,17 @@ def random_replace(g,nid,id2type,edge2port):
 
     for edge in replace_cell.edges:
         g.add_edge(new_nodes[edge[0]][0], new_nodes[edge[1]][0])
+        print('port1', edge[2])
         edge2port[(new_nodes[edge[0]][0], new_nodes[edge[1]][0])] = edge[2]
     # link PI/PO
     for sucessor in sucessors:
         g.add_edge(new_nodes[replace_cell.output_link][0], sucessor)
+        print('port2', edge2port[(rand_nid,sucessor)])
         edge2port[(new_nodes[replace_cell.output_link][0], sucessor)] = edge2port[(rand_nid,sucessor)]
     for port,fanin in fanins.items():
         for pi in replace_cell.input_links[port]:
             g.add_edge(fanin, new_nodes[pi[0]][0])
+            print('port3',pi[1])
             edge2port[(fanin, new_nodes[pi[0]][0])] = pi[1]
     # remove adjacent INVs
     if new_nodes[replace_cell.output_link][1]['ntype'] == 'INV':
