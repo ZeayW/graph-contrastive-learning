@@ -191,7 +191,7 @@ class DcParser:
                             inputs[h_node_name].append((fanins[2 * i].argname,'A1'))
                             inputs[h_node_name].append((fanins[2 * i + 1].argname,'A2'))
 
-                            inputs[output_name].append((h_node_name,'A{}'.format(i)))
+                            inputs[output_name].append((h_node_name,'A{}'.format(i+1)))
 
                         elif num_input == '1':
                             inputs[output_name].append((fanins[2 * i].argname,'A{}'.format(i)))
