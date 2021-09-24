@@ -657,6 +657,8 @@ def random_replace(g,nid,id2type,edge2port):
     for predecessor in predecessors:
         ports = edge2port[(predecessor, rand_nid)]
         for port in ports:
+            if type(port) == list:
+                print(port)
             fanins[port] = predecessor
     print('fanins:',fanins)
     if int(ntype[-1])!= len(fanins):
