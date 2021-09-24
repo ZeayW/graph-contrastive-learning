@@ -783,7 +783,7 @@ def  main():
         value = vf.split('_')[2][1:]
         parser = DcParser('i{}_v{}'.format(options.num_input,value))
         output_nid,nodes,edges = parser.parse(os.path.join(datapath,vf))
-
+        print("nodes:",nodes)
 
         id2type = {}
         edge2port = {}
