@@ -644,7 +644,7 @@ def random_replace(g,nid,id2type,edge2port):
     rand_nid = list(g.nodes.keys())[rand_idx]
     ntype = id2type[rand_nid]
     print('\treplaced_node', rand_nid,ntype)
-    if ntype == 'PI' or ntype == 'INV':
+    if ntype == 'PI' or ntype == 'INV' :
         return nid
     sucessors = list(g.successors(rand_nid))
     predecessors = list(g.predecessors(rand_nid))
@@ -653,6 +653,7 @@ def random_replace(g,nid,id2type,edge2port):
         ports = edge2port[(predecessor, rand_nid)]
         for port in ports:
             fanins[port] = predecessor
+    assert int(ntype[-1])== len(fanins)
     # fanins = sorted(fanins.items())
     # predecessors = {}
     # for fanin in fanins:
@@ -667,7 +668,6 @@ def random_replace(g,nid,id2type,edge2port):
     #     for fanin in fanins:
     #         predecessors.append(fanin[1])
 
-    num_fanin = len(predecessors)
 
     g.remove_node(rand_nid)
     replaces = equal_replaces[ntype]
@@ -693,21 +693,21 @@ def random_replace(g,nid,id2type,edge2port):
     # link PI/PO
     for sucessor in sucessors:
         g.add_edge(new_nodes[replace_cell.output_link][0], sucessor)
-    for j, predecessor in enumerate(predecessors):
-        for pi in replace_cell.input_links[j]:
-            g.add_edge(predecessor, new_nodes[pi][0])
+    for port,fanin in fanins.items():
+        for pi in replace_cell.input_links[port]:
+            g.add_edge(fanin, new_nodes[pi][0])
     # remove adjacent INVs
     if new_nodes[replace_cell.output_link][1]['ntype'] == 'INV':
         for sucessor in sucessors:
             if id2type[sucessor] == 'INV':
                 print('\t\tsuc remove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
                 remove_adjacent_inv(g, new_nodes[replace_cell.output_link][0], sucessor)
-    for j, predecessor in enumerate(predecessors):
-        if id2type[predecessor] == 'INV':
-            pi = replace_cell.input_links[j][0]
+    for port,fanin in fanins.items():
+        if id2type[fanin] == 'INV':
+            pi = replace_cell.input_links[port][0]
             if new_nodes.get(pi,None) is not None and new_nodes[pi][1]['ntype'] == 'INV':
-                print('\t\tpre remove:({},{})'.format(predecessor, new_nodes[pi][0]))
-                remove_adjacent_inv(g, predecessor, new_nodes[pi][0])
+                print('\t\tpre remove:({},{})'.format(fanin, new_nodes[pi][0]))
+                remove_adjacent_inv(g, fanin, new_nodes[pi][0])
     return nid
 
 # and(and,and) = and
