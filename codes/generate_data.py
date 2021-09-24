@@ -194,7 +194,7 @@ class DcParser:
                             inputs[output_name].append((h_node_name,'A{}'.format(i+1)))
 
                         elif num_input == '1':
-                            inputs[output_name].append((fanins[2 * i].argname,'A{}'.format(i)))
+                            inputs[output_name].append((fanins[2 * i].argname,'A{}'.format(i+1)))
                         else:
                             print(ntype, i, num_input)
                             assert False
