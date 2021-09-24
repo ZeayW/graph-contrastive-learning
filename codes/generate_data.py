@@ -690,6 +690,7 @@ def random_replace(g,nid,id2type,edge2port):
 
     # remove adjacent INVs
     if new_nodes[replace_cell.output_link][1]['ntype'] == 'INV':
+        print(sucessors)
         for sucessor in sucessors:
             if id2type[sucessor] == 'INV':
                 print('\t\tremove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
