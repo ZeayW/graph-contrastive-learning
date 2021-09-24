@@ -16,6 +16,7 @@ from options import get_options
 from torch.nn.parameter import Parameter
 
 
+
 def parse_single_file(parser,filename,start_nid):
     start_nid = 0
     # nodes: list of (node, {"type": type}) here node is a str ,like 'n123' or '1'b1'

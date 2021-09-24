@@ -315,7 +315,43 @@ class Cell:
         self.output_link = output_link
         self.input_links = input_links
 
-equal_replaces['AND'] = [
+equal_replaces['AND2'] = [
+    # AND = NOR(INV,INV)
+    Cell(
+        nodes = {'o':(1,{'ntype':'NOR'}),
+                 'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'})},
+        edges = [('i1','o'),('i2','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i2']]
+    ),
+    # AND = INV(NAND)
+    Cell(
+        nodes = {'o':(1,{'ntype':'INV'}),
+                 'i1':(2,{'ntype':'NAND'})},
+        edges = [('i1','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i1']]
+    )
+]
+equal_replaces['AND3'] = [
+    # AND = NOR(INV,INV)
+    Cell(
+        nodes = {'o':(1,{'ntype':'NOR'}),
+                 'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'})},
+        edges = [('i1','o'),('i2','o'),('i3','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i2'],['i3']]
+    ),
+    # AND = INV(NAND)
+    Cell(
+        nodes = {'o':(1,{'ntype':'INV'}),
+                 'i1':(2,{'ntype':'NAND'})},
+        edges = [('i1','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i1'],['i1']]
+    )
+]
+equal_replaces['AND4'] = [
     # AND = NOR(INV,INV)
     Cell(
         nodes = {'o':(1,{'ntype':'NOR'}),
@@ -334,16 +370,25 @@ equal_replaces['AND'] = [
     )
 ]
 
-equal_replaces['NAND'] = [
-    # # NAND = OR(INV,INV)
-    # Cell(
-    #     nodes = {'o':(1,{'ntype':'OR'}),
-    #              'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'})},
-    #     edges = [('i1','o'),('i2','o')],
-    #     output_link= 'o',
-    #     input_links= [['i1'],['i2']]
-    # ),
-    # NAND = INV(AND)
+equal_replaces['NAND2'] = [
+    Cell(
+        nodes = {'o':(1,{'ntype':'INV'}),
+                 'i1':(2,{'ntype':'AND'})},
+        edges = [('i1','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i1']]
+    )
+]
+equal_replaces['NAND3'] = [
+    Cell(
+        nodes = {'o':(1,{'ntype':'INV'}),
+                 'i1':(2,{'ntype':'AND'})},
+        edges = [('i1','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i1'],['i1']]
+    )
+]
+equal_replaces['NAND4'] = [
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
                  'i1':(2,{'ntype':'AND'})},
@@ -353,7 +398,67 @@ equal_replaces['NAND'] = [
     )
 ]
 
-equal_replaces['OR'] = [
+equal_replaces['OR2'] = [
+    # OR = NAND(INV,INV)
+    Cell(
+        nodes = {'o':(1,{'ntype':'NAND'}),'i1':(2,{'ntype':'INV'}),
+                 'i2':(3,{'ntype':'INV'})},
+        edges = [('i1','o'),('i2','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i2']],
+    ),
+    # OR = INV(NOR)
+    Cell(
+        nodes = {'o':(1,{'ntype':'INV'}),
+                 'i1':(2,{'ntype':'NOR'})},
+        edges = [('i1','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i1']]
+    ),
+
+    # a+b = a +a'b
+    Cell(
+        nodes = {'o':(1,{'ntype':'OR'}),
+                 'w1':(2,{'ntype':'AND'}),
+                 'i1':(2,{'ntype':'INV'}),
+                 },
+        edges = [('w1','o'),('i1','w1')],
+        output_link= 'o',
+        input_links= [['o','i1'],['w1']]
+    )
+]
+
+equal_replaces['OR3'] = [
+    # OR = NAND(INV,INV)
+    Cell(
+        nodes = {'o':(1,{'ntype':'NAND'}),'i1':(2,{'ntype':'INV'}),
+                 'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'})},
+        edges = [('i1','o'),('i2','o'),('i3','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i2'],['i3']],
+    ),
+    # OR = INV(NOR)
+    Cell(
+        nodes = {'o':(1,{'ntype':'INV'}),
+                 'i1':(2,{'ntype':'NOR'})},
+        edges = [('i1','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i1'],['i1']]
+    ),
+
+    # a+b+c =  a + a'(b+c)
+    Cell(
+        nodes = {'o':(1,{'ntype':'OR'}),
+                 'w1':(2,{'ntype':'AND'}),
+                 'i1':(2,{'ntype':'INV'}),
+                 'i2':(2,{'ntype':'OR'})},
+        edges = [('w1','o'),('i1','w1'),('i2','w1')],
+        output_link= 'o',
+        input_links= [['o','i1'],['i2'],['i2']]
+    )
+]
+
+equal_replaces['OR4'] = [
     # OR = NAND(INV,INV)
     Cell(
         nodes = {'o':(1,{'ntype':'NAND'}),'i1':(2,{'ntype':'INV'}),
@@ -371,8 +476,6 @@ equal_replaces['OR'] = [
         input_links= [['i1'],['i1'],['i1'],['i1']]
     ),
 
-    # a+b = a +a'b
-    # a+b+c =  a + a'(b+c)
     # a+b+c+d = a+a'(b+c+d)
     Cell(
         nodes = {'o':(1,{'ntype':'OR'}),
@@ -381,20 +484,34 @@ equal_replaces['OR'] = [
                  'i2':(2,{'ntype':'OR'})},
         edges = [('w1','o'),('i1','w1'),('i2','w1')],
         output_link= 'o',
-        input_links= [['o','i1'],['i2','w1'],['i2'],['i2']]
+        input_links= [['o','i1'],['i2'],['i2'],['i2']]
     )
 ]
 
-equal_replaces['NOR'] = [
-    # # NOR = AND(INV,INV)
-    # Cell(
-    #     nodes = {'o':(1,{'ntype':'AND'}),
-    #              'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'})},
-    #     edges = [('i1','o'),('i2','o')],
-    #     output_link= 'o',
-    #     input_links= [['i1'],['i2']]
-    # ),
-    # NOR = INV(OR)
+equal_replaces['NOR2'] = [
+
+    Cell(
+        nodes = {'o':(1,{'ntype':'INV'}),
+                 'i1':(2,{'ntype':'OR'})},
+        edges = [('i1','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i1']]
+    )
+]
+
+equal_replaces['NOR3'] = [
+
+    Cell(
+        nodes = {'o':(1,{'ntype':'INV'}),
+                 'i1':(2,{'ntype':'OR'})},
+        edges = [('i1','o')],
+        output_link= 'o',
+        input_links= [['i1'],['i1'],['i1']]
+    )
+]
+
+equal_replaces['NOR4'] = [
+
     Cell(
         nodes = {'o':(1,{'ntype':'INV'}),
                  'i1':(2,{'ntype':'OR'})},
@@ -404,7 +521,7 @@ equal_replaces['NOR'] = [
     )
 ]
 
-equal_replaces['XOR'] = [
+equal_replaces['XOR2'] = [
     # NOR(x1,x2) = OR( AND(x1,INV(x2)), AND(INV(x1),x2) )
     Cell(
         nodes = {'o':(1,{'ntype':'OR'}),
@@ -412,7 +529,7 @@ equal_replaces['XOR'] = [
                  'i1':(4,{'ntype':'INV'}),'i2':(5,{'ntype':'INV'})},
         edges = [('w1','o'),('w2','o'),('i1','w1'),('i2','w2')],
         output_link= 'o',
-        input_links= [['w1','i2'],['i1','w2']]
+        input_links= [['w2','i1'],['w1','i2']]
     ),
     # XOR = INV(XNOR)
     Cell(
@@ -424,7 +541,27 @@ equal_replaces['XOR'] = [
     )
 ]
 
-equal_replaces['XNOR'] = [
+equal_replaces['XOR3'] = [
+    # NOR(x1,x2) = OR( AND(x1,INV(x2)), AND(INV(x1),x2) )
+    Cell(
+        nodes = {'o':(1,{'ntype':'OR'}),
+                 'w1':(2,{'ntype':'AND'}),'w2':(3,{'ntype':'AND'}),'w3':(4,{'ntype':'AND'}),'w4':(5,{'ntype':'AND'}),
+                 'i1':(6,{'ntype':'INV'}),'i2':(7,{'ntype':'INV'}),'i3':(8,{'ntype':'INV'})},
+        edges = [('w1','o'),('w2','o'),('w3','o'),('w4','o'),('i1','w1'),('i1','w2'),('i2','w2'),('i2','w3'),('i3','w1'),('i3','w3')],
+        output_link= 'o',
+        input_links= [['i1','w3','w4'],['i2','w1','w4'],['i3','w2','w4']]
+    ),
+    # XOR = INV(XNOR)
+    Cell(
+        nodes={'o': (1, {'ntype': 'INV'}),
+               'i1': (2, {'ntype': 'XNOR'})},
+        edges=[('i1', 'o')],
+        output_link='o',
+        input_links=[['i1'], ['i1'],['i1']]
+    )
+]
+
+equal_replaces['XNOR2'] = [
     # XNOR = INV(XOR)
     Cell(
         nodes={'o': (1, {'ntype': 'INV'}),
@@ -435,8 +572,19 @@ equal_replaces['XNOR'] = [
     )
 ]
 
+equal_replaces['XNOR3'] = [
+    # XNOR = INV(XOR)
+    Cell(
+        nodes={'o': (1, {'ntype': 'INV'}),
+               'i1': (2, {'ntype': 'XOR'})},
+        edges=[('i1', 'o')],
+        output_link='o',
+        input_links=[['i1'], ['i1'],['i1']]
+    )
+]
+
 # MAJ(a,b,c) = ab+bc+ac
-equal_replaces['MAJ'] = [
+equal_replaces['MAJ3'] = [
     # XNOR = INV(XOR)
     Cell(
         nodes={'o': (1, {'ntype': 'OR'}),
@@ -448,9 +596,29 @@ equal_replaces['MAJ'] = [
     )
 ]
 
-equal_replaces['MUX'] = [
+equal_replaces['MUX3'] = [
+    # mux2 = s'a+sb
     Cell(
-        nodes = {'o'}
+        nodes = {'o':(1,{'ntype':'OR'}),
+                 'w1':(2,{'ntype':'AND'}),'w2':(3,{'ntype':'AND'}),
+                 'i1':(4,{'ntype':'INV'})
+                 },
+        edges= [('w1','o'),('w2','o'),('i1','w1')],
+        output_link = 'o',
+        input_links = [['w1'],['w2'],['i1','w2']]
+    )
+]
+
+equal_replaces['MUX6'] = [
+    # mux4 = s1's0'a + s1's0b + s1s0'c + s1s0d
+    Cell(
+        nodes = {'o':(1,{'ntype':'OR'}),
+                 'w1':(2,{'ntype':'AND'}),'w2':(3,{'ntype':'AND'}),'w3':(4,{'ntype':'AND'}),'w4':(5,{'ntype':'AND'}),
+                 'i1':(6,{'ntype':'INV'}),'i2':(7,{'ntype':'INV'})
+                 },
+        edges= [('w1','o'),('w2','o'),('w3','o'),('w4','o'),('i1','w1'),('i2','w1'),('i1','w2'),('i2','w3')],
+        output_link = 'o',
+        input_links = [['w1'],['w2'],['w3'],['w4'],['i1','w3','w4'],['i2','w2','w4']]
     )
 ]
 
@@ -459,46 +627,7 @@ equal_replaces['MUX'] = [
 # and(and,and) = and
 # or(or,or) =  or
 
-def  main():
-    g = dgl.DGLGraph()
 
-    options = get_options()
-    datapath = os.path.join(options.save_dir,"i{}/implementation".format(options.num_input))
-    for vf in os.listdir(datapath):
-        if not vf.endswith('.v'):
-            continue
-        value = vf.split('.')[0]
-        parser = DcParser('i{}_v{}'.format(options.num_input,value))
-        output_nid,nodes,edges = parser.parse(os.path.join(datapath,vf))
-
-
-        id2type = {}
-        edge2port = {}
-        # nodes = [(1,{'ntype':'PI'}),(2,{'ntype':'PI'}),(3,{'ntype':'AND'}),(4,{'ntype':'PI'}),(5,{'ntype':'PI'}),
-        #          (6,{'ntype':'OR'}),(7,{'ntype':'XOR'}),(8,{'ntype':'PI'}),(9,{'ntype':'PI'}),(10,{'ntype':'XOR'}),
-        #          (11,{'ntype':'NOR'})]
-        # edges = [(1,3,{'port':'A'}),(2,3,{'port':'A'}),(4,6,{'port':'A'}),(5,6,{'port':'A'}),(3,7,{'port':'A'}),
-        #          (6,7,{'port':'A'}),(8,10,{'port':'A'}),(9,10,{'port':'A'}),(7,11,{'port':'A'}),(10,11,{'port':'A'})]
-        g = nx.DiGraph()
-
-        g.add_edges_from(edges)
-        g.add_nodes_from(nodes)
-        nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
-        plt.show()
-        for n in nodes:
-            id2type[n[0]]=n[1]['ntype']
-        for edge in edges:
-            edge2port[(edge[0],edge[1])] = edge[2]['port']
-        print(id2type)
-        print(edge2port)
-
-        num_nodes = g.number_of_nodes()
-        nid = num_nodes + 1
-        for i in range(3):
-            nid = random_replace(g, nid,id2type,edge2port)
-            # print(ntype,replace_cell.nodes,replace_cell.edges)
-        nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
-        plt.show()
 
 
 def remove_adjacent_inv(g,n1,n2):
@@ -518,15 +647,19 @@ def random_replace(g,nid,id2type,edge2port):
     print('rand_nid', rand_nid,'ntype',ntype)
     if ntype == 'PI' or ntype == 'INV':
         return nid
-    sucessors = g.successors(rand_nid)
+    sucessors = list(g.successors(rand_nid))
     predecessors = list(g.predecessors(rand_nid))
-    # print(list(predecessors_g))
-    # predecessors = []
-    # for pre in predecessors_g:
-    #     predecessors.append(pre)
+    if ntype == 'MUX':
+        fanins = {}
+        for predecessor in predecessors:
+            port = edge2port[(predecessor,rand_nid)]
+            fanins[port] = predecessor
+        fanins = sorted(fanins.items())
+        predecessors = []
+        for fanin in fanins:
+            predecessors.append(fanin[1])
+
     num_fanin = len(predecessors)
-    if ntype == 'XOR':
-        num_fanin = 4
 
     g.remove_node(rand_nid)
     replaces = equal_replaces[ntype]
@@ -535,8 +668,6 @@ def random_replace(g,nid,id2type,edge2port):
     nodes = replace_cell.nodes
     new_nodes = {}
     for i, (var, nd) in enumerate(nodes.items()):
-        if i == num_fanin + 1:
-            break
         if var == 'o':
             new_nodes[var] = (rand_nid,nd[1])
         else:
@@ -550,8 +681,6 @@ def random_replace(g,nid,id2type,edge2port):
         id2type[node[0]] = node[1]['ntype']
 
     for edge in replace_cell.edges:
-        if new_nodes.get(edge[0],None) is None or new_nodes.get(edge[1],None) is None:
-            continue
         g.add_edge(new_nodes[edge[0]][0], new_nodes[edge[1]][0])
 
     # link PI/PO
@@ -559,8 +688,7 @@ def random_replace(g,nid,id2type,edge2port):
         g.add_edge(new_nodes[replace_cell.output_link][0], sucessor)
     for j, predecessor in enumerate(predecessors):
         for pi in replace_cell.input_links[j]:
-            if new_nodes.get(pi,None) is not None:
-                g.add_edge(predecessor, new_nodes[pi][0])
+            g.add_edge(predecessor, new_nodes[pi][0])
     print(rand_nid, ntype)
 
     # remove adjacent INVs
@@ -640,3 +768,47 @@ def if_xor(g,nid):
 def is_xor(graph, root_node):
     pass
 
+
+def  main():
+    g = dgl.DGLGraph()
+
+    options = get_options()
+    datapath = os.path.join(options.save_dir,"i{}/implementation".format(options.num_input))
+    for vf in os.listdir(datapath):
+        if not vf.endswith('.v'):
+            continue
+        value = vf.split('.')[0]
+        parser = DcParser('i{}_v{}'.format(options.num_input,value))
+        output_nid,nodes,edges = parser.parse(os.path.join(datapath,vf))
+
+
+        id2type = {}
+        edge2port = {}
+        # nodes = [(1,{'ntype':'PI'}),(2,{'ntype':'PI'}),(3,{'ntype':'AND'}),(4,{'ntype':'PI'}),(5,{'ntype':'PI'}),
+        #          (6,{'ntype':'OR'}),(7,{'ntype':'XOR'}),(8,{'ntype':'PI'}),(9,{'ntype':'PI'}),(10,{'ntype':'XOR'}),
+        #          (11,{'ntype':'NOR'})]
+        # edges = [(1,3,{'port':'A'}),(2,3,{'port':'A'}),(4,6,{'port':'A'}),(5,6,{'port':'A'}),(3,7,{'port':'A'}),
+        #          (6,7,{'port':'A'}),(8,10,{'port':'A'}),(9,10,{'port':'A'}),(7,11,{'port':'A'}),(10,11,{'port':'A'})]
+        g = nx.DiGraph()
+
+        g.add_edges_from(edges)
+        g.add_nodes_from(nodes)
+        nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
+        plt.show()
+        for n in nodes:
+            id2type[n[0]]=n[1]['ntype']
+        for edge in edges:
+            edge2port[(edge[0],edge[1])] = edge[2]['port']
+        print(id2type)
+        print(edge2port)
+
+        num_nodes = g.number_of_nodes()
+        nid = num_nodes + 1
+        for i in range(5):
+            nid = random_replace(g, nid,id2type,edge2port)
+            # print(ntype,replace_cell.nodes,replace_cell.edges)
+        nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
+        plt.show()
+
+if __name__ == "__main__":
+    main()
