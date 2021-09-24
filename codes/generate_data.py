@@ -44,8 +44,8 @@ class DcParser:
         self.top_module = top_module
         self.hadd_name_dict = {}
         self.hadd_name_dict["hadd_s"] = "XOR"
-        self.hadd_name_dict["hadd_c"] = "AND"
-        self.hadd_name_dict["fadd_s"] = "XOR"
+        self.hadd_name_dict["hadd_c"] = "AND2"
+        self.hadd_name_dict["fadd_s"] = "XOR3"
         self.hadd_name_dict["fadd_c"] = "MAJ"
 
 
@@ -118,14 +118,14 @@ class DcParser:
             # we extract the following parts:
             # mcell: cell name in SAED, e.g. AND2X1
             # mtype: cell type with input shape, e.g. AND2
-            # mfunc: cell function, e.g. AND
+            # mfunc: cell function, e.g. AND2
             # mname: module name, e.g. ALU_DP_OP_J23_U233
             # mcomp: module component, e.g. ALU_DP_OP_J23
             mcell = instance.module  # e.g. AND2X1
             mname = instance.name
             ports = instance.portlist
             mtype = mcell[0: mcell.rfind("X")]  # e.g. AND2
-            mfunc = mtype  # e.g. AND
+            mfunc = mtype  # e.g. AND2
 
             # pos = re.search("\d", mtype)
             # if pos:
@@ -172,8 +172,8 @@ class DcParser:
                 if 'AO' in ntype or 'OA' in ntype:
 
                     num_inputs = ntype[re.search('\d', ntype).start():]
-                    ntype1 = 'AND' if 'AO' in ntype else 'OR'
-                    ntype2 = 'OR' if 'AO' in ntype else 'AND'
+                    ntype1 = 'AND2' if 'AO' in ntype else 'OR2'
+                    ntype2 = 'OR{}'.format(len(num_input)) if 'AO' in ntype else 'AND{}'.format(len(num_input))
                     if 'I' in ntype:
                         output_name = '{}_i'.format(fo.argname)
                         nodes.append((output_name, {"type": ntype2}))
@@ -233,7 +233,7 @@ class DcParser:
                 else:
                     pos = re.search("\d", mtype)
                     if pos:
-                        ntype = ntype[: pos.start()]
+                        ntype = ntype[: pos.start()+1]
 
                     inputs[fo.argname] = inputs.get(fo.argname, [])
                     for fi in fanins:
@@ -583,7 +583,7 @@ equal_replaces['XNOR3'] = [
 ]
 
 # MAJ(a,b,c) = ab+bc+ac
-equal_replaces['MAJ3'] = [
+equal_replaces['MAJ'] = [
     # XNOR = INV(XOR)
     Cell(
         nodes={'o': (1, {'ntype': 'OR'}),
@@ -595,7 +595,7 @@ equal_replaces['MAJ3'] = [
     )
 ]
 
-equal_replaces['MUX3'] = [
+equal_replaces['MUX2'] = [
     # mux2 = s'a+sb
     Cell(
         nodes = {'o':(1,{'ntype':'OR'}),
@@ -608,7 +608,7 @@ equal_replaces['MUX3'] = [
     )
 ]
 
-equal_replaces['MUX6'] = [
+equal_replaces['MUX4'] = [
     # mux4 = s1's0'a + s1's0b + s1s0'c + s1s0d
     Cell(
         nodes = {'o':(1,{'ntype':'OR'}),
@@ -661,7 +661,7 @@ def random_replace(g,nid,id2type,edge2port):
     num_fanin = len(predecessors)
 
     g.remove_node(rand_nid)
-    replaces = equal_replaces['{}{}'.format(ntype,num_fanin)]
+    replaces = equal_replaces[ntype]
     rand_index = random.randint(0, len(replaces) - 1)
     replace_cell = replaces[rand_index]
     nodes = replace_cell.nodes
