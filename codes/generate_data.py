@@ -631,7 +631,7 @@ equal_replaces['MUX4'] = [
 
 
 
-def remove_adjacent_inv(g,n1,n2,edge2port,remain):
+def remove_adjacent_inv(g,n1,n2,edge2port):
     sucs = g.successors(n2)
     pre =None
     for item in g.predecessors(n1):
