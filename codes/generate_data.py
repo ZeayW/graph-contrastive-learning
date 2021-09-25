@@ -726,6 +726,7 @@ def random_replace(g,nid,id2type,edge2port):
             edge2port[new_edge].append(pi[1])
     print('nodes:', list(g.nodes.items()))
     print('edges:', edge2port)
+    print(g.edges)
     # remove adjacent INVs
     if new_nodes[replace_cell.output_link][1]['ntype'] == 'INV':
         flag_remove = False
