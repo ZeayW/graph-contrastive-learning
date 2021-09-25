@@ -688,7 +688,8 @@ def random_replace(g,nid,id2type,edge2port):
 
 
     g.remove_node(rand_nid)
-    edge2port[rand_nid] = []
+    for predecessor in predecessors:
+        edge2port.pop((predecessor,rand_nid))
     replaces = equal_replaces[ntype]
     rand_index = random.randint(0, len(replaces) - 1)
     replace_cell = replaces[rand_index]
