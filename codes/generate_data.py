@@ -688,6 +688,7 @@ def random_replace(g,nid,id2type,edge2port):
 
 
     g.remove_node(rand_nid)
+    edge2port[rand_nid] = []
     replaces = equal_replaces[ntype]
     rand_index = random.randint(0, len(replaces) - 1)
     replace_cell = replaces[rand_index]
@@ -715,6 +716,7 @@ def random_replace(g,nid,id2type,edge2port):
         new_edge = (new_nodes[replace_cell.output_link][0], sucessor)
         g.add_edge(new_edge[0],new_edge[1])
         edge2port[new_edge] = edge2port[(rand_nid,sucessor)]
+
     for port,fanin in fanins.items():
         for pi in replace_cell.input_links[port]:
             new_edge = (fanin, new_nodes[pi[0]][0])
