@@ -631,13 +631,14 @@ equal_replaces['MUX4'] = [
 
 
 
-def remove_adjacent_inv(g,n1,n2,edge2port):
+def remove_adjacent_inv(g,n1,n2,edge2port,remain):
     sucs = g.successors(n2)
     pre =None
     for item in g.predecessors(n1):
         pre = item
-    g.remove_node(n1)
+
     g.remove_node(n2)
+
     for suc in sucs:
         new_edge = (pre, suc)
         g.add_edge(new_edge[0], new_edge[1])
@@ -724,16 +725,24 @@ def random_replace(g,nid,id2type,edge2port):
         if len(sucessors)!=1:
             print(sucessors)
         assert len(sucessors)==1
+        flag_remove = False
         for sucessor in sucessors:
             if id2type[sucessor] == 'INV':
+                flag_remove = True
                 print('\t\tsuc remove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
                 remove_adjacent_inv(g, new_nodes[replace_cell.output_link][0], sucessor,edge2port)
+        if flag_remove:
+            g.remove_node(new_nodes[replace_cell.output_link][0])
     for port,fanin in fanins.items():
         if id2type[fanin] == 'INV':
-            pi = replace_cell.input_links[port][0][0]
-            if new_nodes.get(pi,None) is not None and new_nodes[pi][1]['ntype'] == 'INV':
-                print('\t\tpre remove:({},{})'.format(fanin, new_nodes[pi][0]))
-                remove_adjacent_inv(g, fanin, new_nodes[pi][0],edge2port)
+            flag_remove = False
+            for node,p in replace_cell.input_links[port]:
+                if new_nodes.get(node,None) is not None and new_nodes[node][1]['ntype'] == 'INV':
+                    flag_remove = True
+                    print('\t\tpre remove:({},{})'.format(fanin, new_nodes[node][0]))
+                    remove_adjacent_inv(g, fanin, new_nodes[node][0],edge2port)
+            if flag_remove:
+                g.remove_node(fanin)
     print('nodes:', list(g.nodes.items()))
     print('edges:', edge2port)
     return nid
