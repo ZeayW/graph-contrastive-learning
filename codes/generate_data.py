@@ -325,7 +325,7 @@ equal_replaces['AND2'] = [
                  'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'})},
         edges = [('i1','o','A1'),('i2','o','A2')],
         output_link= 'o',
-        input_links= {'A1':[('i1','A')], 'A2':[('i1','A')]}
+        input_links= {'A1':[('i1','A')], 'A2':[('i2','A')]}
     ),
     # AND = INV(NAND)
     Cell(
@@ -343,7 +343,7 @@ equal_replaces['AND3'] = [
                  'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'})},
         edges =  [('i1','o','A1'),('i2','o','A2'),('i3','o','A3')],
         output_link= 'o',
-        input_links= {'A1':[('i1','A')], 'A2':[('i1','A')],'A3':[('i1','A')]}
+        input_links= {'A1':[('i1','A')], 'A2':[('i2','A')],'A3':[('i3','A')]}
     ),
     # AND = INV(NAND)
     Cell(
@@ -361,7 +361,7 @@ equal_replaces['AND4'] = [
                  'i1':(2,{'ntype':'INV'}),'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'}),'i4':(5,{'ntype':'INV'})},
         edges = [('i1','o','A1'),('i2','o','A2'),('i3','o','A3'),('i4','o','A4')],
         output_link= 'o',
-        input_links= {'A1':[('i1','A')], 'A2':[('i1','A')],'A3':[('i1','A')],'A4':[('i1','A')]}
+        input_links= {'A1':[('i1','A')], 'A2':[('i2','A')],'A3':[('i3','A')],'A4':[('i4','A')]}
     ),
     # AND = INV(NAND)
     Cell(
@@ -408,7 +408,7 @@ equal_replaces['OR2'] = [
                  'i2':(3,{'ntype':'INV'})},
         edges = [('i1','o','A1'),('i2','o','A2')],
         output_link= 'o',
-        input_links= {'A1':[('i1','A')], 'A2':[('i1','A')]},
+        input_links= {'A1':[('i1','A')], 'A2':[('i2','A')]},
     ),
     # OR = INV(NOR)
     Cell(
@@ -427,7 +427,7 @@ equal_replaces['OR2'] = [
                  },
         edges = [('w1','o','A2'),('i1','w1','A1')],
         output_link= 'o',
-        input_links= {'A1':[('o','A1'),('i1','A1')],'A2':[('w1','A2')]}
+        input_links= {'A1':[('o','A1'),('i1','A')],'A2':[('w1','A2')]}
     )
 ]
 
@@ -438,7 +438,7 @@ equal_replaces['OR3'] = [
                  'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'})},
         edges = [('i1','o','A1'),('i2','o','A2'),('i3','o','A3')],
         output_link= 'o',
-        input_links={'A1':[('i1','A')], 'A2':[('i1','A')],'A3':[('i1','A')]},
+        input_links={'A1':[('i1','A')], 'A2':[('i2','A')],'A3':[('i3','A')]},
     ),
     # OR = INV(NOR)
     Cell(
@@ -468,7 +468,7 @@ equal_replaces['OR4'] = [
                  'i2':(3,{'ntype':'INV'}),'i3':(4,{'ntype':'INV'}),'i4':(5,{'ntype':'INV'})},
         edges = [('i1','o','A1'),('i2','o','A2'),('i3','o','A3'),('i4','o','A4')],
         output_link= 'o',
-        input_links=  {'A1':[('i1','A')], 'A2':[('i1','A')],'A3':[('i1','A')],'A4':[('i1','A')]},
+        input_links=  {'A1':[('i1','A')], 'A2':[('i2','A')],'A3':[('i3','A')],'A4':[('i4','A')]},
     ),
     # OR = INV(NOR)
     Cell(
@@ -545,13 +545,14 @@ equal_replaces['XOR2'] = [
 ]
 
 equal_replaces['XOR3'] = [
+    # xor3 = a'b'c + a'bc' + ab'c' + abc
     Cell(
         nodes = {'o':(1,{'ntype':'OR4'}),
                  'w1':(2,{'ntype':'AND3'}),'w2':(3,{'ntype':'AND3'}),'w3':(4,{'ntype':'AND3'}),'w4':(5,{'ntype':'AND3'}),
                  'i1':(6,{'ntype':'INV'}),'i2':(7,{'ntype':'INV'}),'i3':(8,{'ntype':'INV'})},
-        edges = [('w1','o','A1'),('w2','o','A2'),('w3','o','A3'),('w4','o','A4'),('i1','w1','A1'),('i1','w2','A1'),('i2','w2','A2'),('i2','w3','A2'),('i3','w1','A3'),('i3','w3','A3')],
+        edges = [('w1','o','A1'),('w2','o','A2'),('w3','o','A3'),('w4','o','A4'),('i1','w1','A1'),('i1','w2','A1'),('i2','w1','A2'),('i2','w3','A2'),('i3','w2','A3'),('i3','w3','A3')],
         output_link= 'o',
-        input_links= {'A1':[('i1','A'),('w3','A1'),('w4','A1')],'A2':[('i2','A'),('w1','A2'),('w4','A2')],'A3':[('i3','A'),('w2','A3'),('w4','A3')]}
+        input_links= {'A1':[('i1','A'),('w3','A1'),('w4','A1')],'A2':[('i2','A'),('w2','A2'),('w4','A2')],'A3':[('i3','A'),('w1','A3'),('w4','A3')]}
     ),
     # XOR = INV(XNOR)
     Cell(
@@ -593,7 +594,7 @@ equal_replaces['MAJ'] = [
                },
         edges=[('i1', 'o','A1'),('i2', 'o','A2'),('i3', 'o','A3')],
         output_link='o',
-        input_links={'A1':[('i1','A1'),('i3','A3')], 'A2':[('i1','A2'),('i2','A1')],'A3':[('i2','A2'),('i3','A2')]}
+        input_links={'A1':[('i1','A1'),('i3','A1')], 'A2':[('i1','A2'),('i2','A1')],'A3':[('i2','A2'),('i3','A2')]}
     )
 ]
 
