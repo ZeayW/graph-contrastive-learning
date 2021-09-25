@@ -722,7 +722,7 @@ def random_replace(g,nid,id2type,edge2port):
     # remove adjacent INVs
     if new_nodes[replace_cell.output_link][1]['ntype'] == 'INV':
         if len(sucessors)!=1:
-            print(sucessor)
+            print(sucessors)
         assert len(sucessors)==1
         for sucessor in sucessors:
             if id2type[sucessor] == 'INV':
