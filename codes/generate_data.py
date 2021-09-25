@@ -730,27 +730,19 @@ def random_replace(g,nid,id2type,edge2port):
     print(g.edges)
     # remove adjacent INVs
     if new_nodes[replace_cell.output_link][1]['ntype'] == 'INV':
-        flag_remove = False
         for sucessor in sucessors:
             if id2type[sucessor] == 'INV':
-                flag_remove = True
                 print('\t\tsuc remove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
                 remove_adjacent_inv(g, new_nodes[replace_cell.output_link][0], sucessor,edge2port)
-            else:
-                flag_remove = False
-        if flag_remove:
+        if len(list(g.successors(new_nodes[replace_cell.output_link][0])))==0:
             g.remove_node(new_nodes[replace_cell.output_link][0])
     for port,fanin in fanins.items():
         if id2type[fanin] == 'INV':
-            flag_remove = False
             for node,p in replace_cell.input_links[port]:
                 if new_nodes[node][1]['ntype'] == 'INV':
-                    flag_remove = True
                     print('\t\tpre remove:({},{})'.format(fanin, new_nodes[node][0]))
                     remove_adjacent_inv(g, fanin, new_nodes[node][0],edge2port)
-                else:
-                    flag_remove = False
-            if flag_remove:
+            if len(list(g.successors(fanin)))==0:
                 g.remove_node(fanin)
 
     return nid
