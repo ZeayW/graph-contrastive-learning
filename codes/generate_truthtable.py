@@ -104,7 +104,7 @@ if not os.path.exists(save_path):
 #     with open(os.path.join(save_path,'sampled.pkl'),'rb') as f:
 #         sampled = pickle.load(f)
 while current_num<num_sample:
-    i = random.randint(1,range(1,pow(2,pow(2,num_input))-1))
+    i = random.randint(1,pow(2,pow(2,num_input))-1)
     if visited.get(i,False):
         continue
     current_num += 1
