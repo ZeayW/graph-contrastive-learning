@@ -87,11 +87,11 @@ if get_options().num_input == 2:
 elif get_options().num_input == 3:
     num_sample = 50
 elif get_options().num_input == 4:
-    num_sample = 256
+    num_sample = 512
 elif get_options().num_input in (5,6):
-    num_sample = 1024
-elif get_options().num_input in (7,8):
     num_sample = 2048
+elif get_options().num_input in (7,8):
+    num_sample = 4096
 elif get_options().num_input >=8:
     num_sample = 4096
 
