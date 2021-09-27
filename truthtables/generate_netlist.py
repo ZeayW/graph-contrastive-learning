@@ -18,4 +18,4 @@ for vf in os.listdir(data_dir):
 
     with open(tcl_file,'w') as f:
         f.writelines(lines)
-    os.system('dc_shell-xg-t -f dc.tcl')
+    os.system('dc_shell-xg-t -f dc4.tcl')
