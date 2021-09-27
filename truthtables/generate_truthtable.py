@@ -1,5 +1,7 @@
 from generate_options import get_options
 import os
+import random
+import pickle
 # module tb1(
 # input [1:0] I,
 # output reg O
@@ -79,9 +81,33 @@ visited = {}
 equal_arrays = get_equal_arrays(num_input)
 #print(equal_arrays)
 
-for i in range(1,pow(2,pow(2,num_input))-1):
+num_sample = None
+if get_options().num_input == 2:
+    num_sample = 10
+elif get_options().num_input == 3:
+    num_sample = 50
+elif get_options().num_input == 4:
+    num_sample = 256
+elif get_options().num_input in (5,6):
+    num_sample = 1024
+elif get_options().num_input in (7,8):
+    num_sample = 2048
+elif get_options().num_input >=8:
+    num_sample = 4096
+
+current_num = 0
+# sampled = []
+save_path = os.path.join(save_dir,'i{}'.format(num_input))
+if not os.path.exists(save_path):
+    os.makedirs(save_path)
+# if os.path.exists(os.path.join(save_path,'sampled.pkl')):
+#     with open(os.path.join(save_path,'sampled.pkl'),'rb') as f:
+#         sampled = pickle.load(f)
+while current_num<num_sample:
+    i = random.randint(1,range(1,pow(2,pow(2,num_input))-1))
     if visited.get(i,False):
         continue
+    current_num += 1
     visited[i] = True
     truthValue = bin(i)[2:]
     while len(truthValue)<pow(2,num_input):
@@ -101,9 +127,7 @@ for i in range(1,pow(2,pow(2,num_input))-1):
     visited[pow(2,pow(2,num_input))-1-i] = True
 
     print(truthValue,len(truthValue))
-    save_path = os.path.join(save_dir,'i{}'.format(num_input))
-    if not os.path.exists(save_path):
-        os.makedirs(save_path)
+
     with open(os.path.join(save_path,'{}.v'.format(i)),'w') as f:
         f.write('module i{}_v{}(\n'.format(num_input,i))
         f.write('input [{}:0] I,\n'.format(num_input-1))
@@ -111,6 +135,6 @@ for i in range(1,pow(2,pow(2,num_input))-1):
         f.write(');\n')
         f.write('always@(*)\n\tcase(I)\n')
         for j in range(pow(2,num_input)):
-            f.write("\t\t2'b{}: O = {};\n".format(bin(j)[2:],truthValue[j]))
+            f.write("\t\t{}'b{}: O = {};\n".format(num_input,bin(j)[2:],truthValue[j]))
         f.write('\tendcase\n')
         f.write('endmodule\n')
