@@ -126,7 +126,7 @@ while current_num<num_sample:
     # deal with complementary
     visited[pow(2,pow(2,num_input))-1-i] = True
 
-    print(truthValue,len(truthValue))
+    #print(truthValue,len(truthValue))
 
     with open(os.path.join(save_path,'{}.v'.format(i)),'w') as f:
         f.write('module i{}_v{}(\n'.format(num_input,i))
