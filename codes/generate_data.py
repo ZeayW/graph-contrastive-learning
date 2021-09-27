@@ -428,7 +428,19 @@ equal_replaces['OR2'] = [
         edges = [('w1','o','A2'),('i1','w1','A1')],
         output_link= 'o',
         input_links= {'A1':[('o','A1'),('i1','A')],'A2':[('w1','A2')]}
+    ),
+
+    # a+b = a+a'b = a(b+b') + a'b = ab + (ab'+a'b)
+    #     = ab + xor(a,b)
+    Cell(
+        nodes = {'o':(1,{'ntype':'OR2'}),
+                 'w1':(2,{'ntype':'AND2'}),'w2':(3,{'ntype':'XOR2'}),
+                 },
+        edges = [('w1','o','A1'),('w2','o','A2')],
+        output_link= 'o',
+        input_links= {'A1':[('w1','A1'),('w2','A1')],'A2':[('w1','A2'),('w2','A2')]}
     )
+
 ]
 
 equal_replaces['OR3'] = [
@@ -458,6 +470,18 @@ equal_replaces['OR3'] = [
         edges = [('w1','o','A2'),('i1','w1','A1'),('i2','w1','A2')],
         output_link= 'o',
         input_links= {'A1':[('o','A1'),('i1','A')],'A2':[('i2','A1')],'A3':[('i2','A2')]}
+    ),
+
+    # a+b+c = a +a'(b+c) = ab + xor(a,b) +a'c
+    Cell(
+        nodes = {
+            'o':(1,{'ntype':'OR3'}),
+            'w1':(2,{'ntype':'AND2'}),'w2':(3,{'ntype':'XOR2'}),'w3':(4,{'ntype':'AND2'}),
+            'i1':(5,{'ntype':'INV'})
+        },
+        edges=[('w1','o','A1'),('w2','o','A2'),('w3','o','A3'),('i1','w3','A1')],
+        output_link='o',
+        input_links= {'A1':[('w1','A1'),('w2','A1'),('i1','A')],'A2':[('w1','A2'),('w2','A2')],'A3':[('w3','A2')]}
     )
 ]
 
@@ -621,6 +645,17 @@ equal_replaces['MUX4'] = [
         edges= [('w1','o','A1'),('w2','o','A2'),('w3','o','A3'),('w4','o','A4'),('i1','w1','A1'),('i2','w1','A2'),('i1','w2','A1'),('i2','w3','A2')],
         output_link = 'o',
         input_links = {'A1':[('w1','A3')],'A2':[('w2','A3')],'A3':[('w3','A3')],'A4':[('w4','A3')],'S1':[('i1','A'),('w3','A1'),('w4','A1')],'S0':[('i2','A'),('w2','A2'),('w4','A2')]}
+    ),
+    # mux4 = s1'mux(a,b,s0)+s1mux(c,d,s0)
+    Cell(
+        nodes = {
+          'o':(1,{'ntype':'OR2'}),
+          'w1':(2,{'ntype':'AND2'}),'w2':(3,{'ntype':'AND2'}),
+          'i1':(4,{'ntype':'MUX2'}),'i2':(5,{'ntype':'MUX2'}),'i3':(6,{'ntype':'INV'}),
+        },
+        edges=[('w1','o','A1'),('w2','o','A2'),('i1','w1','A2'),('i2','w2','A2'),('i3','w1','A1')],
+        output_link= 'o',
+        input_links= {'A1':[('i1','A1')],'A2':[('i1','A2')],'A3':[('i2','A1')],'A4':[('i2','A2')],'S1':[('i3','A'),('w2','A1')],'S0':[('i1','S0'),('i2','S0')]}
     )
 ]
 
@@ -749,6 +784,9 @@ def random_replace(g,nid,id2type,edge2port):
 
 # and(and,and) = and
 #
+
+# a + bc = (a+b)(a+c)
+# ab+a'c+bc = ab+a'c
 def simplify(g,n,id2type,edge2port):
     if id2type[n] == 'OR':
         predecessors = list(g.predecessors(n))
