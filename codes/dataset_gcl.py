@@ -28,7 +28,7 @@ def parse_single_file(nodes,edges,output_node):
     node2id = {}
     id2node = {}
     output_nid = None
-    ntype = th.zeros((len(node2id), len(label2id.keys())), dtype=th.float)
+    ntype = th.zeros((len(nodes), len(label2id.keys())), dtype=th.float)
     for n in nodes:
         if node2id.get(n[0]) is None:
             node2id[n[0]] = nid
