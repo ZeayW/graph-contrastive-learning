@@ -682,7 +682,7 @@ def remove_adjacent_inv(g,n1,n2,edge2port):
         for port in edge2port[(n2,suc)]:
             edge2port[new_edge].append(port)
 
-def random_replace(g,nid,id2type,edge2port):
+def random_replace(g,nid,id2type,edge2port,output_nid):
     rand_idx = random.randint(0, g.number_of_nodes() - 1)
     rand_nid = list(g.nodes.keys())[rand_idx]
     ntype = id2type[rand_nid]
@@ -756,7 +756,7 @@ def random_replace(g,nid,id2type,edge2port):
             g.add_edge(new_edge[0],new_edge[1])
             edge2port[new_edge] = edge2port.get(new_edge, [])
             edge2port[new_edge].append(pi[1])
-    print('modified nodes:', list(g.nodes.items()))
+    #print('modified nodes:', list(g.nodes.items()))
     #print('edges:', edge2port)
     #print(g.edges)
     num_remove = 0
@@ -767,7 +767,8 @@ def random_replace(g,nid,id2type,edge2port):
                 num_remove += 1
                 #print('\t\tsuc remove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
                 remove_adjacent_inv(g, new_nodes[replace_cell.output_link][0], sucessor,edge2port)
-        if len(list(g.successors(new_nodes[replace_cell.output_link][0])))==0:
+        if len(list(g.successors(new_nodes[replace_cell.output_link][0])))==0 \
+                and new_nodes[replace_cell.output_link][0]!=output_nid:
             g.remove_node(new_nodes[replace_cell.output_link][0])
     for port,fanin in fanins.items():
         if id2type[fanin] == 'INV':
@@ -776,7 +777,7 @@ def random_replace(g,nid,id2type,edge2port):
                     num_remove += 1
                     #print('\t\tpre remove:({},{})'.format(fanin, new_nodes[node][0]))
                     remove_adjacent_inv(g, fanin, new_nodes[node][0],edge2port)
-            if len(list(g.successors(fanin)))==0:
+            if len(list(g.successors(fanin)))==0 and fanin!=output_nid:
                 g.remove_node(fanin)
     print('\treplaced_node', ntype,"removed inv:",num_remove)
     return (nid,True)
@@ -847,7 +848,7 @@ def if_xor(g,nid):
 def is_xor(graph, root_node):
     pass
 
-def transform(nodes,edges,options):
+def transform(nodes,edges,output_nid,options):
     if options.num_input == 2:
         num2replace = 1
     elif options.num_input == 3:
@@ -881,7 +882,7 @@ def transform(nodes,edges,options):
     num_nodes = g.number_of_nodes()
     nid = num_nodes + 1
     while num_replaced < num2replace:
-        nid, flag_replace = random_replace(g, nid, id2type, edge2port)
+        nid, flag_replace = random_replace(g, nid, id2type, edge2port,output_nid)
         if flag_replace:
             num_replaced += 1
         # print(ntype,replace_cell.nodes,replace_cell.edges)
@@ -909,7 +910,7 @@ def  main():
             print('empty...')
             continue
         for i in range(2):
-            new_nodes,new_edges = transform(nodes.copy(),edges.copy(),options)
+            new_nodes,new_edges = transform(nodes.copy(),edges.copy(),output_nid,options)
 
 
 if __name__ == "__main__":
