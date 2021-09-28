@@ -6,7 +6,7 @@ from generate_options import get_options
 os.system('source /opt2/synopsys/setup.sh')
 options = get_options()
 data_dir = os.path.join(options.save_dir,'i{}'.format(options.num_input))
-tcl_file ='dc6.tcl'
+tcl_file ='dc7.tcl'
 for vf in os.listdir(data_dir):
     value = vf.split('.')[0]
     if os.path.exists(os.path.join(data_dir,'implementation/truthtable_i{}_v{}_d5.00.v').format(options.num_input,value)):
