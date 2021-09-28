@@ -765,8 +765,9 @@ def random_replace(g,nid,id2type,edge2port,output_nid):
         for sucessor in sucessors:
             if id2type[sucessor] == 'INV':
                 num_remove += 1
-                if len(g.successors(sucessor)) == 0:
+                if len(list(g.successors(sucessor))) == 0:
                     output_nid = list(g.predecessors(new_nodes[replace_cell.output_link][0]))[0]
+                    print('****************change output********************', output_nid)
                 #print('\t\tsuc remove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
                 remove_adjacent_inv(g, new_nodes[replace_cell.output_link][0], sucessor,edge2port)
         if len(list(g.successors(new_nodes[replace_cell.output_link][0])))==0 \
