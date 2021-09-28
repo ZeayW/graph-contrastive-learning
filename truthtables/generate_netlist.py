@@ -8,12 +8,15 @@ options = get_options()
 data_dir = os.path.join(options.save_dir,'i{}'.format(options.num_input))
 tcl_file ='dc7.tcl'
 for vf in os.listdir(data_dir):
+    value = vf.split('.')[0]
+    if os.path.exists(os.path.join(data_dir,'implementation/truthtable_i{}_v{}_d5.00.v').format(options.num_input,value)):
+        continue
     if not vf.endswith('.v') :
         continue
     with open(tcl_file,'r') as f:
         lines = f.readlines()
     lines[2] = "set numInput \"{}\"\n".format(options.num_input)
-    lines[3] = "set value \"{}\"\n".format(vf.split('.')[0])
+    lines[3] = "set value \"{}\"\n".format(value)
     #print(lines)
 
     with open(tcl_file,'w') as f:
