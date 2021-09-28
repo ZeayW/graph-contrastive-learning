@@ -687,7 +687,6 @@ def random_replace(g,nid,id2type,edge2port):
     rand_nid = list(g.nodes.keys())[rand_idx]
     ntype = id2type[rand_nid]
     if ntype == 'PI' or ntype == 'INV' :
-        print('aaa')
         return (nid,False)
     sucessors = list(g.successors(rand_nid))
     predecessors = list(g.predecessors(rand_nid))
@@ -865,9 +864,9 @@ def  main():
         num2replace = 5
     else:
         num2replace = 6
-    num_replaced = 0
     datapath = os.path.join(options.save_dir,"i{}/implementation".format(options.num_input))
     for vf in os.listdir(datapath):
+        num_replaced = 0
         if not vf.endswith('.v'):
             continue
         print('\ngenerate positive samples for {}'.format(vf))
