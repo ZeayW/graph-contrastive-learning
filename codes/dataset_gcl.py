@@ -59,7 +59,6 @@ def parse_single_file(nodes,edges,output_node):
     #assert len(PIs)==get_options().num_input
     #print(graph.nodes())
     depth = cal_depth(graph,PIs,output_nid)
-    exit()
     return graph,output_nid,depth
 
     
@@ -140,7 +139,7 @@ def cal_depth(g,PIs,output_nid):
                     max_path_length = len(p)
                     path = p
         print('src:{},dst:{},path:{}'.format(src,dst,path))
-        depth = max(depth,max_path_length)
+        depth = max(depth,max_path_length-1)
 
     return depth
 
