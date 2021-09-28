@@ -56,7 +56,7 @@ def parse_single_file(nodes,edges,output_node):
         .numpy().tolist()
     #if len(PIs)!=get_options().num_input:
     print(PIs,output_nid)
-    assert len(PIs)==get_options().num_input
+    #assert len(PIs)==get_options().num_input
     #print(graph.nodes())
     depth = cal_depth(graph,PIs,output_nid)
 
