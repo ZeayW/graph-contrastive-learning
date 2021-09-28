@@ -12,7 +12,7 @@ import numpy as np
 import os
 import random
 from util.single_verilog_parser import *
-from generate_options import get_options
+from generate_options import get_options_g
 from torch.nn.parameter import Parameter
 from codes.generate_data import *
 
@@ -72,7 +72,7 @@ class Dataset_gcl(DGLDataset):
         self.graphs = []
         self.len = 0
         max_depth = 0
-        options = get_options()
+        options = get_options_g()
         start_nid = 0
         self.POs = {}
         for vf in os.listdir(self.datapath):
