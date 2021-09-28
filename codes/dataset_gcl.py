@@ -53,7 +53,8 @@ def parse_single_file(nodes,edges,output_node):
         (th.tensor(src_nodes), th.tensor(dst_nodes)), num_nodes=len(node2id)
     )
     graph.ndata["ntype"] = ntype
-    PIs = th.tensor(range(graph.number_of_nodes()))[th.argmax(ntype,dim=1).squeeze(-1)==15].numpy().tolist()
+    PIs = th.tensor(range(graph.number_of_nodes()))[th.argmax(ntype,dim=1).squeeze(-1)==15]\
+        .numpy().tolist()
     print('PIs:',PIs,'PO:',output_nid)
     print(graph.nodes())
     depth = cal_depth(graph,PIs,output_nid)
@@ -125,7 +126,6 @@ def cal_depth(g,PIs,output_nid):
     depth = 0
     dst = output_nid
     for src in PIs:
-        print(type(src))
         #print('src',id2nodes[src])
         max_path_length = 0
         #for dst in PIs[2*i:2*i+2]:
