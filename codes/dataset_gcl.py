@@ -125,6 +125,8 @@ def cal_depth(g,PIs,output_nid):
     depth = 0
     print(g.has_node(9))
     print(nx.has_path(g,10,9))
+    print(nx.shortest_path(g,10,9))
+    print(nx.all_simple_paths(g,10,9))
     dst = output_nid
     for src in PIs:
         #print('src',id2nodes[src])
