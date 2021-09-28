@@ -61,7 +61,7 @@ def parse_single_file(nodes,edges,output_node):
 
     
 class Dataset_gcl(DGLDataset):
-    def __init__(self,width,datapath):
+    def __init__(self,datapath):
         self.datapath = datapath
         super(Dataset_gcl, self).__init__(name="dac")
         # self.alpha = Parameter(th.tensor([1]))
