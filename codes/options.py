@@ -72,6 +72,7 @@ def get_options(args=None):
     parser.add_argument('--sub',action='store_true')
     parser.add_argument('--muldiv',action='store_true')
     parser.add_argument('--add', type=int,default=0)
+    parser.add_argument('--num_input', type=int, default=3)
     #parser.add_argument('--in')
     options = parser.parse_args(args)
 
