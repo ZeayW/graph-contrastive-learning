@@ -847,70 +847,67 @@ def if_xor(g,nid):
 def is_xor(graph, root_node):
     pass
 
-
-def  main():
-
-    options = get_options()
+def transform(nodes,edges,options):
     if options.num_input == 2:
         num2replace = 1
     elif options.num_input == 3:
         num2replace = 2
-    elif options.num_input ==4:
+    elif options.num_input == 4:
         num2replace = 3
-    elif options.num_input in (5,6):
+    elif options.num_input in (5, 6):
         num2replace = 4
-    elif options.num_input in (6,7):
+    elif options.num_input in (6, 7):
         num2replace = 5
     else:
         num2replace = 6
+    num_replaced = 0
+    print('original num_nodes:{}, num_edges:{}'.format(len(nodes), len(edges)))
+    # print("original nodes:", nodes)
+    # print("original edges:", edges)
+    id2type = {}
+    edge2port = {}
+    g = nx.DiGraph()
+    g.add_edges_from(edges)
+    g.add_nodes_from(nodes)
+
+    for n in nodes:
+        id2type[n[0]] = n[1]['type']
+    for edge in edges:
+        edge2port[(edge[0], edge[1])] = edge2port.get((edge[0], edge[1]), [])
+        edge2port[(edge[0], edge[1])].append(edge[2]['port'])
+    # print(id2type)
+    # print(edge2port)
+
+    num_nodes = g.number_of_nodes()
+    nid = num_nodes + 1
+    while num_replaced < num2replace:
+        nid, flag_replace = random_replace(g, nid, id2type, edge2port)
+        if flag_replace:
+            num_replaced += 1
+        # print(ntype,replace_cell.nodes,replace_cell.edges)
+    print('modified nodes:',list(g.nodes.items()))
+    print('modified edges:',list(g.edges.items()))
+    print('modified num_nodes:{}, num_edges:{}'.format(g.number_of_nodes(), g.number_of_edges()))
+
+
+def  main():
+
+    options = get_options()
     datapath = os.path.join(options.save_dir,"i{}/implementation".format(options.num_input))
     for vf in os.listdir(datapath):
-        num_replaced = 0
         if not vf.endswith('.v'):
             continue
         print('\ngenerate positive samples for {}'.format(vf))
         value = vf.split('_')[2][1:]
         parser = DcParser('i{}_v{}'.format(options.num_input,value))
         output_nid,nodes,edges = parser.parse(os.path.join(datapath,vf))
+
         if len(nodes)==0:
             print('empty...')
             continue
-        print('original num_nodes:{}, num_edges:{}'.format(len(nodes),len(edges)))
-        # print("original nodes:", nodes)
-        # print("original edges:", edges)
-        id2type = {}
-        edge2port = {}
-        # nodes = [(1,{'ntype':'PI'}),(2,{'ntype':'PI'}),(3,{'ntype':'AND'}),(4,{'ntype':'PI'}),(5,{'ntype':'PI'}),
-        #          (6,{'ntype':'OR'}),(7,{'ntype':'XOR'}),(8,{'ntype':'PI'}),(9,{'ntype':'PI'}),(10,{'ntype':'XOR'}),
-        #          (11,{'ntype':'NOR'})]
-        # edges = [(1,3,{'port':'A'}),(2,3,{'port':'A'}),(4,6,{'port':'A'}),(5,6,{'port':'A'}),(3,7,{'port':'A'}),
-        #          (6,7,{'port':'A'}),(8,10,{'port':'A'}),(9,10,{'port':'A'}),(7,11,{'port':'A'}),(10,11,{'port':'A'})]
-        g = nx.DiGraph()
+        for i in range(2):
+            new_nodes,new_edges = transform(nodes.copy(),edges.copy(),options)
 
-        g.add_edges_from(edges)
-        g.add_nodes_from(nodes)
-        # nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
-        # plt.show()
-        for n in nodes:
-            id2type[n[0]]=n[1]['type']
-        for edge in edges:
-            edge2port[(edge[0],edge[1])] = edge2port.get((edge[0],edge[1]),[])
-            edge2port[(edge[0],edge[1])].append(edge[2]['port'])
-        # print(id2type)
-        # print(edge2port)
-
-        num_nodes = g.number_of_nodes()
-        nid = num_nodes + 1
-        while num_replaced < num2replace:
-            nid,flag_replace = random_replace(g, nid,id2type,edge2port)
-            if flag_replace:
-                num_replaced += 1
-            # print(ntype,replace_cell.nodes,replace_cell.edges)
-        # print('modified nodes:',list(g.nodes.items()))
-        # print('modified edges:',list(g.edges.items()))
-        print('modified num_nodes:{}, num_edges:{}'.format(g.number_of_nodes(), g.number_of_edges()))
-        # nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
-        # plt.show()
 
 if __name__ == "__main__":
     main()
