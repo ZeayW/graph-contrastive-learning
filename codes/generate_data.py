@@ -696,8 +696,8 @@ def random_replace(g,nid,id2type,edge2port):
         for port in ports:
             fanins[port] = predecessor
     #print('fanins:',fanins)
-    if int(ntype[-1])!= len(fanins):
-        print(ntype[-1],fanins)
+    # if int(ntype[-1])!= len(fanins):
+    #     print(ntype[-1],fanins)
     if ntype == 'MUX2':
         assert len(fanins)==3
     elif ntype == 'MUX4':
