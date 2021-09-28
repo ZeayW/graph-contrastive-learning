@@ -123,12 +123,9 @@ def change_order(nids,width):
 def cal_depth(g,PIs,output_nid):
     g = g.to_networkx()
     depth = 0
-    print(g.has_node(9))
-    print(nx.has_path(g,10,9))
-    print(nx.shortest_path(g,10,9))
-    print(nx.all_simple_paths(g,10,9))
     dst = output_nid
     for src in PIs:
+        print(type(src))
         #print('src',id2nodes[src])
         max_path_length = 0
         #for dst in PIs[2*i:2*i+2]:
