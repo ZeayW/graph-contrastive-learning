@@ -765,6 +765,8 @@ def random_replace(g,nid,id2type,edge2port,output_nid):
         for sucessor in sucessors:
             if id2type[sucessor] == 'INV':
                 num_remove += 1
+                if len(g.successors(sucessor)) == 0:
+                    output_nid = list(g.predecessors(new_nodes[replace_cell.output_link][0]))[0]
                 #print('\t\tsuc remove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
                 remove_adjacent_inv(g, new_nodes[replace_cell.output_link][0], sucessor,edge2port)
         if len(list(g.successors(new_nodes[replace_cell.output_link][0])))==0 \
@@ -780,7 +782,7 @@ def random_replace(g,nid,id2type,edge2port,output_nid):
             if len(list(g.successors(fanin)))==0 and fanin!=output_nid:
                 g.remove_node(fanin)
     print('\treplaced_node', ntype,"removed inv:",num_remove)
-    return (nid,True)
+    return (nid,output_nid,True)
 
 # and(and,and) = and
 #
@@ -882,7 +884,7 @@ def transform(nodes,edges,output_nid,options):
     num_nodes = g.number_of_nodes()
     nid = num_nodes + 1
     while num_replaced < num2replace:
-        nid, flag_replace = random_replace(g, nid, id2type, edge2port,output_nid)
+        nid, output_nid,flag_replace = random_replace(g, nid, id2type, edge2port,output_nid)
         if flag_replace:
             num_replaced += 1
         # print(ntype,replace_cell.nodes,replace_cell.edges)
@@ -892,7 +894,7 @@ def transform(nodes,edges,output_nid,options):
     res_edges = []
     for edge in g.edges().items():
         res_edges.append((edge[0][0],edge[0][1],edge[1]))
-    return (list(g.nodes.items()),res_edges)
+    return (list(g.nodes.items()),res_edges,output_nid)
 
 def  main():
 

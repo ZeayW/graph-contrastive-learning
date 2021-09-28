@@ -23,8 +23,8 @@ def parse_single_file(nodes,edges,output_node):
     label2id = {"1'b0": 0, "1'b1": 1, 'DFF': 2, 'DFFSSR': 3, 'DFFAS': 4, 'NAND': 5, 'AND': 6,
                 'OR': 7, 'DELLN': 8, 'INV': 9, 'NOR': 10, 'XOR': 11, 'MUX': 12, 'XNOR': 13,
                 'MAJ': 14, 'PI': 15}
-    print(nodes)
-    print(edges)
+    # print(nodes)
+    # print(edges)
     nid = 0
     node2id = {}
     id2node = {}
@@ -95,7 +95,7 @@ class Dataset_gcl(DGLDataset):
             if original_depth>max_depth:
                 max_depth = original_depth
             for i in range(2):
-                new_nodes, new_edges = transform(nodes, edges, output_node,options)
+                new_nodes, new_edges,output_node = transform(nodes, edges, output_node,options)
                 new_graph, new_PO, new_depth = parse_single_file(new_nodes, new_edges, output_node)
                 self.POs[new_PO+start_nid] = new_depth
                 self.graphs.append(new_graph)
