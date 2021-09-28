@@ -55,7 +55,7 @@ def parse_single_file(nodes,edges,output_node):
     graph.ndata["ntype"] = ntype
     PIs = th.tensor(range(graph.number_of_nodes()))[th.argmax(ntype,dim=1).squeeze(-1)==15]
     print('PIs:',PIs,'PO:',output_nid)
-    print(graph.nodes)
+    print(graph.nodes.items())
     depth = cal_depth(graph,PIs,output_nid)
 
     return graph,output_nid,depth
