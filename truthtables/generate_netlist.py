@@ -2,9 +2,9 @@ import sys
 
 sys.path.append("..")
 import os
-from generate_options import get_options_g
+from generate_options import get_options
 os.system('source /opt2/synopsys/setup.sh')
-options = get_options_g()
+options = get_options()
 data_dir = os.path.join(options.save_dir,'i{}'.format(options.num_input))
 tcl_file ='dc7.tcl'
 for vf in os.listdir(data_dir):

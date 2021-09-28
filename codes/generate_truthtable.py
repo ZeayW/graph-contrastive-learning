@@ -1,4 +1,4 @@
-from generate_options import get_options_g
+from options import get_options
 import os
 import random
 import pickle
@@ -17,8 +17,8 @@ import pickle
 
 visited_values = {}
 
-num_input = get_options_g().num_input
-save_dir = get_options_g().save_dir
+num_input = get_options().num_input
+save_dir = get_options().save_dir
 
 def full_array(elements,visited):
     res = []
@@ -82,17 +82,17 @@ equal_arrays = get_equal_arrays(num_input)
 #print(equal_arrays)
 
 num_sample = None
-if get_options_g().num_input == 2:
+if get_options().num_input == 2:
     num_sample = 10
-elif get_options_g().num_input == 3:
+elif get_options().num_input == 3:
     num_sample = 50
-elif get_options_g().num_input == 4:
+elif get_options().num_input == 4:
     num_sample = 512
-elif get_options_g().num_input in (5,6):
+elif get_options().num_input in (5,6):
     num_sample = 2048
-elif get_options_g().num_input in (7,8):
+elif get_options().num_input in (7,8):
     num_sample = 4096
-elif get_options_g().num_input >=8:
+elif get_options().num_input >=8:
     num_sample = 4096
 
 current_num = 0
