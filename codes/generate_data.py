@@ -889,6 +889,7 @@ def transform(nodes,edges,options):
     print('modified edges:',list(g.edges.items()))
     print('modified num_nodes:{}, num_edges:{}'.format(g.number_of_nodes(), g.number_of_edges()))
 
+    return list(g.nodes.items()),list(g.edges.items())
 
 def  main():
 
