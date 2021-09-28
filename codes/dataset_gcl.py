@@ -23,8 +23,8 @@ def parse_single_file(nodes,edges,output_node):
     label2id = {"1'b0": 0, "1'b1": 1, 'DFF': 2, 'DFFSSR': 3, 'DFFAS': 4, 'NAND': 5, 'AND': 6,
                 'OR': 7, 'DELLN': 8, 'INV': 9, 'NOR': 10, 'XOR': 11, 'MUX': 12, 'XNOR': 13,
                 'MAJ': 14, 'PI': 15}
-    print(nodes)
-    print(edges)
+    # print(nodes)
+    # print(edges)
     nid = 0
     node2id = {}
     id2node = {}
@@ -55,7 +55,7 @@ def parse_single_file(nodes,edges,output_node):
     PIs = th.tensor(range(graph.number_of_nodes()))[th.argmax(ntype,dim=1).squeeze(-1)==15]\
         .numpy().tolist()
     #if len(PIs)!=get_options().num_input:
-    print(PIs,output_nid)
+    #print(PIs,output_nid)
     #assert len(PIs)==get_options().num_input
     #print(graph.nodes())
     depth = cal_depth(graph,PIs,output_nid)
@@ -94,9 +94,11 @@ class Dataset_gcl(DGLDataset):
             PO.append((original_PO+start_nid,original_depth))
             self.graphs.append(original_graph)
             start_nid += original_graph.number_of_nodes()
+            print('depth:',original_depth)
             if original_depth>max_depth:
                 max_depth = original_depth
             for i in range(2):
+                print('generating positive sample{}'.format(i))
                 new_nodes, new_edges,output_node = transform(nodes, edges, output_node,options)
                 new_graph, new_PO, new_depth = parse_single_file(new_nodes, new_edges, output_node)
                 self.POs[new_PO+start_nid] = new_depth
@@ -104,6 +106,7 @@ class Dataset_gcl(DGLDataset):
                 start_nid += new_graph.number_of_nodes()
                 if new_depth>max_depth:
                     max_depth = new_depth
+                print('depth:',new_depth)
         self.depth = max_depth
         self.batch_graph = dgl.batch(self.graphs)
 
