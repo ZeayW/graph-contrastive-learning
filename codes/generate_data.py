@@ -878,7 +878,7 @@ def  main():
         if len(nodes)==0:
             print('empty...')
             continue
-        print('original num_nodes:{}, num_edges:{}'.format(g.number_of_nodes(),g.number_of_edges()))
+        print('original num_nodes:{}, num_edges:{}'.format(len(nodes),len(edges)))
         # print("original nodes:", nodes)
         # print("original edges:", edges)
         id2type = {}
