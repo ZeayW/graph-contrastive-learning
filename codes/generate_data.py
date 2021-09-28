@@ -885,7 +885,7 @@ def transform(nodes,edges,options):
         if flag_replace:
             num_replaced += 1
         # print(ntype,replace_cell.nodes,replace_cell.edges)
-    print('modified nodes:',list(g.nodes.items()))
+    print('modified nodes:',list(sorted(g.nodes.items())))
     print('modified edges:',list(g.edges.items()))
     print('modified num_nodes:{}, num_edges:{}'.format(g.number_of_nodes(), g.number_of_edges()))
 
