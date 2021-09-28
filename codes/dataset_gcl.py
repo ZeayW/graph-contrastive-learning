@@ -95,7 +95,7 @@ class Dataset_gcl(DGLDataset):
             if original_depth>max_depth:
                 max_depth = original_depth
             for i in range(2):
-                new_nodes, new_edges = transform(nodes, edges, options)
+                new_nodes, new_edges = transform(nodes, edges, output_node,options)
                 new_graph, new_PO, new_depth = parse_single_file(new_nodes, new_edges, output_node)
                 self.POs[new_PO+start_nid] = new_depth
                 self.graphs.append(new_graph)
