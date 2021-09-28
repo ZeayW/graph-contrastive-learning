@@ -24,6 +24,7 @@ def parse_single_file(nodes,edges,output_node):
                 'OR': 7, 'DELLN': 8, 'INV': 9, 'NOR': 10, 'XOR': 11, 'MUX': 12, 'XNOR': 13,
                 'MAJ': 14, 'PI': 15}
     print(nodes)
+    print(edges)
     nid = 0
     node2id = {}
     id2node = {}
