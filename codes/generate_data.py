@@ -756,7 +756,7 @@ def random_replace(g,nid,id2type,edge2port):
             g.add_edge(new_edge[0],new_edge[1])
             edge2port[new_edge] = edge2port.get(new_edge, [])
             edge2port[new_edge].append(pi[1])
-    #print('nodes:', list(g.nodes.items()))
+    print('modified nodes:', list(g.nodes.items()))
     #print('edges:', edge2port)
     #print(g.edges)
     num_remove = 0
