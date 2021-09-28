@@ -123,6 +123,7 @@ def cal_depth(g,PIs,output_nid):
     g = g.to_networkx()
     depth = 0
     print(g.has_node(9))
+    print(nx.has_path(g,9,10))
     dst = output_nid
     for src in PIs:
         #print('src',id2nodes[src])
