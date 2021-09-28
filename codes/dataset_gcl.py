@@ -120,10 +120,9 @@ def change_order(nids,width):
             res.append(nids[width*module_index+bit_index])
     return res
 def cal_depth(g,PIs,output_nid):
-    print(g.has_node(9))
     g = g.to_networkx()
     depth = 0
-
+    print(g.has_node(9))
     dst = output_nid
     for src in PIs:
         #print('src',id2nodes[src])
