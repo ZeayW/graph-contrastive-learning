@@ -786,7 +786,7 @@ def random_replace(g,nid,id2type,edge2port,output_nid):
                     remove_adjacent_inv(g, fanin, new_nodes[node][0],edge2port)
             if len(list(g.successors(fanin)))==0 and fanin!=output_nid:
                 g.remove_node(fanin)
-    print('\t\treplaced_node', ntype,rand_nid,"index",rand_index,"removed inv:",num_remove)
+    #print('\t\treplaced_node', ntype,rand_nid,"index",rand_index,"removed inv:",num_remove)
     return (nid,output_nid,True)
 
 # and(and,and) = and
