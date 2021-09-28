@@ -10,6 +10,7 @@ tcl_file ='dc4.tcl'
 for vf in os.listdir(data_dir):
     value = vf.split('.')[0]
     if os.path.exists(os.path.join(data_dir,'implementation/truthtable_i{}_v{}_d5.00.v').format(options.num_input,value)):
+        print('continue')
         continue
     if not vf.endswith('.v') :
         continue
