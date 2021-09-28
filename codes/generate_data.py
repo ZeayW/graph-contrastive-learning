@@ -5,7 +5,7 @@ from typing import List, Dict, Tuple, Optional
 import pyverilog
 from pyverilog.vparser.parser import parse
 import re
-from generate_options import get_options
+from generate_options import get_options_g
 import os
 import dgl
 import torch as th
@@ -893,7 +893,7 @@ def transform(nodes,edges,options):
 
 def  main():
 
-    options = get_options()
+    options = get_options_g()
     datapath = os.path.join(options.save_dir,"i{}/implementation".format(options.num_input))
     for vf in os.listdir(datapath):
         if not vf.endswith('.v'):
