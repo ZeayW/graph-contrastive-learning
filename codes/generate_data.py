@@ -687,7 +687,7 @@ def random_replace(g,nid,id2type,edge2port,output_nid):
     rand_nid = list(g.nodes.keys())[rand_idx]
     ntype = id2type[rand_nid]
     if ntype == 'PI' or ntype == 'INV':
-        return (nid,False)
+        return (nid,output_nid,False)
     sucessors = list(g.successors(rand_nid))
     predecessors = list(g.predecessors(rand_nid))
     fanins = {}
