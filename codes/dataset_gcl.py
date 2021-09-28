@@ -44,7 +44,9 @@ def parse_single_file(nodes,edges,output_node):
 
     src_nodes = []
     dst_nodes = []
-
+    for edge in edges:
+        if len(edge)!=3:
+            print(edge)
     for src, dst, edict in edges:
         src_nodes.append(node2id[src])
         dst_nodes.append(node2id[dst])
