@@ -23,7 +23,7 @@ def parse_single_file(nodes,edges,output_node):
     label2id = {"1'b0": 0, "1'b1": 1, 'DFF': 2, 'DFFSSR': 3, 'DFFAS': 4, 'NAND': 5, 'AND': 6,
                 'OR': 7, 'DELLN': 8, 'INV': 9, 'NOR': 10, 'XOR': 11, 'MUX': 12, 'XNOR': 13,
                 'MAJ': 14, 'PI': 15}
-    print(nodes,edges)
+    print(nodes)
     nid = 0
     node2id = {}
     id2node = {}
@@ -54,7 +54,8 @@ def parse_single_file(nodes,edges,output_node):
 
     graph.ndata["ntype"] = ntype
     PIs = th.tensor(range(graph.number_of_nodes()))[th.argmax(ntype,dim=1).squeeze(-1)==15]
-    print(PIs,len(PIs))
+    print('PIs:',PIs,'PO:',output_nid)
+    print(graph.nodes)
     depth = cal_depth(graph,PIs,output_nid)
 
     return graph,output_nid,depth
