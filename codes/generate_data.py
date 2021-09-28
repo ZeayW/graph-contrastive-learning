@@ -686,9 +686,8 @@ def random_replace(g,nid,id2type,edge2port):
     rand_idx = random.randint(0, g.number_of_nodes() - 1)
     rand_nid = list(g.nodes.keys())[rand_idx]
     ntype = id2type[rand_nid]
-    print('\treplaced_node', rand_nid,ntype)
     if ntype == 'PI' or ntype == 'INV' :
-        return nid
+        return (nid,False)
     sucessors = list(g.successors(rand_nid))
     predecessors = list(g.predecessors(rand_nid))
     fanins = {}
@@ -698,7 +697,7 @@ def random_replace(g,nid,id2type,edge2port):
             if type(port) == list:
                 print(port)
             fanins[port] = predecessor
-    print('fanins:',fanins)
+    #print('fanins:',fanins)
     if int(ntype[-1])!= len(fanins):
         print(ntype[-1],fanins)
     if ntype == 'MUX2':
@@ -760,14 +759,16 @@ def random_replace(g,nid,id2type,edge2port):
             g.add_edge(new_edge[0],new_edge[1])
             edge2port[new_edge] = edge2port.get(new_edge, [])
             edge2port[new_edge].append(pi[1])
-    print('nodes:', list(g.nodes.items()))
-    print('edges:', edge2port)
-    print(g.edges)
+    #print('nodes:', list(g.nodes.items()))
+    #print('edges:', edge2port)
+    #print(g.edges)
+    num_remove = 0
     # remove adjacent INVs
     if new_nodes[replace_cell.output_link][1]['ntype'] == 'INV':
         for sucessor in sucessors:
             if id2type[sucessor] == 'INV':
-                print('\t\tsuc remove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
+                num_remove += 1
+                #print('\t\tsuc remove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
                 remove_adjacent_inv(g, new_nodes[replace_cell.output_link][0], sucessor,edge2port)
         if len(list(g.successors(new_nodes[replace_cell.output_link][0])))==0:
             g.remove_node(new_nodes[replace_cell.output_link][0])
@@ -775,12 +776,13 @@ def random_replace(g,nid,id2type,edge2port):
         if id2type[fanin] == 'INV':
             for node,p in replace_cell.input_links[port]:
                 if new_nodes[node][1]['ntype'] == 'INV':
-                    print('\t\tpre remove:({},{})'.format(fanin, new_nodes[node][0]))
+                    num_remove += 1
+                    #print('\t\tpre remove:({},{})'.format(fanin, new_nodes[node][0]))
                     remove_adjacent_inv(g, fanin, new_nodes[node][0],edge2port)
             if len(list(g.successors(fanin)))==0:
                 g.remove_node(fanin)
-
-    return nid
+    print('\treplaced_node', ntype,"removed inv:",num_remove)
+    return (nid,True)
 
 # and(and,and) = and
 #
@@ -850,9 +852,21 @@ def is_xor(graph, root_node):
 
 
 def  main():
-    g = dgl.DGLGraph()
 
     options = get_options()
+    if options.num_input == 2:
+        num2replace = 1
+    elif options.num_input == 3:
+        num2replace = 2
+    elif options.num_input ==4:
+        num2replace = 3
+    elif options.num_input in (5,6):
+        num2replace = 4
+    elif options.num_input in (6,7):
+        num2replace = 5
+    else:
+        num2replace = 6
+    num_replaced = 0
     datapath = os.path.join(options.save_dir,"i{}/implementation".format(options.num_input))
     for vf in os.listdir(datapath):
         if not vf.endswith('.v'):
@@ -864,8 +878,9 @@ def  main():
         if len(nodes)==0:
             print('empty...')
             continue
-        print("original nodes:", nodes)
-        print("original edges:", edges)
+        print('original num_nodes:{}, num_edges:{}'.format(g.number_of_nodes(),g.number_of_edges()))
+        # print("original nodes:", nodes)
+        # print("original edges:", edges)
         id2type = {}
         edge2port = {}
         # nodes = [(1,{'ntype':'PI'}),(2,{'ntype':'PI'}),(3,{'ntype':'AND'}),(4,{'ntype':'PI'}),(5,{'ntype':'PI'}),
@@ -877,8 +892,8 @@ def  main():
 
         g.add_edges_from(edges)
         g.add_nodes_from(nodes)
-        nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
-        plt.show()
+        # nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
+        # plt.show()
         for n in nodes:
             id2type[n[0]]=n[1]['type']
         for edge in edges:
@@ -889,13 +904,16 @@ def  main():
 
         num_nodes = g.number_of_nodes()
         nid = num_nodes + 1
-        for i in range(5):
-            nid = random_replace(g, nid,id2type,edge2port)
+        while num_replaced < num2replace:
+            nid,flag_replace = random_replace(g, nid,id2type,edge2port)
+            if flag_replace:
+                num_replaced += 1
             # print(ntype,replace_cell.nodes,replace_cell.edges)
-        print('modified nodes:',list(g.nodes.items()))
-        print('modified edges:',list(g.edges.items()))
-        nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
-        plt.show()
+        # print('modified nodes:',list(g.nodes.items()))
+        # print('modified edges:',list(g.edges.items()))
+        print('modified num_nodes:{}, num_edges:{}'.format(g.number_of_nodes(), g.number_of_edges()))
+        # nx.draw_shell(g, with_labels=True, font_weight='bold')  # 节点按序排列
+        # plt.show()
 
 if __name__ == "__main__":
     main()
