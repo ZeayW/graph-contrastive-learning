@@ -703,7 +703,6 @@ def random_replace(g,nid,id2type,edge2port):
     elif ntype == 'MUX4':
         assert len(fanins)==6
     else:
-        print(predecessors)
         assert int(ntype[-1])== len(fanins)
     # fanins = sorted(fanins.items())
     # predecessors = {}
