@@ -99,8 +99,8 @@ class Dataset_gcl(DGLDataset):
                 max_depth = original_depth
             for i in range(2):
                 print('generating positive sample{}'.format(i))
-                new_nodes, new_edges,output_node = transform(nodes, edges, output_node,options)
-                new_graph, new_PO, new_depth = parse_single_file(new_nodes, new_edges, output_node)
+                new_nodes, new_edges,output_nid = transform(nodes, edges, output_node,options)
+                new_graph, new_PO, new_depth = parse_single_file(new_nodes, new_edges, output_nid)
                 self.POs[new_PO+start_nid] = new_depth
                 self.graphs.append(new_graph)
                 start_nid += new_graph.number_of_nodes()
