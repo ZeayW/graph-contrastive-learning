@@ -47,7 +47,7 @@ def parse_single_file(nodes,edges,output_node):
     for src, dst, edict in edges:
         src_nodes.append(node2id[src])
         dst_nodes.append(node2id[dst])
-
+    print(src_nodes,dst_nodes)
     graph = dgl.graph(
         (th.tensor(src_nodes), th.tensor(dst_nodes)), num_nodes=len(node2id)
     )
