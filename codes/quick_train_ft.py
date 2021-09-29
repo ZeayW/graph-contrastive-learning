@@ -549,7 +549,8 @@ def train(options):
         for ni, (central_nodes,input_nodes,blocks) in enumerate(traindataloader):
             #continue
             #print(in_blocks)
-            print(model.conv.gate_functions[11].weight)
+            #print(model.conv.gate_functions[11].weight)
+            print(mlp.layers[2].weight)
             start_time = time()
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
