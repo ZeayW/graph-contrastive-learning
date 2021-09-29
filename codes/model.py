@@ -806,6 +806,21 @@ class BiClassifier(nn.Module):
         #print("aa")
         return h
 
+class MLP(nn.Module):
+    def __init__(self,in_dim,out_dim,nlayers):
+        self.in_dim = in_dim
+        self.out_dim = out_dim
+        self.nlayers = nlayers
+        self.layers= nn.Sequential()
+        dim1 = in_dim
+        for i in range(nlayers-1):
+            self.layers.add_module('dropout_{}'.format(i+1),self.dropout)
+            self.layers.add_module('activation_{}'.format(i+1), self.activation)
+            self.layers.add_module('linear_{}'.format(i+1),nn.Linear(dim1, int(dim1/2)))
+            dim1 = int(dim1 / 2)
+        self.mlp_label.add_module('linear_{}'.format(nlayers),nn.Linear(dim1, out_dim))
+    def foward(self,embedding):
+        return self.layers(embedding).squeeze(-1)
 class BiClassifier_pos(nn.Module):
     def __init__(
         self, GCN1,GCN2, out_dim,n_fcn,combine_type='concat',activation=nn.ReLU(),dropout=0.5,
