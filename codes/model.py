@@ -807,11 +807,12 @@ class BiClassifier(nn.Module):
         return h
 
 class MLP(nn.Module):
-    def __init__(self,in_dim,out_dim,nlayers,dropout=0.5):
+    def __init__(self,in_dim,out_dim,nlayers,activation =nn.ReLU() ,dropout=0.5):
         super(MLP, self).__init__()
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.nlayers = nlayers
+        self.activation = activation
         self.dropout = nn.Dropout(p=dropout)
         self.layers= nn.Sequential()
         dim1 = in_dim
