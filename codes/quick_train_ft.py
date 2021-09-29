@@ -181,7 +181,7 @@ def preprocess(data_path,device,options,in_dim):
         out_dim = options.nlabels,
         nlayers = options.n_fcn,
         dropout = options.mlp_dropout
-    )
+    ).to(device)
     print(model)
     print(mlp)
     print("creating model in:",options.model_saving_dir)
@@ -380,6 +380,7 @@ def train(options):
         print("No model, please prepocess first , or choose a pretrain model")
         return
     print(model)
+    mlp = mlp.to(device)
     print(mlp)
     # for model with reception , in_nlayers is a list; for others , in_nlayers is an integer
 
