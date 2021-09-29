@@ -88,11 +88,13 @@ elif get_options().num_input == 3:
     num_sample = 50
 elif get_options().num_input == 4:
     num_sample = 512
-elif get_options().num_input in (5,6):
+elif get_options().num_input == 5:
+    num_sample = 1024
+elif get_options().num_input == 6:
     num_sample = 2048
-elif get_options().num_input in (7,8):
+elif get_options().num_input == 7:
     num_sample = 4096
-elif get_options().num_input >=8:
+else:
     num_sample = 4096
 
 current_num = 0
@@ -162,3 +164,5 @@ while current_num<num_sample:
             f.write("\t\t{}'b{}: O = {};\n".format(num_input,bin(j)[2:],truthValue[j]))
         f.write('\tendcase\n')
         f.write('endmodule\n')
+
+print('num visited:',len(visited),'total',pow(2,pow(2,num_input)))
