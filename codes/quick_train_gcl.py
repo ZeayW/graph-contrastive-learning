@@ -295,10 +295,11 @@ def train(options):
         original_nids.append(PO_nids[i])
         aug_nids.append(PO_nids[i+1])
         aug_nids.append(PO_nids[i+2])
+    print(POs)
     print('original nids:',original_nids)
     print('aug nids:',aug_nids)
-    exit()
-    
+
+
     if options.gat:
         add_self_loop = True
     else:
@@ -368,6 +369,7 @@ def train(options):
             start_time = time()
             neg_embeddings = []
             blocks = [b.to(device) for b in blocks]
+            print(blocks)
             loss = 0
             # print("in_block:",in_blocks)
             #print("out_block:",blocks)
