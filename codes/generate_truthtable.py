@@ -103,6 +103,28 @@ if not os.path.exists(save_path):
 # if os.path.exists(os.path.join(save_path,'sampled.pkl')):
 #     with open(os.path.join(save_path,'sampled.pkl'),'rb') as f:
 #         sampled = pickle.load(f)
+
+for vf in os.listdir(save_path):
+    value = int(vf.split(['.'])[0])
+    visited[value]=True
+    truthValue = bin(value)[2:]
+    while len(truthValue) < pow(2, num_input):
+        truthValue = '0' + truthValue
+    # deal with symmetrical equivalences
+    postive_postions = []
+    for j in range(len(truthValue)):
+        if truthValue[j] == '1':
+            postive_postions.append(j)
+
+    for array in equal_arrays:
+        equal_value = 0
+        for position in postive_postions:
+            equal_value += pow(2, pow(2, num_input) - 1 - array[position])
+            visited[equal_value] = True
+    # deal with complementary
+    visited[pow(2, pow(2, num_input)) - 1 - value] = True
+
+print('num visited:',len(visited))
 while current_num<num_sample:
     i = random.randint(1,pow(2,pow(2,num_input))-1)
     if visited.get(i,False):
@@ -127,7 +149,6 @@ while current_num<num_sample:
     visited[pow(2,pow(2,num_input))-1-i] = True
 
     #print(truthValue,len(truthValue))
-
     with open(os.path.join(save_path,'{}.v'.format(i)),'w') as f:
         f.write('module i{}_v{}(\n'.format(num_input,i))
         f.write('input [{}:0] I,\n'.format(num_input-1))
