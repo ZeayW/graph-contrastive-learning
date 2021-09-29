@@ -9,6 +9,7 @@ import numpy as np
 import os
 from MyDataLoader_ud import *
 from time import time
+import math
 from random import shuffle
 
 def preprocess(data_path,device,options):
@@ -203,7 +204,7 @@ def NCEloss(pos1,pos2,neg,tao):
     loss = -1*th.log(
                 th.exp(pos_similarity/tao)
                 /
-                (th.sum(th.exp(neg_similarity/tao))-th.exp(th.tensor([1/tao])))
+                (th.sum(th.exp(neg_similarity/tao))-math.exp(1/tao))
     )
     return loss
 
