@@ -401,7 +401,7 @@ def train(options):
     else:
         label_name = 'adder_o'
 
-
+    print(train_g.ndata)
     train_g.ndata['label_o'] = train_g.ndata[label_name]
     val_g.ndata['label_o'] = val_g.ndata[label_name]
     mask_sub_train = train_g.ndata['sub_o']>0
