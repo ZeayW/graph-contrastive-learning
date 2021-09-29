@@ -315,7 +315,7 @@ def train(options):
             runtime += endtime - start_time
 
 
-            print(loss.item())
+            #print(loss.item())
             # val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device,
             #                                                             model, Loss, options.alpha, beta,
             #                                                             depth, width, num_aug, po_depths,query_embedding,
