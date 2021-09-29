@@ -808,6 +808,7 @@ class BiClassifier(nn.Module):
 
 class MLP(nn.Module):
     def __init__(self,in_dim,out_dim,nlayers):
+        super(MLP, self).__init__()
         self.in_dim = in_dim
         self.out_dim = out_dim
         self.nlayers = nlayers
