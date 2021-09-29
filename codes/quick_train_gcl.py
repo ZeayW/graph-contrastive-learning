@@ -270,7 +270,7 @@ def train(options):
         aug_nids,
         sampler,
         batch_size=options.batch_size,
-        shuffle=False,
+        shuffle=True,
         drop_last=False,
     )
 
