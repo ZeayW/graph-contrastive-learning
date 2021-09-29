@@ -182,6 +182,8 @@ def preprocess(data_path,device,options,in_dim):
         nlayers = options.n_fcn,
         dropout = options.mlp_dropout
     )
+    print(model)
+    print(mlp)
     print("creating model in:",options.model_saving_dir)
     if os.path.exists(options.model_saving_dir) is False:
         os.makedirs(options.model_saving_dir)
