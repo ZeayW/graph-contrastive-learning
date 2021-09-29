@@ -179,7 +179,8 @@ def preprocess(data_path,device,options,in_dim):
     mlp = MLP(
         in_dim = model.out_dim,
         out_dim = options.nlabels,
-        nlayers = options.n_fcn
+        nlayers = options.n_fcn,
+        dropout = options.mlp_dropout
     )
     print("creating model in:",options.model_saving_dir)
     if os.path.exists(options.model_saving_dir) is False:
@@ -651,7 +652,7 @@ def train(options):
               os.makedirs(options.model_saving_dir)
            with open(os.path.join(options.model_saving_dir, 'model.pkl'), 'wb') as f:
               parameters = options
-              pickle.dump((parameters, model), f)
+              pickle.dump((parameters, model,mlp), f)
            print("Model successfully saved")
 
 
