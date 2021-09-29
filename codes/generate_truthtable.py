@@ -126,7 +126,7 @@ for vf in os.listdir(save_path):
     # deal with complementary
     visited[pow(2, pow(2, num_input)) - 1 - value] = True
 
-print('num visited:',len(visited))
+print('num visited:',len(visited),'total',pow(2,pow(2,num_input)))
 exit()
 while current_num<num_sample:
     i = random.randint(1,pow(2,pow(2,num_input))-1)
