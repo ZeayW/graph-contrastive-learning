@@ -226,6 +226,17 @@ def get_pos_pairs(width,num_aug):
             for k in range(j+1,num_aug):
                 pos_pairs.append((j+start_id,k+start_id))
     return pos_pairs
+
+def NCEloss(pos1,pos2,neg,tao):
+    pos_similarity  = th.cosine_similarity(pos1,pos2,dim=-1)
+    neg_similarity = th.cosine_similarity(pos1,neg,dim=-1)
+    loss = -1*th.log(
+                th.exp(pos_similarity/tao)
+                /
+                (th.sum(th.exp(neg_similarity/tao))-1)
+    )
+    return loss
+
 def contrastive_loss(pos_pair,neg_embeddings1,neg_embeddings2,tao):
     pos_sim = th.cosine_similarity(pos_pair[0],pos_pair[1],dim=-1)
     #print(pos_sim)
@@ -273,11 +284,21 @@ def train(options):
 
     with open(train_data_file,'rb') as f:
         train_g,POs,depth = pickle.load(f)
+    train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+    train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+    train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
 
-    if in_nlayers == -1:
-        in_nlayers = 0
-    if out_nlayers == -1:
-        out_nlayers = 0
+    PO_nids = list(POs.keys())
+    #PO_depths = list(POs.values())
+    original_nids, aug_nids= [],[]
+    for i in range(0,len(PO_nids),3):
+        original_nids.append(PO_nids[i])
+        aug_nids.append(PO_nids[i+1])
+        aug_nids.append(PO_nids[i+2])
+    print('original nids:',original_nids)
+    print('aug nids:',aug_nids)
+    exit()
+    
     if options.gat:
         add_self_loop = True
     else:
@@ -287,32 +308,21 @@ def train(options):
     train_blocks = sampler.sample_blocks(train_g,POs)
     train_blocks = [b.to(device) for b in train_blocks]
     pos_pairs = None
-    neg_g = None
-    neg_nodes = None
-    val_g = None
     print(train_blocks)
     # print(pos_pairs)
     print(po_depths)
     #check(train_g,POs,depth)
 
-    negdataloader = MyNodeDataLoader(
+    dataloader = MyNodeDataLoader(
         False,
-        neg_g,
-        neg_nodes,
+        train_g,
+        aug_nids,
         sampler,
         batch_size=options.batch_size,
-        shuffle=True,
+        shuffle=False,
         drop_last=False,
     )
-    valdataloader = MyNodeDataLoader(
-        True,
-        val_g,
-        list(range(val_g.num_nodes())),
-        sampler,
-        batch_size=val_g.num_nodes(),
-        shuffle=True,
-        drop_last=False,
-    )
+
     # for (central_nodes,input_nodes,blocks,reverse_input_nodes,reverse_blocks) in dataloader:
     #     dataset.append((central_nodes,input_nodes,blocks,reverse_input_nodes,reverse_blocks))
     # total_size = len(dataset)
@@ -323,10 +333,10 @@ def train(options):
     print("Data successfully loaded")
     k = options.k
     beta = options.beta
-    if options.nlabels!=1 : Loss = nn.CrossEntropyLoss()
-    else: Loss = nn.BCEWithLogitsLoss(pos_weight=th.FloatTensor([options.pos_weight]).to(device))
-    print(options.nlabels)
-    print(Loss)
+    # if options.nlabels!=1 : Loss = nn.CrossEntropyLoss()
+    # else: Loss = nn.BCEWithLogitsLoss(pos_weight=th.FloatTensor([options.pos_weight]).to(device))
+    #print(options.nlabels)
+    #print(Loss)
     options, model = load_model(device, options)
     if model is None:
         print("No model, please prepocess first , or choose a pretrain model")
@@ -353,7 +363,7 @@ def train(options):
 
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
-        for ni, (central_nodes,input_nodes,blocks) in enumerate(negdataloader):
+        for ni, (central_nodes,input_nodes,blocks) in enumerate(dataloader):
             #continue
             start_time = time()
             neg_embeddings = []
@@ -365,23 +375,14 @@ def train(options):
             #neg_features = blocks[0].srcdata["ntype"]
 
             #print(blocks[-1].dstdata["label")
-            output_labels = blocks[-1].dstdata[label_name].squeeze(1)
+            #output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             #total_num += len(output_labels)
-            query_embedding = model(train_blocks, train_blocks[0].srcdata['ntype'])
-            for i in range(depth):
-                neg_embeddings.append(model(blocks[i:],blocks[i].srcdata['ntype']))
-            for pos_pair in pos_pairs:
-                idx1, idx2 = pos_pair[0],pos_pair[1]
-                if po_depths[idx1] in (0,1) or po_depths[idx2] in (0,1):
-                    continue
-                #print(train_blocks[-1].dstdata)
-                #print(len(neg_embeddings),depth,po_depths[idx1],po_depths[idx2])
-                #print(train_blocks[-1].dstdata['depth'][idx1].item(),po_depths[idx1])
+            embeddings = model(blocks, blocks[0].srcdata['f_input'])
+            for i in range(0,len(embeddings),2):
+                loss += NCEloss(embeddings[i],embeddings[i+1],embeddings,options.tao)
+                loss += NCEloss(embeddings[i+1], embeddings[i], embeddings, options.tao)
+            loss = loss / len(embeddings)
 
-                loss += contrastive_loss((query_embedding[idx1],query_embedding[idx2]),
-                                         neg_embeddings[depth-po_depths[idx1]],neg_embeddings[depth-po_depths[idx2]],options.tao)
-
-            loss = loss / len(pos_pairs)
             total_num +=1
             # label_hat = model(blocks,input_features)
             # logp = nn.functional.log_softmax(label_hat, 1)
@@ -419,10 +420,10 @@ def train(options):
             # tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
             # fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
             print(loss.item())
-            val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device,
-                                                                        model, Loss, options.alpha, beta,
-                                                                        depth, width, num_aug, po_depths,query_embedding,
-                                                                        thredshold=0.0)
+            # val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device,
+            #                                                             model, Loss, options.alpha, beta,
+            #                                                             depth, width, num_aug, po_depths,query_embedding,
+            #                                                             thredshold=0.0)
             start_time = time()
             optim.zero_grad()
             loss.backward()
