@@ -822,7 +822,7 @@ class MLP(nn.Module):
             self.layers.add_module('linear_{}'.format(i+1),nn.Linear(dim1, int(dim1/2)))
             dim1 = int(dim1 / 2)
         self.layers.add_module('linear_{}'.format(nlayers),nn.Linear(dim1, out_dim))
-    def foward(self,embedding):
+    def forward(self,embedding):
         return self.layers(embedding).squeeze(-1)
 class BiClassifier_pos(nn.Module):
     def __init__(
