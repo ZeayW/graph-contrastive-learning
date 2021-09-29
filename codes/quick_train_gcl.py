@@ -105,20 +105,7 @@ def load_model(device,options):
             param.alpha = options.alpha
     return param,classifier
 
-def type_count(ntypes,count):
-    for tp in ntypes:
-        tp = tp.item()
-        count[tp] +=1
 
-def cal_ratios(count1,count2):
-    ratios = []
-    for i in range(len(count1)):
-        if count2[i] == 0:
-            ratios.append(-1)
-        else:
-            ratio = count1[i] / count2[i]
-            ratios.append(round(ratio,4))
-    return ratios
 def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta,depth,width,num_aug,po_depths,query_embedding,thredshold):
 
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
@@ -211,21 +198,6 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta,depth,widt
     print("\tacc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(acc,recall, F1_score))
     return [acc,recall,precision,F1_score]
 
-def get_neg_nodes(g,target='label_o'):
-    labels = g.ndata[target].squeeze(1)
-    index = th.tensor(range(g.number_of_nodes()))
-    neg_nodes = index[labels==0]
-
-    return neg_nodes
-
-def get_pos_pairs(width,num_aug):
-    pos_pairs = []
-    for i in range(width):
-        start_id = i*num_aug
-        for j in range(num_aug):
-            for k in range(j+1,num_aug):
-                pos_pairs.append((j+start_id,k+start_id))
-    return pos_pairs
 
 def NCEloss(pos1,pos2,neg,tao):
     pos_similarity  = th.cosine_similarity(pos1,pos2,dim=-1)
@@ -237,32 +209,6 @@ def NCEloss(pos1,pos2,neg,tao):
     )
     return loss
 
-def contrastive_loss(pos_pair,neg_embeddings1,neg_embeddings2,tao):
-    pos_sim = th.cosine_similarity(pos_pair[0],pos_pair[1],dim=-1)
-    #print(pos_sim)
-    neg_sim1 = th.cosine_similarity(pos_pair[0],neg_embeddings1,dim=-1)
-    #print(neg_sim1)
-    neg_sim2 = th.cosine_similarity(pos_pair[1], neg_embeddings2, dim=-1)
-    loss1 = -1*th.log(
-                th.exp(pos_sim/tao)
-                /
-                ( th.exp(pos_sim/tao) + th.sum(th.exp(neg_sim1/tao)) )
-    )
-    loss2 = -1 * th.log(
-        th.exp(pos_sim / tao)
-        /
-        (th.exp(pos_sim / tao) + th.sum(th.exp(neg_sim2 / tao)))
-    )
-    return (loss1+loss2)/2
-
-def check(g,pos,depth):
-    for po in pos:
-        d = g.ndata['depth'][po]
-
-        sampler = Sampler(depth * [None], include_dst_in_src=False)
-        blocks = sampler.sample_blocks(g,[po])
-        blocks = [b for b in blocks if b.num_src_nodes()!=0]
-        print('depth=',d.item(),len(blocks))
 def train(options):
 
     th.multiprocessing.set_sharing_strategy('file_system')
@@ -300,6 +246,7 @@ def train(options):
     # print('aug nids:',aug_nids)
     print(len(POs))
     print('num samples',len(aug_nids))
+    aug_nids =aug_nids[:1024]
     if options.gat:
         add_self_loop = True
     else:
@@ -325,20 +272,9 @@ def train(options):
         drop_last=False,
     )
 
-    # for (central_nodes,input_nodes,blocks,reverse_input_nodes,reverse_blocks) in dataloader:
-    #     dataset.append((central_nodes,input_nodes,blocks,reverse_input_nodes,reverse_blocks))
-    # total_size = len(dataset)
-    # valid_end = int(total_size/options.k)
-    # val_data = dataset[:valid_end]
-    # train_data = dataset[valid_end:]
 
     print("Data successfully loaded")
-    k = options.k
-    beta = options.beta
-    # if options.nlabels!=1 : Loss = nn.CrossEntropyLoss()
-    # else: Loss = nn.BCEWithLogitsLoss(pos_weight=th.FloatTensor([options.pos_weight]).to(device))
-    #print(options.nlabels)
-    #print(Loss)
+
     options, model = load_model(device, options)
     if model is None:
         print("No model, please prepocess first , or choose a pretrain model")
@@ -357,11 +293,6 @@ def train(options):
     stop_score = 0
     for epoch in range(options.num_epoch):
         runtime = 0
-        #options, model = load_model(device, options) 
-        #optim = th.optim.Adam(
-        #model.parameters(), options.learning_rate, weight_decay=options.weight_decay
-        #)
-        #model.train()
 
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
@@ -372,56 +303,18 @@ def train(options):
             blocks = [b.to(device) for b in blocks]
             #print(blocks)
             loss = 0
-            # print("in_block:",in_blocks)
-            #print("out_block:",blocks)
-            #print(out_blocks)
-            #neg_features = blocks[0].srcdata["ntype"]
 
-            #print(blocks[-1].dstdata["label")
-            #output_labels = blocks[-1].dstdata[label_name].squeeze(1)
-            #total_num += len(output_labels)
             embeddings = model(blocks, blocks[0].srcdata['f_input'])
             for i in range(0,len(embeddings),2):
                 loss += NCEloss(embeddings[i],embeddings[i+1],embeddings,options.tao)
                 loss += NCEloss(embeddings[i+1], embeddings[i], embeddings, options.tao)
             loss = loss / len(embeddings)
-
             total_num +=1
-            # label_hat = model(blocks,input_features)
-            # logp = nn.functional.log_softmax(label_hat, 1)
-            # predict_labels = logp.max(dim=1)[1]
-            # if get_options().nlabels != 1:
-            #     pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
-            # else:
-            #     pos_prob = th.sigmoid(label_hat)
-            # pos_prob[pos_prob >= beta] = 1
-            # pos_prob[pos_prob < beta] = 0
-            # # pos_prob = label_hat
-            # predict_labels = pos_prob
-            #print(nn.functional.sigmoid(label_hat),output_labels)
-            #print(label_hat,output_labels)
-            # if options.alpha != 1 :
-            #     pos_index = (output_labels != 0)
-            #     neg_index = (output_labels == 0)
-            #     pos_count += len(output_labels[pos_index])
-            #     neg_count += len(output_labels[neg_index])
-            #     pos_loss = Loss(label_hat[pos_index],output_labels[pos_index])*pos_index.sum().item()
-            #     neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
-            #     train_loss = (options.alpha*pos_loss+neg_loss) / len(output_labels)
-            # else:
-            #     train_loss = Loss(label_hat, output_labels)
             total_loss += loss
             endtime = time()
             runtime += endtime - start_time
 
-            # train_loss += loss
-            # correct += (
-            #         predict_labels == output_labels
-            # ).sum().item()
-            # fn += ((predict_labels == 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 0 的总数
-            # tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
-            # tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
-            # fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
+
             print(loss.item())
             # val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device,
             #                                                             model, Loss, options.alpha, beta,
@@ -437,23 +330,7 @@ def train(options):
 
         Train_loss = total_loss / total_num
 
-        # if Train_loss > pre_loss:
-        #     stop_score += 1
-        #     if stop_score >= 2:
-        #         print('Early Stop!')
-        #         #exit()
-        # else:
-        #     stop_score = 0
-        #     pre_loss = Train_loss
-        # Train_acc = correct / total_num
-        # Train_recall = 0
-        # Train_precision = 0
-        # if tp != 0:
-        #     Train_recall = tp / (tp + fn)
-        #     Train_precision = tp / (tp + fp)
-        # Train_F1_score = 0
-        # if Train_precision != 0 or Train_recall != 0:
-        #     Train_F1_score = 2 * Train_recall * Train_precision / (Train_recall + Train_precision)
+
 
         print("epoch[{:d}]".format(epoch))
         print("training runtime: ",runtime)
@@ -469,12 +346,8 @@ def train(options):
         #                                                                      depth,width,num_aug,query_embedding,thredshold=0.75)
         # if epoch % 1 == 0 and get_options().rel:
         #     #if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
-        #     #print(model.GCN1.layers[0].attn_e.grad)
-        #     #else: print(model.GCN1.layers[0].fc_attn_e.weight)
-        #     print(model.GCN.layers[0].alpha)
-        # if options.weighted:
-        #     print('alpha:',model.fc_combine.weight)
-        # # save the result of current epoch
+        #     #print(model.GCN1.layer
+
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
             # f.write(str(round(Train_loss, 3)) + " " + str(round(Train_acc, 3)) + " " + str(
             #     round(Train_recall, 3)) + " " + str(round(Train_precision,3))+" " + str(round(Train_F1_score, 3)) + "\n")
