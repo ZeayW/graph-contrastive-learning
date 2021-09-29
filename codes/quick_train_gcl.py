@@ -20,7 +20,7 @@ def preprocess(data_path,device,options):
     in_dim = get_options().in_dim
     nlabels = options.nlabels
     label2id = {}
-    if os.path.exists(data_path) is False:
+    if not os.path.exists(data_path) :
         os.makedirs(data_path)
     data_file = os.path.join(data_path, 'i{}.pkl'.format(options.num_input))
     val_data_file = os.path.join(data_path, 'rocket2.pkl')
