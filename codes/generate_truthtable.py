@@ -105,7 +105,7 @@ if not os.path.exists(save_path):
 #         sampled = pickle.load(f)
 
 for vf in os.listdir(save_path):
-    value = int(vf.split(['.'])[0])
+    value = int(vf.split('.')[0])
     visited[value]=True
     truthValue = bin(value)[2:]
     while len(truthValue) < pow(2, num_input):
