@@ -295,9 +295,9 @@ def train(options):
         original_nids.append(PO_nids[i])
         aug_nids.append(PO_nids[i+1])
         aug_nids.append(PO_nids[i+2])
-    print(POs)
-    print('original nids:',original_nids)
-    print('aug nids:',aug_nids)
+    # print(POs)
+    # print('original nids:',original_nids)
+    # print('aug nids:',aug_nids)
 
 
     if options.gat:
@@ -305,7 +305,7 @@ def train(options):
     else:
         add_self_loop = False
     sampler = Sampler(depth*[options.degree],include_dst_in_src=options.include,add_self_loop=add_self_loop)
-    
+
     train_blocks = sampler.sample_blocks(train_g,POs)
     train_blocks = [b.to(device) for b in train_blocks]
     pos_pairs = None
