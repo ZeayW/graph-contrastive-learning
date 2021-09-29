@@ -99,6 +99,8 @@ class Sampler(BlockSampler):
 
             #seed_nodes = {ntype: block.srcnodes[ntype].data[NID] for ntype in block.srctypes}
             seed_nodes = block.srcdata[NID]
+            if block.number_of_edges() == 0:
+                break
             # Pre-generate CSR format so that it can be used in training directly
             block.create_formats_()
             blocks.insert(0, block)
