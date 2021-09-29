@@ -203,7 +203,7 @@ def NCEloss(pos1,pos2,neg,tao):
     loss = -1*th.log(
                 th.exp(pos_similarity/tao)
                 /
-                (th.sum(th.exp(neg_similarity/tao))-1)
+                (th.sum(th.exp(neg_similarity/tao))-th.exp(1/tao))
     )
     return loss
 
