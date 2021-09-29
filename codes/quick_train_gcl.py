@@ -299,7 +299,7 @@ def train(options):
     # print('original nids:',original_nids)
     # print('aug nids:',aug_nids)
 
-
+    print('num samples',len(aug_nids))
     if options.gat:
         add_self_loop = True
     else:
