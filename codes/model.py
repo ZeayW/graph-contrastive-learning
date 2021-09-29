@@ -821,7 +821,7 @@ class MLP(nn.Module):
             self.layers.add_module('activation_{}'.format(i+1), self.activation)
             self.layers.add_module('linear_{}'.format(i+1),nn.Linear(dim1, int(dim1/2)))
             dim1 = int(dim1 / 2)
-        self.mlp_label.add_module('linear_{}'.format(nlayers),nn.Linear(dim1, out_dim))
+        self.layers.add_module('linear_{}'.format(nlayers),nn.Linear(dim1, out_dim))
     def foward(self,embedding):
         return self.layers(embedding).squeeze(-1)
 class BiClassifier_pos(nn.Module):
