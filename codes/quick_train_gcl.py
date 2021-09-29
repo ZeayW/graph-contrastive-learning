@@ -55,7 +55,7 @@ def preprocess(data_path,device,options):
 
     if options.pre_train :
         with open(os.path.join(options.pre_model_dir,'model.pkl'),'rb') as f:
-            _,classifier = pickle.load(f)
+            _,model = pickle.load(f)
     else:
         network = FuncGCN
         num_heads = options.num_heads
@@ -85,10 +85,8 @@ def preprocess(data_path,device,options):
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'w') as f:
             pass
 def load_model(device,options):
-    if options.pre_train is True:
-        model_dir = options.pre_model_dir
-    else:
-        model_dir = options.model_saving_dir
+
+    model_dir = options.model_saving_dir
     if os.path.exists(os.path.join(model_dir, 'model.pkl')) is False:
         return None,None
 
