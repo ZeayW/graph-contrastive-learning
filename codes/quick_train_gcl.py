@@ -370,7 +370,7 @@ def train(options):
             start_time = time()
             neg_embeddings = []
             blocks = [b.to(device) for b in blocks]
-            print(blocks)
+            #print(blocks)
             loss = 0
             # print("in_block:",in_blocks)
             #print("out_block:",blocks)
