@@ -305,13 +305,13 @@ def train(options):
     else:
         add_self_loop = False
     sampler = Sampler(depth*[options.degree],include_dst_in_src=options.include,add_self_loop=add_self_loop)
-    po_depths = train_g.ndata['depth'][POs].squeeze(1).numpy().tolist()
+    
     train_blocks = sampler.sample_blocks(train_g,POs)
     train_blocks = [b.to(device) for b in train_blocks]
     pos_pairs = None
     print(train_blocks)
     # print(pos_pairs)
-    print(po_depths)
+    #print(po_depths)
     #check(train_g,POs,depth)
 
     dataloader = MyNodeDataLoader(
