@@ -246,7 +246,10 @@ def train(options):
     # print('aug nids:',aug_nids)
     print(len(POs))
     print('num samples',len(aug_nids))
-    aug_nids =aug_nids[:int(len(aug_nids)/options.batch_size)*options.batch_size]
+    data_size = len(aug_nids)
+    if data_size>options.batch_size:
+        data_size = int(len(aug_nids)/options.batch_size)*options.batch_size
+    aug_nids =aug_nids[:data_size]
     if options.gat:
         add_self_loop = True
     else:
