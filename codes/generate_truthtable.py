@@ -77,10 +77,10 @@ res = full_array(range(3),[])
 
 
 visited = {}
-
+#print(num_input)
 equal_arrays = get_equal_arrays(num_input)
-#print(equal_arrays)
-
+# print(equal_arrays)
+# exit()
 num_sample = None
 if get_options().num_input == 2:
     num_sample = 10
@@ -131,37 +131,46 @@ for vf in os.listdir(save_path):
 print('num visited:',len(visited),'total',pow(2,pow(2,num_input)))
 
 while current_num<num_sample:
-    i = random.randint(1,pow(2,pow(2,num_input))-1)
+    #i = random.randint(1,pow(2,pow(2,num_input))-1)
+    num = ''
+    postive_postions = []
+    for j in range(pow(2,num_input)):
+        bit = random.randint(0,1)
+        if bit==1:
+            postive_postions.append(j)
+        num += str(bit)
+    i = int(num,2)
+
     if visited.get(i,False):
         continue
     current_num += 1
     visited[i] = True
-    truthValue = bin(i)[2:]
-    while len(truthValue)<pow(2,num_input):
-        truthValue = '0'+truthValue
+    # truthValue = bin(i)[2:]
+    # while len(truthValue)<pow(2,num_input):
+    #     truthValue = '0'+truthValue
     # deal with symmetrical equivalences
-    postive_postions = []
-    for j in range(len(truthValue)):
-        if truthValue[j]=='1':
-            postive_postions.append(j)
+    # postive_postions = []
+    # for j in range(len(truthValue)):
+    #     if truthValue[j]=='1':
+    #         postive_postions.append(j)
 
     for array in equal_arrays:
         equal_value = 0
         for position in postive_postions:
             equal_value += pow(2,pow(2,num_input)-1-array[position])
-            visited[equal_value] = True
+        visited[equal_value] = True
     # deal with complementary
     visited[pow(2,pow(2,num_input))-1-i] = True
 
     #print(truthValue,len(truthValue))
     with open(os.path.join(save_path,'{}.v'.format(i)),'w') as f:
-        f.write('module i{}_v{}(\n'.format(num_input,i))
+        f.write('module i{}_v{}(\n'.format(num_input,num))
         f.write('input [{}:0] I,\n'.format(num_input-1))
         f.write('output reg O\n')
         f.write(');\n')
         f.write('always@(*)\n\tcase(I)\n')
         for j in range(pow(2,num_input)):
-            f.write("\t\t{}'b{}: O = {};\n".format(num_input,bin(j)[2:],truthValue[j]))
+            f.write("\t\t{}'b{}: O = {};\n".format(num_input,bin(j)[2:],num[j]))
         f.write('\tendcase\n')
         f.write('endmodule\n')
 
