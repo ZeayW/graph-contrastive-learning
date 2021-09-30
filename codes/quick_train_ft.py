@@ -532,7 +532,7 @@ def train(options):
     
     max_val_recall, max_val_precision = 0.0,0.0
     print("Start training")
-
+    print(len(traindataloader))
     pre_loss = 100
     stop_score = 0
     max_F1_score = 0
