@@ -238,7 +238,7 @@ def get_reverse_graph(g):
         # print(key,value)
         rg.edata[key] = value
     return rg
-def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
+def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
     print('beta:',beta)
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
@@ -252,7 +252,7 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
         for ni, (central_nodes, input_nodes, blocks) in enumerate(valid_dataloader):
             # continue
             # print(in_blocks)
-            start_time = time()
+            start = time()
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata[label_name].squeeze(1)
@@ -281,16 +281,16 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
             total_loss += val_loss.item() * len(output_labels)
 
             error_mask = predict_labels !=output_labels
-            errors = out_blocks[-1].dstdata['ntype'][error_mask]
+            errors = blocks[-1].dstdata['ntype'][error_mask]
             if len(errors) != 0 :
                 errors = th.argmax(errors,dim=1)
                 num_errors += len(errors)
                 type_count(errors, error_count)
             fp_mask = (predict_labels != 0 ) & (output_labels == 0)
             fn_mask = (predict_labels == 0) & (output_labels != 0)
-            fps = out_blocks[-1].dstdata['ntype'][fp_mask]
+            fps = blocks[-1].dstdata['ntype'][fp_mask]
             if len(fps) != 0: fps = th.argmax(fps,dim=1)
-            fns = out_blocks[-1].dstdata['ntype'][fn_mask]
+            fns = blocks[-1].dstdata['ntype'][fn_mask]
             if len(fns) != 0: fns = th.argmax(fns, dim=1)
             type_count(fps,fp_count)
             type_count(fns,fn_count)
@@ -634,7 +634,7 @@ def train(options):
         #if options.weighted:
             #print('alpha = ',model.alpha)
         print("num of pos: ",pos_count," num of neg: ",neg_count)
-        val_loss, val_acc, val_recall,val_precision, val_F1_score = validate(valdataloader, label_name,device, model, Loss,options.alpha,beta)
+        val_loss, val_acc, val_recall,val_precision, val_F1_score = validate(valdataloader, label_name,device, model, mlp,Loss,options.alpha,beta)
         if epoch % 1 == 0 and get_options().rel:
             if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
             #print(model.GCN1.layers[0].attn_e.grad)
