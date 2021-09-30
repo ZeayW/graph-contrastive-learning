@@ -128,6 +128,7 @@ for vf in os.listdir(save_path):
     # deal with complementary
     visited[pow(2, pow(2, num_input)) - 1 - value] = True
 
+
 print('num visited:',len(visited),'total',pow(2,pow(2,num_input)))
 
 while current_num<num_sample:
@@ -165,7 +166,7 @@ while current_num<num_sample:
 
     #print(truthValue,len(truthValue))
     with open(os.path.join(save_path,'{}.v'.format(i)),'w') as f:
-        f.write('module i{}_v{}(\n'.format(num_input,num))
+        f.write('module i{}_v{}(\n'.format(num_input,i))
         f.write('input [{}:0] I,\n'.format(num_input-1))
         f.write('output reg O\n')
         f.write(');\n')
