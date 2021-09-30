@@ -593,7 +593,7 @@ def train(options):
             tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
             tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
             fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
-
+            print(ni,train_loss.item())
             start_time = time()
             optim.zero_grad()
             train_loss.backward()
