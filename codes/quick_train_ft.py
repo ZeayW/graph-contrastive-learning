@@ -238,7 +238,7 @@ def get_reverse_graph(g):
         # print(key,value)
         rg.edata[key] = value
     return rg
-def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta,is_FuncGCN1,is_FuncGCN2):
+def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
     print('beta:',beta)
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
@@ -634,7 +634,7 @@ def train(options):
         #if options.weighted:
             #print('alpha = ',model.alpha)
         print("num of pos: ",pos_count," num of neg: ",neg_count)
-        val_loss, val_acc, val_recall,val_precision, val_F1_score = validate(valdataloader, label_name,device, model, Loss,options.alpha,beta,is_FuncGCN1,is_FuncGCN2)
+        val_loss, val_acc, val_recall,val_precision, val_F1_score = validate(valdataloader, label_name,device, model, Loss,options.alpha,beta)
         if epoch % 1 == 0 and get_options().rel:
             if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
             #print(model.GCN1.layers[0].attn_e.grad)
