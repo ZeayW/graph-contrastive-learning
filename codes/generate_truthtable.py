@@ -144,7 +144,7 @@ while current_num<num_sample:
 
     if visited.get(i,False):
         continue
-    print(num)
+    print(i)
     current_num += 1
     visited[i] = True
     # truthValue = bin(i)[2:]
