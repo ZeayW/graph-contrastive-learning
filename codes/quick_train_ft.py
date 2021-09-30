@@ -551,6 +551,8 @@ def train(options):
             #print(in_blocks)
             #print(model.conv.gate_functions[11].weight)
             #print(mlp.layers[2].weight)
+            if ni == len(traindataloader)-1:
+                continue
             start_time = time()
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
@@ -593,7 +595,7 @@ def train(options):
             tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
             tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
             fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
-            print(ni,train_loss.item())
+            #print(ni,train_loss.item())
             start_time = time()
             optim.zero_grad()
             train_loss.backward()
