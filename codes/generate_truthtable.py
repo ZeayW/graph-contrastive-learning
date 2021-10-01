@@ -95,7 +95,7 @@ elif get_options().num_input == 6:
 elif get_options().num_input == 7:
     num_sample = 4096
 else:
-    num_sample = 4096
+    num_sample = 10000
 
 current_num = 0
 # sampled = []
@@ -130,7 +130,7 @@ for vf in os.listdir(save_path):
 
 
 print('num visited:',len(visited),'total',pow(2,pow(2,num_input)))
-
+size =0
 while current_num<num_sample:
     #i = random.randint(1,pow(2,pow(2,num_input))-1)
     num = ''
@@ -141,10 +141,10 @@ while current_num<num_sample:
             postive_postions.append(j)
         num += str(bit)
     i = int(num,2)
-
     if visited.get(i,False):
         continue
-    print(i)
+    size += 1
+    print(size,i)
     current_num += 1
     visited[i] = True
     # truthValue = bin(i)[2:]
