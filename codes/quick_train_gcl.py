@@ -223,6 +223,7 @@ def train(options):
     # val_data_file = os.path.join(data_path,'rocket2.pkl')
     #split_dir = 'splits/rokcet'
     in_nlayers,out_nlayers = options.in_nlayers,options.out_nlayers
+    num_epoch = options.num_epoch
     if options.preprocess :
         preprocess(data_path,device,options)
         return
@@ -306,7 +307,7 @@ def train(options):
     max_F1_score = 0
     pre_loss = 100
     stop_score = 0
-    for epoch in range(options.num_epoch):
+    for epoch in range(num_epoch):
         runtime = 0
 
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
