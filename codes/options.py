@@ -5,7 +5,7 @@ def get_options(args=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--learning_rate", type=float, default=1e-3)
     parser.add_argument("--batch_size", type=int, default=512)
-    parser.add_argument("--num_epoch", type=float, default=1000)
+    parser.add_argument("--num_epoch", type=float, default=1500)
     parser.add_argument("--in_dim", type=int, default=22)
     parser.add_argument("--out_dim", type=int, default=256)
     parser.add_argument("--hidden_dim", type=int, default=512)
