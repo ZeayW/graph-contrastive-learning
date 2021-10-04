@@ -215,7 +215,10 @@ def train(options):
     # Dump the preprocessing result to save time!
     # for region detecion, the data_path is 'data/region', for boundary(io) detection, the data_path is 'data/boundary'
     data_path = '../data/gcl2/'
-    train_data_file = os.path.join(data_path,'i{}.pkl'.format(options.num_input))
+    train_data_files = []
+    for i in range(4,options.num_input+1):
+        train_data_files.append(os.path.join(data_path,'i{}.pkl'.format(i)))
+    #train_data_file = os.path.join(data_path,'i{}.pkl'.format(options.num_input))
     # neg_data_file = os.path.join(data_path, 'rocket2.pkl')
     # val_data_file = os.path.join(data_path,'rocket2.pkl')
     #split_dir = 'splits/rokcet'
@@ -226,53 +229,62 @@ def train(options):
     print(options)
 
     print("Loading data...")
+    data_loaders = []
+    for file in train_data_files:
+        with open(file,'rb') as f:
+            train_g,POs,depth = pickle.load(f)
+            train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+            train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+            train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
 
-    with open(train_data_file,'rb') as f:
-        train_g,POs,depth = pickle.load(f)
-    train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-    train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-    train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
+        PO_nids = list(POs.keys())
+        #PO_depths = list(POs.values())
+        original_nids, aug_nids= [],[]
+        for i in range(0,len(PO_nids),3):
+            original_nids.append(PO_nids[i])
+            aug_nids.append(PO_nids[i+1])
+            aug_nids.append(PO_nids[i+2])
 
-    PO_nids = list(POs.keys())
-    #PO_depths = list(POs.values())
-    original_nids, aug_nids= [],[]
-    for i in range(0,len(PO_nids),3):
-        original_nids.append(PO_nids[i])
-        aug_nids.append(PO_nids[i+1])
-        aug_nids.append(PO_nids[i+2])
-    # print(POs)
-    # print('original nids:',original_nids)
-    # print('aug nids:',aug_nids)
-    print(len(POs))
-    print('num samples',len(aug_nids))
-    data_size = len(aug_nids)
-    if data_size>options.batch_size:
-        data_size = int(len(aug_nids)/options.batch_size)*options.batch_size
-    aug_nids =aug_nids[:data_size]
-    if options.gat:
-        add_self_loop = True
-    else:
-        add_self_loop = False
-    sampler = Sampler(depth*[options.degree],include_dst_in_src=options.include,add_self_loop=add_self_loop)
+        print(len(POs))
+        print('num samples',len(aug_nids))
+        data_size = len(aug_nids)
+        if data_size>options.batch_size:
+            data_size = int(len(aug_nids)/options.batch_size)*options.batch_size
+        aug_nids =aug_nids[:data_size]
+        if options.gat:
+            add_self_loop = True
+        else:
+            add_self_loop = False
+        sampler = Sampler(depth*[options.degree],include_dst_in_src=options.include,add_self_loop=add_self_loop)
 
-    train_blocks = sampler.sample_blocks(train_g,POs)
-    train_blocks = [b.to(device) for b in train_blocks]
-    pos_pairs = None
+        train_blocks = sampler.sample_blocks(train_g,POs)
+        train_blocks = [b.to(device) for b in train_blocks]
+        pos_pairs = None
 
-    print(train_blocks)
-    # print(pos_pairs)
-    #print(po_depths)
-    #check(train_g,POs,depth)
-
-    dataloader = MyNodeDataLoader(
-        False,
-        train_g,
-        aug_nids,
-        sampler,
-        batch_size=options.batch_size,
-        shuffle=False,
-        drop_last=False,
-    )
+        print(train_blocks)
+        # print(pos_pairs)
+        #print(po_depths)
+        #check(train_g,POs,depth)
+        data_loaders.append(
+            MyNodeDataLoader(
+                False,
+                train_g,
+                aug_nids,
+                sampler,
+                batch_size=options.batch_size,
+                shuffle=False,
+                drop_last=False,
+            )
+        )
+        # dataloader = MyNodeDataLoader(
+        #     False,
+        #     train_g,
+        #     aug_nids,
+        #     sampler,
+        #     batch_size=options.batch_size,
+        #     shuffle=False,
+        #     drop_last=False,
+        # )
 
 
     print("Data successfully loaded")
@@ -298,37 +310,38 @@ def train(options):
 
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
-        for ni, (central_nodes,input_nodes,blocks) in enumerate(dataloader):
-            #continue
-            start_time = time()
-            neg_embeddings = []
-            blocks = [b.to(device) for b in blocks]
-            #print(blocks)
-            loss = 0
+        for dataloader in data_loaders:
+            for ni, (central_nodes,input_nodes,blocks) in enumerate(dataloader):
+                #continue
+                start_time = time()
+                neg_embeddings = []
+                blocks = [b.to(device) for b in blocks]
+                #print(blocks)
+                loss = 0
 
-            embeddings = model(blocks, blocks[0].srcdata['f_input'])
-            for i in range(0,len(embeddings),2):
-                loss += NCEloss(embeddings[i],embeddings[i+1],embeddings,options.tao)
-                loss += NCEloss(embeddings[i+1], embeddings[i], embeddings, options.tao)
-            loss = loss / len(embeddings)
-            total_num +=1
-            total_loss += loss
-            endtime = time()
-            runtime += endtime - start_time
+                embeddings = model(blocks, blocks[0].srcdata['f_input'])
+                for i in range(0,len(embeddings),2):
+                    loss += NCEloss(embeddings[i],embeddings[i+1],embeddings,options.tao)
+                    loss += NCEloss(embeddings[i+1], embeddings[i], embeddings, options.tao)
+                loss = loss / len(embeddings)
+                total_num +=1
+                total_loss += loss
+                endtime = time()
+                runtime += endtime - start_time
 
 
-            #print(loss.item())
-            # val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device,
-            #                                                             model, Loss, options.alpha, beta,
-            #                                                             depth, width, num_aug, po_depths,query_embedding,
-            #                                                             thredshold=0.0)
-            start_time = time()
-            optim.zero_grad()
-            loss.backward()
-           # print(model.GCN1.layers[0].attn_n.grad)
-            optim.step()
-            endtime = time()
-            runtime += endtime-start_time
+                #print(loss.item())
+                # val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device,
+                #                                                             model, Loss, options.alpha, beta,
+                #                                                             depth, width, num_aug, po_depths,query_embedding,
+                #                                                             thredshold=0.0)
+                start_time = time()
+                optim.zero_grad()
+                loss.backward()
+               # print(model.GCN1.layers[0].attn_n.grad)
+                optim.step()
+                endtime = time()
+                runtime += endtime-start_time
 
         Train_loss = total_loss / total_num
 
