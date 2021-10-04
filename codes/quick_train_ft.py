@@ -10,7 +10,7 @@ import os
 from MyDataLoader_ud import *
 from time import time
 from random import shuffle
-
+import itertools
 def DAG2UDG(g):
     edges = g.edges()
     reverse_edges = (edges[1],edges[0])
@@ -513,7 +513,7 @@ def train(options):
     print(options.nlabels)
     print(Loss)
     optim = th.optim.Adam(
-        {'MLP':mlp.parameters(),'model':model.parameters()}, options.learning_rate, weight_decay=options.weight_decay
+        itertools.chain(mlp.parameters(),model.parameters()), options.learning_rate, weight_decay=options.weight_decay
     )
     model.train()
     mlp.train()
