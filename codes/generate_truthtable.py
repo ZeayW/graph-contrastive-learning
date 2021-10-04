@@ -109,6 +109,7 @@ if not os.path.exists(save_path):
 for vf in os.listdir(save_path):
     if not vf.endswith('.v') :
         continue
+    current_num +=1
     value = int(vf.split('.')[0])
     visited[value]=True
     truthValue = bin(value)[2:]
@@ -130,6 +131,7 @@ for vf in os.listdir(save_path):
 
 
 print('num visited:',len(visited),'total',pow(2,pow(2,num_input)))
+
 size =0
 while current_num<num_sample:
     #i = random.randint(1,pow(2,pow(2,num_input))-1)
