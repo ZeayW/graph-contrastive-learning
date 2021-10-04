@@ -93,7 +93,7 @@ elif get_options().num_input == 5:
 elif get_options().num_input == 6:
     num_sample = 2048
 elif get_options().num_input == 7:
-    num_sample = 4096
+    num_sample = 10000
 else:
     num_sample = 10000
 
