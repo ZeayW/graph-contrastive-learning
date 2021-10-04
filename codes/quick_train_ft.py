@@ -512,10 +512,10 @@ def train(options):
     else: Loss = nn.BCEWithLogitsLoss(pos_weight=th.FloatTensor([options.pos_weight]).to(device))
     print(options.nlabels)
     print(Loss)
-
     optim = th.optim.Adam(
-        mlp.parameters(), options.learning_rate, weight_decay=options.weight_decay
+        {'MLP':mlp.parameters(),'model':model.parameters()}, options.learning_rate, weight_decay=options.weight_decay
     )
+    model.train()
     mlp.train()
     # if model.GCN1 is not None:model.GCN1.train()
     # if model.GCN2 is not None:model.GCN2.train()
