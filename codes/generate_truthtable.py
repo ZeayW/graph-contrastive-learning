@@ -134,7 +134,7 @@ for vf in os.listdir(save_path):
 
 
 print('num visited:',len(visited),'total',pow(2,pow(2,num_input)))
-
+print('equal transformation: ',len(equal_arrays))
 size =0
 while current_num<num_sample:
     #i = random.randint(1,pow(2,pow(2,num_input))-1)
