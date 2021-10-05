@@ -134,7 +134,7 @@ class MyNodeCollator(NodeCollator):
                while len(items) !=get_options().batch_size:
                   items.add(randint(0,self.g.num_nodes()))
                items = torch.tensor(list(items))
-        print(items)
+        #print(items)
         blocks = self.block_sampler.sample_blocks(self.g, items)
 
         #print(blocks[-1].dstnodes())

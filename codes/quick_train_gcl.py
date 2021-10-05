@@ -246,8 +246,7 @@ def train(options):
             original_nids.append(PO_nids[i])
             aug_nids.append(PO_nids[i+1])
             aug_nids.append(PO_nids[i+2])
-        for po in PO_nids:
-            print(len(train_g.successors(po)))
+
         #print(PO_nids)
         #print(len(POs))
         print('num samples',len(aug_nids))

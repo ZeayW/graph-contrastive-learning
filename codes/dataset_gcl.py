@@ -80,7 +80,7 @@ class Dataset_gcl(DGLDataset):
         for vf in os.listdir(self.datapath):
             if not vf.endswith('.v'):
                 continue
-            PO = []
+            #PO = []
             print('\ngenerate positive samples for {}'.format(vf))
             value = vf.split('_')[2][1:]
             parser = DcParser('i{}_v{}'.format(options.num_input, value))
@@ -90,7 +90,7 @@ class Dataset_gcl(DGLDataset):
                 continue
             original_graph, original_PO, original_depth = parse_single_file(nodes, edges, output_node)
             self.POs[original_PO+start_nid] = original_depth
-            PO.append((original_PO+start_nid,original_depth))
+            #PO.append((original_PO+start_nid,original_depth))
             self.graphs.append(original_graph)
             start_nid += original_graph.number_of_nodes()
             print('depth:',original_depth)
