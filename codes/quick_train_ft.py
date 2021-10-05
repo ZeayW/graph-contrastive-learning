@@ -403,23 +403,24 @@ def train(options):
         label_name = 'adder_o'
 
     print(train_g.ndata)
-    train_g.ndata['label_o'] = train_g.ndata[label_name]
-    val_g.ndata['label_o'] = val_g.ndata[label_name]
-    mask_sub_train = train_g.ndata['sub_o']>0
-    mask_sub_val = val_g.ndata['sub_o'] > 0
-    mask_mul_train = train_g.ndata['mul_o'] > 0
-    mask_mul_val = val_g.ndata['mul_o'] > 0
-    if options.add ==1:
-        train_g.ndata['label_o'][mask_mul_train] = 1
-        val_g.ndata['label_o'][mask_mul_val] = 1
-    elif options.add == 2:
-        train_g.ndata['label_o'][mask_sub_train] = 1
-        val_g.ndata['label_o'][mask_sub_val] = 1
-    elif options.add == 3:
-        train_g.ndata['label_o'][mask_mul_train] = 1
-        val_g.ndata['label_o'][mask_mul_val] = 1
-        train_g.ndata['label_o'][mask_sub_train] = 1
-        val_g.ndata['label_o'][mask_sub_val] = 1
+    if options.add != -1:
+        train_g.ndata['label_o'] = train_g.ndata[label_name]
+        val_g.ndata['label_o'] = val_g.ndata[label_name]
+        mask_sub_train = train_g.ndata['sub_o']>0
+        mask_sub_val = val_g.ndata['sub_o'] > 0
+        mask_mul_train = train_g.ndata['mul_o'] > 0
+        mask_mul_val = val_g.ndata['mul_o'] > 0
+        if options.add ==1:
+            train_g.ndata['label_o'][mask_mul_train] = 1
+            val_g.ndata['label_o'][mask_mul_val] = 1
+        elif options.add == 2:
+            train_g.ndata['label_o'][mask_sub_train] = 1
+            val_g.ndata['label_o'][mask_sub_val] = 1
+        elif options.add == 3:
+            train_g.ndata['label_o'][mask_mul_train] = 1
+            val_g.ndata['label_o'][mask_mul_val] = 1
+            train_g.ndata['label_o'][mask_sub_train] = 1
+            val_g.ndata['label_o'][mask_sub_val] = 1
     #print(len(muldiv_nodes))
     #print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
     #train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
@@ -440,22 +441,26 @@ def train(options):
 
     unlabel_low(train_g, options.unlabel)
     unlabel_low(val_g, options.unlabel)
+    if options.add==-1:
+        label_name = 'label_o'
+        train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = 1
+        val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
     # skip muldiv
     # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # predict muldiv
 
     #print('muldiv:', len(is_output[is_output == -1]))
-    print('muldiv_outputs:', len(train_g.ndata['mul_o'][train_g.ndata['mul_o'] ==1]))
-    print('muldiv_inputs1:', len(train_g.ndata['mul_i'][train_g.ndata['mul_i'] == 1]))
-    print('muldiv_inputs2:', len(train_g.ndata['mul_i'][train_g.ndata['mul_i'] == 2]))
-    print('sub_outputs:', len(train_g.ndata['sub_o'][train_g.ndata['sub_o'] == 1]))
-    print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 1]))
-    print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 2]))
-    print('adder_outputs:', len(train_g.ndata['adder_o'][train_g.ndata['adder_o'] == 1]))
-    print('adder_inputs:', len(train_g.ndata['adder_i'][train_g.ndata['adder_i'] == 1]))
-
-    print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
+    # print('muldiv_outputs:', len(train_g.ndata['mul_o'][train_g.ndata['mul_o'] ==1]))
+    # print('muldiv_inputs1:', len(train_g.ndata['mul_i'][train_g.ndata['mul_i'] == 1]))
+    # print('muldiv_inputs2:', len(train_g.ndata['mul_i'][train_g.ndata['mul_i'] == 2]))
+    # print('sub_outputs:', len(train_g.ndata['sub_o'][train_g.ndata['sub_o'] == 1]))
+    # print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 1]))
+    # print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 2]))
+    # print('adder_outputs:', len(train_g.ndata['adder_o'][train_g.ndata['adder_o'] == 1]))
+    # print('adder_inputs:', len(train_g.ndata['adder_i'][train_g.ndata['adder_i'] == 1]))
+    #
+    # print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
 
     train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
 
