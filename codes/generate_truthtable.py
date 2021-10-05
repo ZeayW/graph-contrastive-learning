@@ -80,7 +80,8 @@ visited = {}
 #print(num_input)
 var_arrays = full_array(range(num_input),[])
 equal_arrays = get_equal_arrays(num_input,var_arrays)
-print(equal_arrays)
+#print(equal_arrays)
+print(len(equal_arrays))
 # print(equal_arrays)
 # exit()
 num_sample = None
