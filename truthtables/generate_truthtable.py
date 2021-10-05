@@ -99,9 +99,9 @@ elif get_options().num_input == 5:
 elif get_options().num_input == 6:
     num_sample = 100000
 elif get_options().num_input == 7:
-    num_sample = 10000
+    num_sample = 100000
 else:
-    num_sample = 20000
+    num_sample = 200000
 
 current_num = 0
 # sampled = []
