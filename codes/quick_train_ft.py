@@ -357,8 +357,8 @@ def train(options):
     #data_path = 'data/boundary/'
     data_path = options.datapath
     print(data_path)
-    train_data_file = os.path.join(data_path,'rocket2.pkl')
-    val_data_file = os.path.join(data_path,'boom2.pkl')
+    train_data_file = os.path.join(data_path,'boom2.pkl')
+    val_data_file = os.path.join(data_path,'rocket2.pkl')
     #split_dir = 'splits/rokcet'
     if options.region:
         label_name = 'label_ad'
