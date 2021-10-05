@@ -38,7 +38,7 @@ def full_array(elements,visited):
     return res
 
 
-def get_equal_arrays(num_input):
+def get_equal_arrays(num_input,var_arrays):
 
     equal_arrays = []
     varValues = []
@@ -48,7 +48,7 @@ def get_equal_arrays(num_input):
             value = '0'+value
         varValues.append(value)
     #print(varValues)
-    var_arrays = full_array(range(num_input),[])
+    #var_arrays = full_array(range(num_input),[])
     for var_array in var_arrays:
         truthValue = list(range(pow(2,num_input)))
         for i,varValue in enumerate(varValues):
@@ -78,7 +78,9 @@ res = full_array(range(3),[])
 
 visited = {}
 #print(num_input)
-equal_arrays = get_equal_arrays(num_input)
+var_arrays = full_array(range(num_input),[])
+equal_arrays = get_equal_arrays(num_input,var_arrays)
+print(equal_arrays)
 # print(equal_arrays)
 # exit()
 num_sample = None
@@ -95,7 +97,7 @@ elif get_options().num_input == 6:
 elif get_options().num_input == 7:
     num_sample = 10000
 else:
-    num_sample = 10000
+    num_sample = 20000
 
 current_num = 0
 # sampled = []
