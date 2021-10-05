@@ -647,6 +647,8 @@ def train(options):
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
         for ni, (in_blocks,out_blocks) in enumerate(traindataloader):
+            if ni == len(traindataloader)-1:
+                continue
             #continue
             #print(in_blocks)
             start_time = time()
