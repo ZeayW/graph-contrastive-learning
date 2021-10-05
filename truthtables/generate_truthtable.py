@@ -1,3 +1,6 @@
+import sys
+
+sys.path.append("..")
 from options import get_options
 import os
 import random
