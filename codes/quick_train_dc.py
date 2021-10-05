@@ -508,6 +508,8 @@ def train(options):
             val_g.ndata['label_o'][mask_sub_val] = 1
     else:
         label_name = 'label_o'
+        train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
+        val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     #print(len(muldiv_nodes))
     #print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
     #train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
@@ -560,7 +562,7 @@ def train(options):
         val_g.ndata['f_input'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim),dtype=th.float)
         val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim),dtype=th.float)
         val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
-    print(val_g.ndata['ntype2'])
+    #print(val_g.ndata['ntype2'])
     if model.GCN1 is not None and type(model.GCN1) == FuncGCN:
         is_FuncGCN1 = True
     if model.GCN2 is not None and type(model.GCN2) == FuncGCN:
