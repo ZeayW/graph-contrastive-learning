@@ -1,7 +1,7 @@
 import sys
 
 sys.path.append("..")
-from options import get_options
+from generate_options import get_options
 import os
 import random
 import pickle
