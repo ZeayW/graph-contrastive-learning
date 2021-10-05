@@ -560,6 +560,7 @@ def train(options):
         val_g.ndata['f_input'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim),dtype=th.float)
         val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim),dtype=th.float)
         val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
+    print(val_g.ndata['ntype2'])
     if model.GCN1 is not None and type(model.GCN1) == FuncGCN:
         is_FuncGCN1 = True
     if model.GCN2 is not None and type(model.GCN2) == FuncGCN:
@@ -647,8 +648,6 @@ def train(options):
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
         for ni, (in_blocks,out_blocks) in enumerate(traindataloader):
-            if ni == len(traindataloader)-1:
-                continue
             #continue
             #print(in_blocks)
             start_time = time()
