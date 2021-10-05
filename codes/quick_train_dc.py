@@ -508,6 +508,7 @@ def train(options):
             val_g.ndata['label_o'][mask_sub_val] = 1
     else:
         label_name = 'label_o'
+        
         train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
         val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     #print(len(muldiv_nodes))
