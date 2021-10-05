@@ -529,9 +529,8 @@ def train(options):
     unlabel_low(val_g, options.unlabel)
     if options.add==-1:
         label_name = 'label_o'
-        print('a')
-        train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
-        val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
+        train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = 1
+        val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
     # skip muldiv
     # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
