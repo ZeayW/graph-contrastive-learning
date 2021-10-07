@@ -849,7 +849,7 @@ def random_replace(g,rand_nid,nid,id2type,edge2port,output_nid):
     if 'AND' in ntype and rand_index==0:
         prob = random.random()
         if prob >=0.5:
-            print(replace_cell.nodes)
+            print(ntype,replace_cell.nodes)
             nid, output_nid, _ = random_replace(g, rand_nid,nid, id2type, edge2port, output_nid)
             print('replace and:',id2type[rand_nid],id2type[nid-1])
             nid,output_nid,_=random_replace(g,nid-1,nid,id2type,edge2port,output_nid)
