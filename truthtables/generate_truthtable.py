@@ -131,7 +131,7 @@ for vf in os.listdir(save_path):
         equal_value = 0
         for position in postive_postions:
             equal_value += pow(2, pow(2, num_input) - 1 - array[position])
-            visited[equal_value] = True
+        visited[equal_value] = True
     # deal with complementary
     visited[pow(2, pow(2, num_input)) - 1 - value] = True
 
