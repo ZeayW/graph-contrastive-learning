@@ -93,19 +93,20 @@ class Dataset_gcl(DGLDataset):
             #PO.append((original_PO+start_nid,original_depth))
             self.graphs.append(original_graph)
             start_nid += original_graph.number_of_nodes()
-            print('depth:',original_depth)
+            #print('depth:',original_depth)
             if original_depth>max_depth:
                 max_depth = original_depth
-            for i in range(2):
-                print('generating positive sample{}'.format(i))
-                new_nodes, new_edges,output_nid = transform(nodes, edges, output_node,options)
-                new_graph, new_PO, new_depth = parse_single_file(new_nodes, new_edges, output_nid)
-                self.POs[new_PO+start_nid] = new_depth
-                self.graphs.append(new_graph)
-                start_nid += new_graph.number_of_nodes()
-                if new_depth>max_depth:
-                    max_depth = new_depth
-                print('depth:',new_depth)
+            for num2replace in range(1,4):
+                for i in range(2):
+                    print('generating positive sample{}, num replaced = {}'.format(i,num2replace))
+                    new_nodes, new_edges,output_nid = transform(nodes, edges, output_node,num2replace,options)
+                    new_graph, new_PO, new_depth = parse_single_file(new_nodes, new_edges, output_nid)
+                    self.POs[new_PO+start_nid] = new_depth
+                    self.graphs.append(new_graph)
+                    start_nid += new_graph.number_of_nodes()
+                    if new_depth>max_depth:
+                        max_depth = new_depth
+                    #print('depth:',new_depth)
         self.depth = max_depth
         self.batch_graph = dgl.batch(self.graphs)
 
