@@ -214,7 +214,7 @@ def train(options):
     device = th.device("cuda:"+str(options.gpu) if th.cuda.is_available() else "cpu")
     # Dump the preprocessing result to save time!
     # for region detecion, the data_path is 'data/region', for boundary(io) detection, the data_path is 'data/boundary'
-    data_path = '../data/gcl2/'
+    data_path = '../data/gcl_new/'
     train_data_files = []
     for i in range(4,options.num_input+1):
         train_data_files.append(os.path.join(data_path,'i{}.pkl'.format(i)))
