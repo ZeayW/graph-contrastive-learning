@@ -471,18 +471,47 @@ equal_replaces['OR3'] = [
         output_link= 'o',
         input_links= {'A1':[('o','A1'),('i1','A')],'A2':[('i2','A1')],'A3':[('i2','A2')]}
     ),
-
-    # a+b+c = a +a'(b+c) = ab + xor(a,b) +a'c
+    # a+b+c = a +a'(b+c) = ab+ab'+a'b+a'c = mux(c,b,a) + xor(a,b)
     Cell(
         nodes = {
-            'o':(1,{'type':'OR3'}),
-            'w1':(2,{'type':'AND2'}),'w2':(3,{'type':'XOR2'}),'w3':(4,{'type':'AND2'}),
-            'i1':(5,{'type':'INV'})
+            'o':(1,{'type':'OR2'}),
+            'w1':(2,{'type':'MUX2'}),'w2':(3,{'type':'XOR2'}),
         },
-        edges=[('w1','o','A1'),('w2','o','A2'),('w3','o','A3'),('i1','w3','A1')],
+        edges=[('w1','o','A1'),('w2','o','A2')],
         output_link='o',
-        input_links= {'A1':[('w1','A1'),('w2','A1'),('i1','A')],'A2':[('w1','A2'),('w2','A2')],'A3':[('w3','A2')]}
+        input_links= {'A1':[('w1','S0'),('w2','A1')],'A2':[('w1','A2'),('w2','A2')],'A3':[('w1','A1')]}
+    ),
+    # a+b+c = a(b+c) + xor(a,(b+c))
+    Cell(
+        nodes = {
+            'o':(1,{'type':'OR2'}),
+            'w1':(2,{'type':'AND2'}),'w2':(3,{'type':'XOR2'}),
+            'i1':(4,{'type':'OR2'})
+        },
+        edges=[('w1','o','A1'),('w2','o','A2'),('i1','w1','A2'),('i1','w2','A2')],
+        output_link='o',
+        input_links= {'A1':[('w1','A1'),('w2','A1')],'A2':[('i1','A1')],'A3':[('i1','A2')]}
+    ),
+    #a+b+c = a+a'(b+c+d) = a(b+b'+c') +a'(b+c)
+    #        = ab+xor(a,b)+xor(a,c)
+    Cell(
+        nodes = {'o':(1,{'type':'OR3'}),
+                 'w1':(2,{'type':'AND2'}),'w2':(3,{'type':'XOR2'}),'w3':(4,{'type':'XOR2'}),
+                 },
+        edges = [('w1','o','A1'),('w2','o','A2'),('w3','o','A3')],
+        output_link= 'o',
+        input_links= {'A1':[('w1','A1'),('w2','A1'),('w3','A1')],'A2':[('w1','A2'),('w2','A2')],'A3':[('w3','A2')]}
+    ),
+    # a+b+c = maj(a,b,c) +a+b+c
+    Cell(
+        nodes = {'o':(1,{'type':'OR4'}),
+                 'w1':(2,{'type':'MAJ'}),
+                 },
+        edges = [('w1','o','A1')],
+        output_link= 'o',
+        input_links= {'A1':[('w1','A1'),('o','A2')],'A2':[('w1','A2'),('o','A3')],'A3':[('w1','A3'),('o','A4')]}
     )
+    #  a+b+c = maj(a,b,c) + mux(a,c',b) + c
 ]
 
 equal_replaces['OR4'] = [
@@ -512,7 +541,31 @@ equal_replaces['OR4'] = [
         edges = [('w1','o','A2'),('i1','w1','A1'),('i2','w1','A2')],
         output_link= 'o',
         input_links= {'A1':[('o','A1'),('i1','A')],'A2':[('i2','A1')],'A3':[('i2','A2')],'A4':[('i2','A3')]}
-    )
+    ),
+
+    # a+b+c+d = mux(c+d,b,a)+xor(a,b)
+    Cell(
+        nodes={
+            'o': (1, {'type': 'OR2'}),
+            'w1': (2, {'type': 'MUX2'}), 'w2': (3, {'type': 'XOR2'}),
+            'i1':(4,{'type':'OR2'})
+        },
+        edges=[('w1', 'o', 'A1'), ('w2', 'o', 'A2'),('i1','w1','A1')],
+        output_link='o',
+        input_links={'A1': [('w1', 'S0'), ('w2', 'A1')], 'A2': [('w1', 'A2'), ('w2', 'A2')], 'A3': [('i1', 'A1')],'A4': [('i1', 'A2')]}
+    ),
+    #a+b+c+d = a+a'(b+c+d) = a(b+b'+c'+d') +a'(b+c+d)
+    #        = ab+xor(a,b)+xor(a,c)+xor(a,d)
+    Cell(
+        nodes = {'o':(1,{'type':'OR4'}),
+                 'w1':(2,{'type':'AND2'}),'w2':(3,{'type':'XOR2'}),'w3':(4,{'type':'XOR2'}),'w4':(5,{'type':'XOR2'}),
+                 },
+        edges = [('w1','o','A1'),('w2','o','A2'),('w3','o','A3'),('w4','o','A4')],
+        output_link= 'o',
+        input_links= {'A1':[('w1','A1'),('w2','A1'),('w3','A1'),('w4','A1')],'A2':[('w1','A2'),('w2','A2')],'A3':[('w3','A2')],'A4':[('w4','A2')]}
+    ),
+
+
 ]
 
 equal_replaces['NOR2'] = [
@@ -669,9 +722,7 @@ equal_replaces['MUX4'] = [
 
 def remove_adjacent_inv(g,n1,n2,edge2port):
     sucs = g.successors(n2)
-    pre =None
-    for item in g.predecessors(n1):
-        pre = item
+    pre = list(g.predecessors(n1))[0]
 
     g.remove_node(n2)
 
@@ -682,12 +733,14 @@ def remove_adjacent_inv(g,n1,n2,edge2port):
         for port in edge2port[(n2,suc)]:
             edge2port[new_edge].append(port)
 
-def random_replace(g,nid,id2type,edge2port,output_nid):
-    rand_idx = random.randint(0, g.number_of_nodes() - 1)
-    rand_nid = list(g.nodes.keys())[rand_idx]
+
+def random_replace(g,rand_nid,nid,id2type,edge2port,output_nid):
+    # rand_idx = random.randint(0, g.number_of_nodes() - 1)
+    # rand_nid = list(g.nodes.keys())[rand_idx]
+    replace_score = 0.0
     ntype = id2type[rand_nid]
     if ntype == 'PI' or ntype == 'INV':
-        return (nid,output_nid,False)
+        return (nid,output_nid,0)
     sucessors = list(g.successors(rand_nid))
     predecessors = list(g.predecessors(rand_nid))
     fanins = {}
@@ -763,20 +816,25 @@ def random_replace(g,nid,id2type,edge2port,output_nid):
     #print(g.edges)
     num_remove = 0
     # remove adjacent INVs
-    if new_nodes[replace_cell.output_link][1]['type'] == 'INV':
+    output_node = new_nodes[replace_cell.output_link]
+    if output_node[1]['type'] == 'INV':
+        replace_score +=0.5
+    else:
+        replace_score += 1
+    if output_node[1]['type'] == 'INV':
         for sucessor in sucessors:
             if id2type[sucessor] == 'INV':
                 num_remove += 1
                 if len(list(g.successors(sucessor))) == 0:
-                    output_nid = list(g.predecessors(new_nodes[replace_cell.output_link][0]))[0]
+                    output_nid = list(g.predecessors(output_node[0]))[0]
                     print(new_nodes[replace_cell.output_link][0],sucessor)
                     print('****************change output********************', output_nid)
                 #print('\t\tsuc remove:({},{})'.format(new_nodes[replace_cell.output_link][0], sucessor))
-                remove_adjacent_inv(g, new_nodes[replace_cell.output_link][0], sucessor,edge2port)
-        if len(list(g.successors(new_nodes[replace_cell.output_link][0])))==0 \
-                and new_nodes[replace_cell.output_link][0]!=output_nid:
-            print(new_nodes[replace_cell.output_link][0],output_nid)
-            g.remove_node(new_nodes[replace_cell.output_link][0])
+                remove_adjacent_inv(g,output_node[0], sucessor,edge2port)
+        if len(list(g.successors(output_node[0])))==0 \
+                and output_node[0]!=output_nid:
+            print(output_node[0],output_nid)
+            g.remove_node(output_node[0])
     for port,fanin in fanins.items():
         if id2type[fanin] == 'INV':
             for node,p in replace_cell.input_links[port]:
@@ -787,7 +845,15 @@ def random_replace(g,nid,id2type,edge2port,output_nid):
             if len(list(g.successors(fanin)))==0 and fanin!=output_nid:
                 g.remove_node(fanin)
     #print('\t\treplaced_node', ntype,rand_nid,"index",rand_index,"removed inv:",num_remove)
-    return (nid,output_nid,True)
+
+    if 'AND' in ntype and rand_index==0:
+        prob = random.random()
+        if prob >=0.5:
+            nid, output_nid, _ = random_replace(g, rand_nid,nid, id2type, edge2port, output_nid)
+            print(id2type[rand_nid],id2type[nid-1])
+            nid,output_nid,_=random_replace(g,nid-1,nid,id2type,edge2port,output_nid)
+            replace_score +=0.5
+    return (nid,output_nid,replace_score)
 
 # and(and,and) = and
 #
@@ -868,7 +934,7 @@ def transform(nodes,edges,output_nid,options):
         num2replace = 5
     else:
         num2replace = 6
-    num_replaced = 0
+    num_replaced = 0.0
     print('\toriginal num_nodes:{}, num_edges:{}'.format(len(nodes), len(edges)))
     # print("original nodes:", nodes)
     # print("original edges:", edges)
@@ -889,9 +955,10 @@ def transform(nodes,edges,output_nid,options):
     num_nodes = g.number_of_nodes()
     nid = num_nodes + 1
     while num_replaced < num2replace:
-        nid, output_nid,flag_replace = random_replace(g, nid, id2type, edge2port,output_nid)
-        if flag_replace:
-            num_replaced += 1
+        rand_idx = random.randint(0, g.number_of_nodes() - 1)
+        rand_nid = list(g.nodes.keys())[rand_idx]
+        nid, output_nid,replace_score = random_replace(g, rand_nid,nid, id2type, edge2port,output_nid)
+        num_replaced += replace_score
         # print(ntype,replace_cell.nodes,replace_cell.edges)
     # print('modified nodes:',list(sorted(g.nodes.items())))
     # print('modified edges:',list(g.edges.items()))
