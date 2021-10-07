@@ -922,19 +922,19 @@ def if_xor(g,nid):
 def is_xor(graph, root_node):
     pass
 
-def transform(nodes,edges,output_nid,options):
-    if options.num_input == 2:
-        num2replace = 1
-    elif options.num_input == 3:
-        num2replace = 2
-    elif options.num_input == 4:
-        num2replace = 3
-    elif options.num_input in (5, 6):
-        num2replace = 4
-    elif options.num_input in (6, 7):
-        num2replace = 5
-    else:
-        num2replace = 6
+def transform(nodes,edges,output_nid,num2replace,options):
+    # if options.num_input == 2:
+    #     num2replace = 1
+    # elif options.num_input == 3:
+    #     num2replace = 2
+    # elif options.num_input == 4:
+    #     num2replace = 3
+    # elif options.num_input in (5, 6):
+    #     num2replace = 4
+    # elif options.num_input in (6, 7):
+    #     num2replace = 5
+    # else:
+    #     num2replace = 6
     num_replaced = 0.0
     print('\toriginal num_nodes:{}, num_edges:{}'.format(len(nodes), len(edges)))
     # print("original nodes:", nodes)
@@ -970,7 +970,7 @@ def transform(nodes,edges,output_nid,options):
     return (list(g.nodes.items()),res_edges,output_nid)
 
 def  main():
-
+    num2replace = 2
     options = get_options()
     datapath = os.path.join(options.save_dir,"i{}/implementation".format(options.num_input))
     for vf in os.listdir(datapath):
@@ -985,7 +985,7 @@ def  main():
             print('empty...')
             continue
         for i in range(2):
-            new_nodes,new_edges,output_nid = transform(nodes.copy(),edges.copy(),output_nid,options)
+            new_nodes,new_edges,output_nid = transform(nodes.copy(),edges.copy(),output_nid,num2replace,options)
 
 
 if __name__ == "__main__":
