@@ -833,7 +833,7 @@ def random_replace(g,rand_nid,nid,id2type,edge2port,output_nid):
                 remove_adjacent_inv(g,output_node[0], sucessor,edge2port)
         if len(list(g.successors(output_node[0])))==0 \
                 and output_node[0]!=output_nid:
-            print(output_node[0],output_nid)
+            #print(output_node[0],output_nid)
             g.remove_node(output_node[0])
     for port,fanin in fanins.items():
         if id2type[fanin] == 'INV':
