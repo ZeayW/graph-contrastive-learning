@@ -984,7 +984,7 @@ def  main():
             print('empty...')
             continue
         for i in range(2):
-            new_nodes,new_edges = transform(nodes.copy(),edges.copy(),output_nid,options)
+            new_nodes,new_edges,output_nid = transform(nodes.copy(),edges.copy(),output_nid,options)
 
 
 if __name__ == "__main__":
