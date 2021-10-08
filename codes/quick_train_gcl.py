@@ -22,7 +22,7 @@ def preprocess(data_path,device,options):
     nlabels = options.nlabels
     label2id = {}
     if not os.path.exists( os.path.join(data_path, 'i{}'.format(options.num_input))) :
-        os.makedirs(data_path)
+        os.makedirs(os.path.join(data_path, 'i{}'.format(options.num_input)))
     data_file = os.path.join(data_path, 'i{}/{}.pkl'.format(options.num_input,options.split))
     val_data_file = os.path.join(data_path, 'rocket2.pkl')
 
