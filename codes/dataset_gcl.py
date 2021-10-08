@@ -15,7 +15,7 @@ from util.single_verilog_parser import *
 from options import get_options
 from torch.nn.parameter import Parameter
 from codes.generate_data import *
-
+import pickle
 
 def parse_single_file(nodes,edges,output_node):
     # nodes: list of (node, {"type": type}) here node is a str ,like 'n123' or '1'b1'
@@ -63,8 +63,9 @@ def parse_single_file(nodes,edges,output_node):
 
     
 class Dataset_gcl(DGLDataset):
-    def __init__(self,datapath):
+    def __init__(self,datapath,split):
         self.datapath = datapath
+        self.split = split
         super(Dataset_gcl, self).__init__(name="dac")
         # self.alpha = Parameter(th.tensor([1]))
 
@@ -77,7 +78,11 @@ class Dataset_gcl(DGLDataset):
         options = get_options()
         start_nid = 0
         self.POs = {}
-        for vf in os.listdir(self.datapath):
+
+        with open(os.path.join(self.datapath,'split{}.pkl'.format(self.split)),'r') as f:
+            filelist = pickle.load(f)
+        print('file list{} start with {}'.format(self.split,filelist[0]))
+        for vf in filelist:
             if not vf.endswith('.v'):
                 continue
             #PO = []
