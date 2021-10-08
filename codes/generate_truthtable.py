@@ -96,7 +96,7 @@ elif get_options().num_input == 5:
 elif get_options().num_input == 6:
     num_sample = 100000
 elif get_options().num_input == 7:
-    num_sample = 10000
+    num_sample = 100000
 else:
     num_sample = 20000
 
@@ -109,7 +109,9 @@ if not os.path.exists(save_path):
 #     with open(os.path.join(save_path,'sampled.pkl'),'rb') as f:
 #         sampled = pickle.load(f)
 
-for vf in os.listdir(save_path):
+for i,vf in enumerate(os.listdir(save_path)):
+    if i% 1000 == 0:
+        print(i)
     if not vf.endswith('.v') :
         continue
     current_num +=1
