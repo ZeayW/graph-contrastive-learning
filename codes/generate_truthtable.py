@@ -110,6 +110,7 @@ if not os.path.exists(save_path):
 #         sampled = pickle.load(f)
 
 for i,vf in enumerate(os.listdir(save_path)):
+    print(i)
     if i% 500 == 0:
         print(i)
     if not vf.endswith('.v') :
@@ -130,7 +131,7 @@ for i,vf in enumerate(os.listdir(save_path)):
         equal_value = 0
         for position in postive_postions:
             equal_value += pow(2, pow(2, num_input) - 1 - array[position])
-            visited[equal_value] = True
+        visited[equal_value] = True
     # deal with complementary
     visited[pow(2, pow(2, num_input)) - 1 - value] = True
 
