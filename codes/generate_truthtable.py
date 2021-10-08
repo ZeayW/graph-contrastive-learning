@@ -110,7 +110,7 @@ if not os.path.exists(save_path):
 #         sampled = pickle.load(f)
 
 for i,vf in enumerate(os.listdir(save_path)):
-    if i% 1000 == 0:
+    if i% 500 == 0:
         print(i)
     if not vf.endswith('.v') :
         continue
