@@ -79,7 +79,7 @@ class Dataset_gcl(DGLDataset):
         start_nid = 0
         self.POs = {}
 
-        with open(os.path.join(self.datapath,'split{}.pkl'.format(self.split)),'r') as f:
+        with open(os.path.join(self.datapath,'split{}.pkl'.format(self.split)),'rb') as f:
             filelist = pickle.load(f)
         print('file list{} start with {}'.format(self.split,filelist[0]))
         for vf in filelist:
