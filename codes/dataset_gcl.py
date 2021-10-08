@@ -87,7 +87,7 @@ class Dataset_gcl(DGLDataset):
                 continue
             #PO = []
             print('\ngenerate positive samples for {}'.format(vf))
-            value = vf.split('_')[2][1:]
+            value = vf.split('_')[2].split('.')[0][1:]
             parser = DcParser('i{}_v{}'.format(options.num_input, value))
             output_node, nodes, edges = parser.parse(os.path.join(self.datapath, vf))
             if len(nodes) == 0:
