@@ -21,9 +21,9 @@ def preprocess(data_path,device,options):
     in_dim = get_options().in_dim
     nlabels = options.nlabels
     label2id = {}
-    if not os.path.exists(data_path) :
+    if not os.path.exists( os.path.join(data_path, 'i{}'.format(options.num_input))) :
         os.makedirs(data_path)
-    data_file = os.path.join(data_path, 'i{}.pkl'.format(options.num_input))
+    data_file = os.path.join(data_path, 'i{}/{}.pkl'.format(options.num_input,options.split))
     val_data_file = os.path.join(data_path, 'rocket2.pkl')
 
     # if os.path.exists(val_data_file) is False:
@@ -41,7 +41,7 @@ def preprocess(data_path,device,options):
         datapath = "../truthtables/i{}/implementation/".format(options.num_input)
         th.multiprocessing.set_sharing_strategy('file_system')
         #print(dataset_not_edge.Dataset_n)
-        dataset = Dataset_gcl(datapath)
+        dataset = Dataset_gcl(datapath,options.split)
         #print(g.ndata)
         print(dataset.batch_graph.ndata)
         #print(g.edata['r'])
