@@ -18,7 +18,7 @@ for i in range(int(num_split)):
     with open(os.path.join(datapath,'{}.pkl'.format(i+1)), 'rb') as f:
         graph, POs, depth = pickle.load(f)
     graphs = dgl.unbatch(graph)
-    PO_nids = POs.items()
+    PO_nids = POs.keys()
     for i in range(0, len(POs), 7):
         original_nids.append(PO_nids[i]+start_nid)
         original_depth = max(original_depth, POs[PO_nids[i]])
