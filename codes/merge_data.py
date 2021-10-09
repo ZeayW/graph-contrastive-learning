@@ -17,7 +17,7 @@ for i in range(int(num_split)):
     for node,dp in POs.items():
         res_POs[node+start_nid] = dp
     graphs.append(graph)
-    print('split{}, num_nodes:{}, num_pos:{}'.format(num_input,graph.number_of_nodes(),len(POs)))
+    print('split{}, num_nodes:{}, num_pos:{}'.format(i,graph.number_of_nodes(),len(POs)))
 
 batch_graph = dgl.batch(graphs)
 
