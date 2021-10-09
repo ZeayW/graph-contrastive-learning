@@ -216,7 +216,7 @@ def train(options):
     # for region detecion, the data_path is 'data/region', for boundary(io) detection, the data_path is 'data/boundary'
     data_path = '../data/gcl_new/'
     train_data_files = []
-    for i in range(4,options.num_input+1):
+    for i in range(5,options.num_input+1):
         train_data_files.append((i,os.path.join(data_path,'i{}/merge.pkl'.format(i))))
     #train_data_file = os.path.join(data_path,'i{}.pkl'.format(options.num_input))W
     # neg_data_file = os.path.join(data_path, 'rocket2.pkl')
@@ -232,8 +232,6 @@ def train(options):
     print("Loading data...")
     data_loaders = []
     for num_input,file in train_data_files:
-        if num_input == 4:
-            continue
         with open(file,'rb') as f:
             train_g,POs,depth = pickle.load(f)
             train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
