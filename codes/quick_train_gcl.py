@@ -239,54 +239,60 @@ def train(options):
             train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
 
         PO_nids = list(POs.keys())
-        print('num_input{} : {}'.format(num_input,len(PO_nids)/3*2))
+        print('num_input{} : {}'.format(num_input,len(aug_nids)))
         #PO_depths = list(POs.values())
-        original_nids, aug1_nids,aug2_nids,aug3_nids= [],[],[],[]
+        graphs = dgl.unbatch(train_g)
+        original_nids, aug_nids= [],([],[],[])
+        orignal_graphs,aug_graphs = [],([],[],[])
+        depths = [0,0,0]
         for i in range(0,len(PO_nids),7):
             original_nids.append(PO_nids[i])
-            aug1_nids.append(PO_nids[i+1])
-            aug1_nids.append(PO_nids[i+2])
-            aug2_nids.append(PO_nids[i + 3])
-            aug2_nids.append(PO_nids[i + 4])
-            aug3_nids.append(PO_nids[i + 5])
-            aug3_nids.append(PO_nids[i + 6])
-        aug_nids = []
-        aug_nids.extend(aug1_nids)
-        aug_nids.extend(aug2_nids)
-        aug_nids.extend(aug3_nids)
+            orignal_graphs.append(graphs[i])
+            for j in range(3):
+                depths[j] = max(depth[j], POs[PO_nids[i + 1 + 2 * j]])
+                depths[j] = max(depth[j], POs[PO_nids[i + 2 + 2 * j]])
+                aug_nids[j].append(PO_nids[i + 1 + 2 * j])
+                aug_nids[j].append(PO_nids[i + 2 + 2 * j])
+                aug_graphs[j].append(graphs[i + 1 + 2 * j])
+                aug_graphs[j].append(graphs[i + 2 + 2 * j])
+
+
+
+        for i in range(3):
+            batch_graph = dgl.batch(aug_graphs[i])
+            aug_POs = aug_nids[i]
 
         #print(PO_nids)
         #print(len(POs))
-        print('num samples',len(aug_nids))
-        data_size = len(aug_nids)
-        if data_size>options.batch_size:
-            data_size = int(len(aug_nids)/options.batch_size)*options.batch_size
-        aug_nids =aug_nids[:data_size]
-        if options.gat:
-            add_self_loop = True
-        else:
-            add_self_loop = False
-        sampler = Sampler(depth*[options.degree],include_dst_in_src=options.include,add_self_loop=add_self_loop)
-
-        train_blocks = sampler.sample_blocks(train_g,POs)
-        train_blocks = [b.to(device) for b in train_blocks]
-        pos_pairs = None
-
-        print(train_blocks)
+            data_size = len(aug_POs)
+            if data_size>options.batch_size:
+                data_size = int(len(aug_POs)/options.batch_size)*options.batch_size
+            aug_POs =aug_POs[:data_size]
+            if options.gat:
+                add_self_loop = True
+            else:
+                add_self_loop = False
+            sampler = Sampler(depths[i]*[options.degree],include_dst_in_src=options.include,add_self_loop=add_self_loop)
+            print('aug{}, depth:{},num_nodes:{}, num_pos:{}'.format(i,depths[i],batch_graph.number_of_nodes(),len(aug_POs)))
+        # train_blocks = sampler.sample_blocks(train_g,POs)
+        # train_blocks = [b.to(device) for b in train_blocks]
+        # pos_pairs = None
+        #
+        # print(train_blocks)
         # print(pos_pairs)
         #print(po_depths)
         #check(train_g,POs,depth)
-        data_loaders.append(
-            MyNodeDataLoader(
-                False,
-                train_g,
-                aug_nids,
-                sampler,
-                batch_size=options.batch_size,
-                shuffle=False,
-                drop_last=False,
+            data_loaders.append(
+                MyNodeDataLoader(
+                    False,
+                    batch_graph,
+                    aug_POs,
+                    sampler,
+                    batch_size=options.batch_size,
+                    shuffle=False,
+                    drop_last=False,
+                )
             )
-        )
         # dataloader = MyNodeDataLoader(
         #     False,
         #     train_g,
