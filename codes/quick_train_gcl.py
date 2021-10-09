@@ -217,7 +217,7 @@ def train(options):
     data_path = '../data/gcl_new/'
     train_data_files = []
     for i in range(4,options.num_input+1):
-        train_data_files.append(os.path.join(data_path,'i{}.pkl'.format(i)))
+        train_data_files.append((i,os.path.join(data_path,'i{}/merge.pkl'.format(i))))
     #train_data_file = os.path.join(data_path,'i{}.pkl'.format(options.num_input))W
     # neg_data_file = os.path.join(data_path, 'rocket2.pkl')
     # val_data_file = os.path.join(data_path,'rocket2.pkl')
@@ -231,7 +231,9 @@ def train(options):
 
     print("Loading data...")
     data_loaders = []
-    for num_input,file in enumerate(train_data_files):
+    for num_input,file in train_data_files:
+        if num_input == 4:
+            continue
         with open(file,'rb') as f:
             train_g,POs,depth = pickle.load(f)
             train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
@@ -241,11 +243,19 @@ def train(options):
         PO_nids = list(POs.keys())
         print('num_input{} : {}'.format(num_input,len(PO_nids)/3*2))
         #PO_depths = list(POs.values())
-        original_nids, aug_nids= [],[]
-        for i in range(0,len(PO_nids),3):
+        original_nids, aug1_nids,aug2_nids,aug3_nids= [],[],[],[]
+        for i in range(0,len(PO_nids),7):
             original_nids.append(PO_nids[i])
-            aug_nids.append(PO_nids[i+1])
-            aug_nids.append(PO_nids[i+2])
+            aug1_nids.append(PO_nids[i+1])
+            aug1_nids.append(PO_nids[i+2])
+            aug2_nids.append(PO_nids[i + 3])
+            aug2_nids.append(PO_nids[i + 4])
+            aug3_nids.append(PO_nids[i + 5])
+            aug3_nids.append(PO_nids[i + 6])
+        aug_nids = []
+        aug_nids.extend(aug1_nids)
+        aug_nids.extend(aug2_nids)
+        aug_nids.extend(aug3_nids)
 
         #print(PO_nids)
         #print(len(POs))
