@@ -74,9 +74,12 @@ res = full_array(range(3),[])
 
 
 #print(equal_arrays)
-
-
-visited = {}
+save_path = os.path.join(save_dir,'i{}'.format(num_input))
+if os.path.exists(os.path.join(save_path,'visited.pkl')):
+    with open(os.path.join(save_path,'visited.pkl'),'rb') as f:
+        visited  = pickle.load(f)
+else:
+    visited = {}
 #print(num_input)
 var_arrays = full_array(range(num_input),[])
 equal_arrays = get_equal_arrays(num_input,var_arrays)
@@ -102,7 +105,7 @@ else:
 
 current_num = 0
 # sampled = []
-save_path = os.path.join(save_dir,'i{}'.format(num_input))
+
 if not os.path.exists(save_path):
     os.makedirs(save_path)
 # if os.path.exists(os.path.join(save_path,'sampled.pkl')):
@@ -137,6 +140,8 @@ for i,vf in enumerate(os.listdir(save_path)):
 
 
 print('num visited:',len(visited),'total',pow(2,pow(2,num_input)))
+with open(os.path.join(save_path,'visitied.pkl'),'wb') as f:
+    pickle.dump(visited,f)
 print('equal transformation: ',len(equal_arrays))
 size =0
 while current_num<num_sample:
