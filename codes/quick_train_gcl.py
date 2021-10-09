@@ -322,32 +322,30 @@ def train(options):
     max_F1_score = 0
     pre_loss = 100
     stop_score = 0
-    for epoch in range(num_epoch):
-        runtime = 0
-
-        total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
-        pos_count , neg_count =0, 0
-        for dataloader in data_loaders:
-            for ni, (central_nodes,input_nodes,blocks) in enumerate(dataloader):
-                #continue
+    for dataloader in data_loaders:
+        for epoch in range(num_epoch):
+            runtime = 0
+            total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
+            pos_count , neg_count =0, 0
+            for ni, (central_nodes, input_nodes, blocks) in enumerate(dataloader):
+                # continue
                 start_time = time()
                 neg_embeddings = []
                 blocks = [b.to(device) for b in blocks]
-                #print(blocks)
+                # print(blocks)
                 loss = 0
 
                 embeddings = model(blocks, blocks[0].srcdata['f_input'])
-                for i in range(0,len(embeddings),2):
-                    loss += NCEloss(embeddings[i],embeddings[i+1],embeddings,options.tao)
-                    loss += NCEloss(embeddings[i+1], embeddings[i], embeddings, options.tao)
+                for i in range(0, len(embeddings), 2):
+                    loss += NCEloss(embeddings[i], embeddings[i + 1], embeddings, options.tao)
+                    loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
                 loss = loss / len(embeddings)
-                total_num +=1
+                total_num += 1
                 total_loss += loss
                 endtime = time()
                 runtime += endtime - start_time
 
-
-                #print(loss.item())
+                # print(loss.item())
                 # val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device,
                 #                                                             model, Loss, options.alpha, beta,
                 #                                                             depth, width, num_aug, po_depths,query_embedding,
@@ -355,50 +353,53 @@ def train(options):
                 start_time = time()
                 optim.zero_grad()
                 loss.backward()
-               # print(model.GCN1.layers[0].attn_n.grad)
+                # print(model.GCN1.layers[0].attn_n.grad)
                 optim.step()
                 endtime = time()
-                runtime += endtime-start_time
-
-        Train_loss = total_loss / total_num
+                runtime += endtime - start_time
 
 
+            Train_loss = total_loss / total_num
 
-        print("epoch[{:d}]".format(epoch))
-        print("training runtime: ",runtime)
-        print("  train:")
-        print("loss:{:.8f}".format(Train_loss.item()))
-        # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
-        # print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
-        # #if options.weighted:
-        #     #print('alpha = ',model.alpha)
-        # print("num of pos: ",pos_count," num of neg: ",neg_count)
-        # val_acc, val_recall,val_precision, val_F1_score = validate(valdataloader, label_name,device,
-        #                                                                      model, Loss,options.alpha,beta,
-        #                                                                      depth,width,num_aug,query_embedding,thredshold=0.75)
-        # if epoch % 1 == 0 and get_options().rel:
-        #     #if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
-        #     #print(model.GCN1.layer
+            if Train_loss.item()<0.1:
+                print('train loss beyond thredshold, change to the next dataset...')
+                break
 
-        with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
-            # f.write(str(round(Train_loss, 3)) + " " + str(round(Train_acc, 3)) + " " + str(
-            #     round(Train_recall, 3)) + " " + str(round(Train_precision,3))+" " + str(round(Train_F1_score, 3)) + "\n")
-            # f.write(str(round(val_loss, 3)) + " " + str(round(val_acc, 3)) + " " + str(
-            #     round(val_recall, 3)) + " "+ str(round(val_precision,3))+" " + str(round(val_F1_score, 3)) + "\n")
-            f.write(str(round(Train_loss.item(), 3)) )
-            f.write('\n')
+            print("epoch[{:d}]".format(epoch))
+            print("training runtime: ",runtime)
+            print("  train:")
+            print("loss:{:.8f}".format(Train_loss.item()))
+            # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
+            # print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
+            # #if options.weighted:
+            #     #print('alpha = ',model.alpha)
+            # print("num of pos: ",pos_count," num of neg: ",neg_count)
+            # val_acc, val_recall,val_precision, val_F1_score = validate(valdataloader, label_name,device,
+            #                                                                      model, Loss,options.alpha,beta,
+            #                                                                      depth,width,num_aug,query_embedding,thredshold=0.75)
+            # if epoch % 1 == 0 and get_options().rel:
+            #     #if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
+            #     #print(model.GCN1.layer
 
-        #judgement = val_F1_score > max_F1_score
-        judgement = Train_loss < 100
-        if judgement:
-           #max_F1_score = val_F1_score
-           print("Saving model.... ", os.path.join(options.model_saving_dir))
-           if os.path.exists(options.model_saving_dir) is False:
-              os.makedirs(options.model_saving_dir)
-           with open(os.path.join(options.model_saving_dir, 'model.pkl'), 'wb') as f:
-              parameters = options
-              pickle.dump((parameters, model), f)
-           print("Model successfully saved")
+            with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
+                # f.write(str(round(Train_loss, 3)) + " " + str(round(Train_acc, 3)) + " " + str(
+                #     round(Train_recall, 3)) + " " + str(round(Train_precision,3))+" " + str(round(Train_F1_score, 3)) + "\n")
+                # f.write(str(round(val_loss, 3)) + " " + str(round(val_acc, 3)) + " " + str(
+                #     round(val_recall, 3)) + " "+ str(round(val_precision,3))+" " + str(round(val_F1_score, 3)) + "\n")
+                f.write(str(round(Train_loss.item(), 3)) )
+                f.write('\n')
+
+            #judgement = val_F1_score > max_F1_score
+            judgement = Train_loss < 100
+            if judgement:
+               #max_F1_score = val_F1_score
+               print("Saving model.... ", os.path.join(options.model_saving_dir))
+               if os.path.exists(options.model_saving_dir) is False:
+                  os.makedirs(options.model_saving_dir)
+               with open(os.path.join(options.model_saving_dir, 'model.pkl'), 'wb') as f:
+                  parameters = options
+                  pickle.dump((parameters, model), f)
+               print("Model successfully saved")
 
 
 
