@@ -261,7 +261,7 @@ def train(options):
         for i in range(3):
             batch_graph = dgl.batch(aug_graphs[i])
             aug_POs = aug_nids[i]
-
+            print(batch_graph)
         #print(PO_nids)
         #print(len(POs))
             data_size = len(aug_POs)
@@ -332,7 +332,7 @@ def train(options):
                 start_time = time()
                 neg_embeddings = []
                 blocks = [b.to(device) for b in blocks]
-                # print(blocks)
+                print(blocks)
                 loss = 0
 
                 embeddings = model(blocks, blocks[0].srcdata['f_input'])
@@ -340,6 +340,8 @@ def train(options):
                     loss += NCEloss(embeddings[i], embeddings[i + 1], embeddings, options.tao)
                     loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
                 loss = loss / len(embeddings)
+
+                print(loss)
                 total_num += 1
                 total_loss += loss
                 endtime = time()
