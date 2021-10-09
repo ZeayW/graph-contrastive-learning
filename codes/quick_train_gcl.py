@@ -323,6 +323,7 @@ def train(options):
     pre_loss = 100
     stop_score = 0
     for dataloader in data_loaders:
+        print(len(dataloader))
         for epoch in range(num_epoch):
             runtime = 0
             total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
