@@ -249,8 +249,8 @@ def train(options):
             original_nids.append(PO_nids[i])
             orignal_graphs.append(graphs[i])
             for j in range(3):
-                depths[j] = max(depth[j], POs[PO_nids[i + 1 + 2 * j]])
-                depths[j] = max(depth[j], POs[PO_nids[i + 2 + 2 * j]])
+                depths[j] = max(depths[j], POs[PO_nids[i + 1 + 2 * j]])
+                depths[j] = max(depths[j], POs[PO_nids[i + 2 + 2 * j]])
                 aug_nids[j].append(PO_nids[i + 1 + 2 * j])
                 aug_nids[j].append(PO_nids[i + 2 + 2 * j])
                 aug_graphs[j].append(graphs[i + 1 + 2 * j])
