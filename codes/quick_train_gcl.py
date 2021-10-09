@@ -239,7 +239,7 @@ def train(options):
             train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
 
         PO_nids = list(POs.keys())
-        print('num_input{} : {}'.format(num_input,len(aug_nids)))
+        print('num_input{} : {}'.format(num_input,len(PO_nids)))
         #PO_depths = list(POs.values())
         graphs = dgl.unbatch(train_g)
         original_nids, aug_nids= [],([],[],[])
