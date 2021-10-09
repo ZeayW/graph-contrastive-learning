@@ -332,7 +332,6 @@ def train(options):
                 start_time = time()
                 neg_embeddings = []
                 blocks = [b.to(device) for b in blocks]
-                print(blocks)
                 loss = 0
 
                 embeddings = model(blocks, blocks[0].srcdata['f_input'])
@@ -341,7 +340,7 @@ def train(options):
                     loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
                 loss = loss / len(embeddings)
 
-                print(loss)
+                print(ni,loss)
                 total_num += 1
                 total_loss += loss
                 endtime = time()
