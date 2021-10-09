@@ -11,7 +11,7 @@ graphs = []
 res_POs = {}
 start_nid = 0
 for i in range(int(num_split)):
-    with open(os.path.join(datapath,'split{}.pkl'.format(i+1)), 'rb') as f:
+    with open(os.path.join(datapath,'{}.pkl'.format(i+1)), 'rb') as f:
         graph, POs, depth = pickle.load(f)
     start_nid += graph.number_of_nodes()
     for node,dp in POs.items():
