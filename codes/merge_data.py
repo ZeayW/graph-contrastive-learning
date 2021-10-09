@@ -14,8 +14,8 @@ orignal_graphs,aug_graphs = [],([],[],[])
 original_depth = 0
 depths = [0,0,0]
 start_nid = 0
-for i in range(int(num_split)):
-    with open(os.path.join(datapath,'{}.pkl'.format(i+1)), 'rb') as f:
+for k in range(int(num_split)):
+    with open(os.path.join(datapath,'{}.pkl'.format(k+1)), 'rb') as f:
         graph, POs, depth = pickle.load(f)
     graphs = dgl.unbatch(graph)
     PO_nids = list(POs.keys())
@@ -33,7 +33,7 @@ for i in range(int(num_split)):
 
     start_nid += graph.number_of_nodes()
 
-    print('split{}, num_nodes:{}, num_pos:{}'.format(i,graph.number_of_nodes(),len(POs)))
+    print('split{}, num_nodes:{}, num_pos:{}'.format(k,graph.number_of_nodes(),len(POs)))
 
 with open(os.path.join(datapath, 'origin.pkl'.format(num_input)), 'wb') as f:
     pickle.dump((dgl.batch(orignal_graphs), original_nids, original_depth), f)
