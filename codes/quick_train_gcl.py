@@ -232,7 +232,7 @@ def train(options):
     print("Loading data...")
     data_loaders = []
     for num_input in range(5,options.num_input+1):
-        origin_file = os.path.join(data_path,'i{}/origin.pkl'.format())
+        origin_file = os.path.join(data_path,'i{}/origin.pkl'.format(num_input))
         aug_files = [os.path.join(data_path,'i{}/aug{}.pkl'.format(num_input,i+1)) for i in range(3)]
         for file in aug_files:
             with open(file,'rb') as f:
