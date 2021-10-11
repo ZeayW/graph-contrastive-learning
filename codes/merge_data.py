@@ -14,7 +14,8 @@ orignal_graphs,aug_graphs = [],([],[],[])
 original_depth = 0
 depths = [0,0,0]
 
-pre_nid = 0
+pre_nid = [0,0,0,0]
+begin_nids = [0,0,0,0]
 for k in range(int(num_split)):
     start_nid = 0
     with open(os.path.join(datapath,'{}.pkl'.format(k+1)), 'rb') as f:
@@ -25,22 +26,25 @@ for k in range(int(num_split)):
     print('pre_nid',pre_nid)
     for i in range(0, len(PO_nids), 7):
         print(PO_nids[i:i+7])
-        original_nids.append(PO_nids[i]-start_nid+ pre_nid)
+        original_nids.append(PO_nids[i]-start_nid+ pre_nid[0])
         print('\t', start_nid)
         start_nid += graphs[i].number_of_nodes()
+        pre_nid[0] += graphs[i].number_of_nodes()
         original_depth = max(original_depth, POs[PO_nids[i]])
         orignal_graphs.append(graphs[i])
         for j in range(3):
             depths[j] = max(depths[j], POs[PO_nids[i + 1 + 2 * j]])
             depths[j] = max(depths[j], POs[PO_nids[i + 2 + 2 * j]])
             aug_nids[j].append(PO_nids[i + 1 + 2 * j]-start_nid+ pre_nid)
+            pre_nid[j+1] += graphs[i + 1 + 2 * j].number_of_nodes()
             aug_nids[j].append(PO_nids[i + 2 + 2 * j]-start_nid+pre_nid )
+            pre_nid[j+1] += graphs[i + 2 + 2 * j].number_of_nodes()
             print('\t', start_nid, PO_nids[i + 1 + 2 * j]-start_nid+ pre_nid, PO_nids[i + 2 + 2 * j]-start_nid+pre_nid )
             start_nid += graphs[i + 1 + 2 * j].number_of_nodes()
             start_nid += graphs[i + 2 + 2 * j].number_of_nodes()
             aug_graphs[j].append(graphs[i + 1 + 2 * j])
             aug_graphs[j].append(graphs[i + 2 + 2 * j])
-    pre_nid += graph.number_of_nodes()
+
 
 
     print('split{}, num_nodes:{}, num_pos:{}'.format(k,graph.number_of_nodes(),len(POs)))
