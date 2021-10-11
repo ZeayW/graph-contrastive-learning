@@ -231,49 +231,27 @@ def train(options):
 
     print("Loading data...")
     data_loaders = []
-    for num_input,file in train_data_files:
-        with open(file,'rb') as f:
-            train_g,POs,depth = pickle.load(f)
-            train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-            train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-            train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
-
-        PO_nids = list(POs.keys())
-        print('num_input{} : {}'.format(num_input,len(PO_nids)))
-        #PO_depths = list(POs.values())
-        graphs = dgl.unbatch(train_g)
-        original_nids, aug_nids= [],([],[],[])
-        orignal_graphs,aug_graphs = [],([],[],[])
-        depths = [0,0,0]
-        for i in range(0,len(PO_nids),7):
-            original_nids.append(PO_nids[i])
-            orignal_graphs.append(graphs[i])
-            for j in range(3):
-                depths[j] = max(depths[j], POs[PO_nids[i + 1 + 2 * j]])
-                depths[j] = max(depths[j], POs[PO_nids[i + 2 + 2 * j]])
-                aug_nids[j].append(PO_nids[i + 1 + 2 * j])
-                aug_nids[j].append(PO_nids[i + 2 + 2 * j])
-                aug_graphs[j].append(graphs[i + 1 + 2 * j])
-                aug_graphs[j].append(graphs[i + 2 + 2 * j])
+    for num_input in range(5,options.num_input+1):
+        origin_file = os.path.join(data_path,'i{}/origin.pkl'.format())
+        aug_files = [os.path.join(data_path,'i{}/aug{}.pkl'.format(num_input,i+1)) for i in range(3)]
+        for file in aug_files:
+            with open(file,'rb') as f:
+                train_g,POs,depth = pickle.load(f)
+                train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+                train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+                train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
 
 
-
-        for i in range(3):
-            batch_graph = dgl.batch(aug_graphs[i])
-            aug_POs = aug_nids[i]
-            print(batch_graph)
-        #print(PO_nids)
-        #print(len(POs))
-            data_size = len(aug_POs)
+            data_size = len(POs)
             if data_size>options.batch_size:
-                data_size = int(len(aug_POs)/options.batch_size)*options.batch_size
-            aug_POs =aug_POs[:data_size]
+                data_size = int(len(POs)/options.batch_size)*options.batch_size
+            POs =POs[:data_size]
             if options.gat:
                 add_self_loop = True
             else:
                 add_self_loop = False
-            sampler = Sampler(depths[i]*[options.degree],include_dst_in_src=options.include,add_self_loop=add_self_loop)
-            print('aug{}, depth:{},num_nodes:{}, num_pos:{}'.format(i,depths[i],batch_graph.number_of_nodes(),len(aug_POs)))
+            sampler = Sampler(depth*[options.degree],include_dst_in_src=options.include,add_self_loop=add_self_loop)
+            print('aug{}, depth:{},num_nodes:{}, num_pos:{}'.format(i,depth,train_g.number_of_nodes(),len(POs)))
         # train_blocks = sampler.sample_blocks(train_g,POs)
         # train_blocks = [b.to(device) for b in train_blocks]
         # pos_pairs = None
@@ -285,8 +263,8 @@ def train(options):
             data_loaders.append(
                 MyNodeDataLoader(
                     False,
-                    batch_graph,
-                    aug_POs,
+                    train_g,
+                    POs,
                     sampler,
                     batch_size=options.batch_size,
                     shuffle=False,
