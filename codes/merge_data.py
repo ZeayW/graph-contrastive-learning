@@ -23,9 +23,9 @@ for k in range(int(num_split)):
     graphs = dgl.unbatch(graph)
     PO_nids = list(POs.keys())
     #print(PO_nids)
-    print('pre_nid',pre_nid)
+    #print('pre_nid',pre_nid)
     for i in range(0, len(PO_nids), 7):
-        print(PO_nids[i:i+7])
+        #print(PO_nids[i:i+7])
         original_nids.append(PO_nids[i]-start_nid+ pre_nid[0])
         #print('\t', start_nid)
         start_nid += graphs[i].number_of_nodes()
@@ -36,9 +36,9 @@ for k in range(int(num_split)):
             depths[j] = max(depths[j], POs[PO_nids[i + 1 + 2 * j]])
             depths[j] = max(depths[j], POs[PO_nids[i + 2 + 2 * j]])
             aug_nids[j].append(PO_nids[i + 1 + 2 * j]-start_nid+ pre_nid[j+1])
-            print('\t', 'aug1', PO_nids[i + 1 + 2 * j] - start_nid,pre_nid[j+1],PO_nids[i + 1 + 2 * j]-start_nid+ pre_nid[j+1])
+            #print('\t', 'aug1', PO_nids[i + 1 + 2 * j] - start_nid,pre_nid[j+1],PO_nids[i + 1 + 2 * j]-start_nid+ pre_nid[j+1])
             aug_nids[j].append(PO_nids[i + 2 + 2 * j]-start_nid+pre_nid[j+1] )
-            print('\t', 'aug2', PO_nids[i + 2 + 2 * j] - start_nid, pre_nid[j + 1],PO_nids[i + 2 + 2 * j]-start_nid+pre_nid[j+1])
+            #print('\t', 'aug2', PO_nids[i + 2 + 2 * j] - start_nid, pre_nid[j + 1],PO_nids[i + 2 + 2 * j]-start_nid+pre_nid[j+1])
             pre_nid[j + 1] += graphs[i + 1 + 2 * j].number_of_nodes()
             pre_nid[j+1] += graphs[i + 2 + 2 * j].number_of_nodes()
 
