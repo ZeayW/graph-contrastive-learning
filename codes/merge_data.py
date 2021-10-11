@@ -21,6 +21,7 @@ for k in range(int(num_split)):
         graph, POs, depth = pickle.load(f)
     graphs = dgl.unbatch(graph)
     PO_nids = list(POs.keys())
+    print(PO_nids)
     for i in range(0, len(POs), 7):
         original_nids.append(PO_nids[i]-start_nid+pre_nid)
         start_nid += graphs[i].number_of_nodes()
