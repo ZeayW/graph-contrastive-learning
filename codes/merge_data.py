@@ -24,6 +24,7 @@ for k in range(int(num_split)):
     #print(PO_nids)
     print('pre_nid',pre_nid)
     for i in range(0, len(POs), 7):
+        print(PO_nids[i:i+7])
         original_nids.append(PO_nids[i]-start_nid+ pre_nid)
         print('\t', start_nid)
         start_nid += graphs[i].number_of_nodes()
