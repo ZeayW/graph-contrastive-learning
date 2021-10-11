@@ -13,10 +13,10 @@ original_nids, aug_nids= [],([],[],[])
 orignal_graphs,aug_graphs = [],([],[],[])
 original_depth = 0
 depths = [0,0,0]
-start_nid = 0
+
 pre_nid = 0
 for k in range(int(num_split)):
-
+    start_nid = 0
     with open(os.path.join(datapath,'{}.pkl'.format(k+1)), 'rb') as f:
         graph, POs, depth = pickle.load(f)
     graphs = dgl.unbatch(graph)
