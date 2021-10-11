@@ -39,7 +39,7 @@ for k in range(int(num_split)):
             pre_nid[j+1] += graphs[i + 1 + 2 * j].number_of_nodes()
             aug_nids[j].append(PO_nids[i + 2 + 2 * j]-start_nid+pre_nid[j+1] )
             pre_nid[j+1] += graphs[i + 2 + 2 * j].number_of_nodes()
-            print('\t', start_nid, PO_nids[i + 1 + 2 * j]-start_nid+ pre_nid[j+1], PO_nids[i + 2 + 2 * j]-start_nid+pre_nid[j+1] )
+            #print('\t', start_nid, PO_nids[i + 1 + 2 * j]-start_nid+ pre_nid[j+1], PO_nids[i + 2 + 2 * j]-start_nid+pre_nid[j+1] )
             start_nid += graphs[i + 1 + 2 * j].number_of_nodes()
             start_nid += graphs[i + 2 + 2 * j].number_of_nodes()
             aug_graphs[j].append(graphs[i + 1 + 2 * j])
