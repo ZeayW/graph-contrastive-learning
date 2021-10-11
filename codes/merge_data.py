@@ -36,10 +36,10 @@ for k in range(int(num_split)):
             depths[j] = max(depths[j], POs[PO_nids[i + 1 + 2 * j]])
             depths[j] = max(depths[j], POs[PO_nids[i + 2 + 2 * j]])
             aug_nids[j].append(PO_nids[i + 1 + 2 * j]-start_nid+ pre_nid[j+1])
-            print('\t', 'aug1', PO_nids[i + 1 + 2 * j] - start_nid,pre_nid[j+1])
+            print('\t', 'aug1', PO_nids[i + 1 + 2 * j] - start_nid,pre_nid[j+1],PO_nids[i + 1 + 2 * j]-start_nid+ pre_nid[j+1])
             pre_nid[j+1] += graphs[i + 1 + 2 * j].number_of_nodes()
             aug_nids[j].append(PO_nids[i + 2 + 2 * j]-start_nid+pre_nid[j+1] )
-            print('\t', 'aug2', PO_nids[i + 2 + 2 * j] - start_nid, pre_nid[j + 1])
+            print('\t', 'aug2', PO_nids[i + 2 + 2 * j] - start_nid, pre_nid[j + 1],PO_nids[i + 2 + 2 * j]-start_nid+pre_nid[j+1])
             pre_nid[j+1] += graphs[i + 2 + 2 * j].number_of_nodes()
 
             #print('\t', start_nid, PO_nids[i + 1 + 2 * j]-start_nid+ pre_nid[j+1], PO_nids[i + 2 + 2 * j]-start_nid+pre_nid[j+1] )
