@@ -10,6 +10,7 @@ import os
 from MyDataLoader_ud import *
 from time import time
 import math
+import networkx as nx
 from random import shuffle
 
 def preprocess(data_path,device,options):
@@ -243,6 +244,10 @@ def train(options):
 
 
             data_size = len(POs)
+            #for po in POs.keys():
+
+            for po in POs:
+                assert  len(train_g.successors(po))==0
             if data_size>options.batch_size:
                 data_size = int(len(POs)/options.batch_size)*options.batch_size
             POs =POs[:data_size]
@@ -319,7 +324,7 @@ def train(options):
                     loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
                 loss = loss / len(embeddings)
 
-                print(ni,loss)
+                #print(ni,loss)
                 total_num += 1
                 total_loss += loss
                 endtime = time()
