@@ -83,7 +83,7 @@ class Dataset_gcl(DGLDataset):
             filelist = pickle.load(f)
         print('file list{} start with {}'.format(self.split,filelist[0]))
         for vf in filelist:
-            if not vf.endswith('.v'):
+            if not vf.endswith('.v') or not os.path.exists(os.path.join(self.datapath,vf)):
                 continue
             #PO = []
             print('\ngenerate positive samples for {}'.format(vf))
