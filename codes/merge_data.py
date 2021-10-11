@@ -20,18 +20,21 @@ for k in range(int(num_split)):
     graphs = dgl.unbatch(graph)
     PO_nids = list(POs.keys())
     for i in range(0, len(POs), 7):
-        original_nids.append(PO_nids[i]+start_nid)
+        original_nids.append(PO_nids[i]-start_nid)
+        start_nid += graph[i].number_of_nodes()
         original_depth = max(original_depth, POs[PO_nids[i]])
         orignal_graphs.append(graphs[i])
         for j in range(3):
             depths[j] = max(depths[j], POs[PO_nids[i + 1 + 2 * j]])
             depths[j] = max(depths[j], POs[PO_nids[i + 2 + 2 * j]])
-            aug_nids[j].append(PO_nids[i + 1 + 2 * j]+start_nid)
-            aug_nids[j].append(PO_nids[i + 2 + 2 * j]+start_nid)
+            aug_nids[j].append(PO_nids[i + 1 + 2 * j]-start_nid)
+            aug_nids[j].append(PO_nids[i + 2 + 2 * j]-start_nid )
+            start_nid += graph[i + 1 + 2 * j].number_of_nodes()
+            start_nid += graph[i + 2 + 2 * j].number_of_nodes()
             aug_graphs[j].append(graphs[i + 1 + 2 * j])
             aug_graphs[j].append(graphs[i + 2 + 2 * j])
 
-    start_nid += graph.number_of_nodes()
+
 
     print('split{}, num_nodes:{}, num_pos:{}'.format(k,graph.number_of_nodes(),len(POs)))
 
