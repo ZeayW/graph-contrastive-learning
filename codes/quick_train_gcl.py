@@ -210,7 +210,7 @@ def NCEloss(pos1,pos2,neg,tao):
     return loss
 
 def train(options):
-
+    start_input, start_aug = options.start[0],options.start[1]
     th.multiprocessing.set_sharing_strategy('file_system')
     device = th.device("cuda:"+str(options.gpu) if th.cuda.is_available() else "cpu")
     # Dump the preprocessing result to save time!
@@ -232,11 +232,11 @@ def train(options):
 
     print("Loading data...")
     data_loaders = []
-    for num_input in range(5,options.num_input+1):
+    for num_input in range(start_input,options.num_input+1):
         if num_input == 6:
             continue
         origin_file = os.path.join(data_path,'i{}/origin.pkl'.format(num_input))
-        aug_files = [os.path.join(data_path,'i{}/aug{}.pkl'.format(num_input,i+1)) for i in range(3)]
+        aug_files = [os.path.join(data_path,'i{}/aug{}.pkl'.format(num_input,i)) for i in range(start_aug,4)]
         for file in aug_files:
             with open(file,'rb') as f:
                 train_g,POs,depth = pickle.load(f)
