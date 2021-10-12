@@ -211,6 +211,7 @@ def NCEloss(pos1,pos2,neg,tao):
 
 def train(options):
     start_input, start_aug = options.start[0],options.start[1]
+    loss_thred = options.loss_thred
     th.multiprocessing.set_sharing_strategy('file_system')
     device = th.device("cuda:"+str(options.gpu) if th.cuda.is_available() else "cpu")
     # Dump the preprocessing result to save time!
@@ -346,7 +347,7 @@ def train(options):
 
             Train_loss = total_loss / total_num
 
-            if Train_loss.item()<0.1:
+            if Train_loss.item()<loss_thred:
                 print('train loss beyond thredshold, change to the next dataset...')
                 break
 

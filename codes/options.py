@@ -78,6 +78,7 @@ def get_options(args=None):
     parser.add_argument('--split', type=int, default=1)
     parser.add_argument('--start',type=int, nargs='+', default=[5,1])
     parser.add_argument('--train_percent',type=int,default=6)
+    parser.add_argument('--loss_thred',type=float,default=0.1)
     #parser.add_argument('--in')
     options = parser.parse_args(args)
 
