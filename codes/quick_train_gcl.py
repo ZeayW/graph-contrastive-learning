@@ -233,8 +233,6 @@ def train(options):
     print("Loading data...")
     data_loaders = []
     for num_input in range(start_input,options.num_input+1):
-        if num_input == 6:
-            continue
         origin_file = os.path.join(data_path,'i{}/origin.pkl'.format(num_input))
         aug_files = [os.path.join(data_path,'i{}/aug{}.pkl'.format(num_input,i)) for i in range(start_aug,4)]
         for file in aug_files:

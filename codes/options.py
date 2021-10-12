@@ -76,7 +76,7 @@ def get_options(args=None):
     parser.add_argument('--save_dir', type=str, default='../truthtables')
     parser.add_argument('--data_dir', type=str, default='../truthtables/i')
     parser.add_argument('--split', type=int, default=1)
-    parser.add_argument('--start',type=int, nargs='+', default=[5,0])
+    parser.add_argument('--start',type=int, nargs='+', default=[5,1])
     parser.add_argument('--train_percent',type=int,default=6)
     #parser.add_argument('--in')
     options = parser.parse_args(args)
