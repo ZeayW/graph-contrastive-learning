@@ -391,6 +391,9 @@ def train(options):
     print("Loading data...")
     with open(train_data_file,'rb') as f:
         train_g = pickle.load(f)
+        train_graphs = dgl.unbatch(train_g)
+        train_graphs = train_graphs[:options.train_percent]
+        train_g = dgl.batch(train_graphs)
     with open(val_data_file,'rb') as f:
         val_g = pickle.load(f)
     train_nids = th.tensor(range(train_g.number_of_nodes()))
@@ -518,9 +521,11 @@ def train(options):
     print(options.nlabels)
     print(Loss)
     optim = th.optim.Adam(
-        itertools.chain(mlp.parameters(),model.parameters()), options.learning_rate, weight_decay=options.weight_decay
+        #itertools.chain(mlp.parameters(),model.parameters()),
+        mlp.parameters(),
+        options.learning_rate, weight_decay=options.weight_decay
     )
-    model.train()
+    #model.train()
     mlp.train()
     # if model.GCN1 is not None:model.GCN1.train()
     # if model.GCN2 is not None:model.GCN2.train()
