@@ -307,7 +307,7 @@ def train(options):
     max_F1_score = 0
     pre_loss = 100
     stop_score = 0
-    for dataloader in data_loaders:
+    for indx,dataloader in enumerate(data_loaders):
         print(len(dataloader))
         for epoch in range(num_epoch):
             runtime = 0
@@ -326,7 +326,7 @@ def train(options):
                     loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
                 loss = loss / len(embeddings)
 
-                print(ni,loss.item())
+                if indx>=6: print(ni,loss.item())
                 total_num += 1
                 total_loss += loss
                 endtime = time()
@@ -349,7 +349,7 @@ def train(options):
             Train_loss = total_loss / total_num
 
             if Train_loss.item()<loss_thred:
-                print('train loss beyond thredshold, change to the next dataset...')
+                print('train loss beyond thredshold, change to the next dataset: {} {}'.format(indx%3+5,indx-3*(indx%3)+1))
                 break
 
             print("epoch[{:d}]".format(epoch))
