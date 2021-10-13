@@ -325,6 +325,14 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
     print("or error ratio:",error_count[5]/num_errors)
     return [loss, acc,recall,precision,F1_score]
 
+def check_distance(embeddings):
+    distance = 0
+    num = embeddings.shape[0]
+    for i in range(num):
+        d = th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1
+        distance += d
+        print('sample {}, sum distance:{}'.format(i,d))
+
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
     mask_in = g.ndata['label_i'].squeeze(1) == 1
@@ -398,6 +406,27 @@ def train(options):
         val_g = pickle.load(f)
     train_nids = th.tensor(range(train_g.number_of_nodes()))
 
+    val_nodes = th.tensor(range(val_g.num_nodes()))
+    val_pos = val_nodes[val_g.ndata['label_o']==1]
+    sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
+    print('num_val_pos:',len(val_pos))
+    loader = MyNodeDataLoader(
+        True,
+        val_g,
+        val_pos,
+        sampler,
+        batch_size=len(val_pos),
+        shuffle=True,
+        drop_last=False,
+    )
+    for ni, (central_nodes,input_nodes,blocks) in enumerate(loader):
+        blocks = [b.to(device) for b in blocks]
+        input_features = blocks[0].srcdata["f_input"]
+        output_labels = blocks[-1].dstdata[label_name].squeeze(1)
+        embeddings = model(blocks, input_features)
+        print(embeddings)
+        check_distance(embeddings)
+    exit()
     if options.muldiv:
         label_name = 'mul_o'
     elif options.sub:
