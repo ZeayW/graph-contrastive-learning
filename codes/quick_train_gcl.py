@@ -349,7 +349,7 @@ def train(options):
             Train_loss = total_loss / total_num
 
             if Train_loss.item()<loss_thred:
-                print('train loss beyond thredshold, change to the next dataset: {} {}'.format(indx%3+5,indx-3*(indx%3)+1))
+                print('train loss beyond thredshold, change to the next dataset: {} {}'.format(indx/3+5,indx-3*(indx/3)+1))
                 break
 
             print("epoch[{:d}]".format(epoch))
