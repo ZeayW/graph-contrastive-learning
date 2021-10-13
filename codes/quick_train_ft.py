@@ -561,7 +561,8 @@ def train(options):
         #model.parameters(), options.learning_rate, weight_decay=options.weight_decay
         #)
         #model.train()
-
+        val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
+                                                                              mlp, Loss, options.alpha, beta)
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
         for ni, (central_nodes,input_nodes,blocks) in enumerate(traindataloader):
@@ -653,7 +654,7 @@ def train(options):
         #if options.weighted:
             #print('alpha = ',model.alpha)
         print("num of pos: ",pos_count," num of neg: ",neg_count)
-        val_loss, val_acc, val_recall,val_precision, val_F1_score = validate(valdataloader, label_name,device, model, mlp,Loss,options.alpha,beta)
+
         if epoch % 1 == 0 and get_options().rel:
             if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
             #print(model.GCN1.layers[0].attn_e.grad)
