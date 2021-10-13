@@ -475,7 +475,9 @@ def train(options):
     # print('adder_inputs:', len(train_g.ndata['adder_i'][train_g.ndata['adder_i'] == 1]))
     #
     # print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
-
+    val_graphs = dgl.unbatch(val_g)
+    print(len(val_graphs))
+    exit()
     train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
 
     rates = cal_ratios(neg_count,pos_count)
