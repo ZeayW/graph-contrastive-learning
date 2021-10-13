@@ -95,7 +95,7 @@ elif get_options().num_input == 3:
 elif get_options().num_input == 4:
     num_sample = 512
 elif get_options().num_input == 5:
-    num_sample = 50000
+    num_sample = 100100
 elif get_options().num_input == 6:
     num_sample = 100000
 elif get_options().num_input == 7:
