@@ -494,14 +494,14 @@ def train(options):
     pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
     neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
-    print('num_val_pos:', len(val_pos))
+    #print('num_val_pos:', len(val_pos))
     print(th.sum(val_g.ndata['label_o'][val_pos]))
     loader = MyNodeDataLoader(
         True,
         val_g,
         th.tensor(range(val_g.number_of_nodes()))[val_g.ndata['label_o'].squeeze(-1)!=-1],
         sampler,
-        batch_size=len(val_pos),
+        batch_size=val_g.num_nodes(),
         shuffle=True,
         drop_last=False,
     )
