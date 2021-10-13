@@ -404,29 +404,9 @@ def train(options):
         train_g = dgl.batch(train_graphs)
     with open(val_data_file,'rb') as f:
         val_g = pickle.load(f)
-    train_nids = th.tensor(range(train_g.number_of_nodes()))
 
-    val_nodes = th.tensor(range(val_g.num_nodes()))
-    val_pos = val_nodes[(val_g.ndata['label_o']==1).squeeze(1)]
-    sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
-    print('num_val_pos:',len(val_pos))
-    loader = MyNodeDataLoader(
-        True,
-        val_g,
-        val_pos,
-        sampler,
-        batch_size=len(val_pos),
-        shuffle=True,
-        drop_last=False,
-    )
-    for ni, (central_nodes,input_nodes,blocks) in enumerate(loader):
-        blocks = [b.to(device) for b in blocks]
-        input_features = blocks[0].srcdata["f_input"]
-        output_labels = blocks[-1].dstdata[label_name].squeeze(1)
-        embeddings = model(blocks, input_features)
-        print(embeddings)
-        check_distance(embeddings)
-    exit()
+
+
     if options.muldiv:
         label_name = 'mul_o'
     elif options.sub:
@@ -508,7 +488,27 @@ def train(options):
     val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
 
-
+    val_nodes = th.tensor(range(val_g.num_nodes()))
+    val_pos = val_nodes[(val_g.ndata['label_o'] == 1).squeeze(1)]
+    sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
+    print('num_val_pos:', len(val_pos))
+    loader = MyNodeDataLoader(
+        True,
+        val_g,
+        val_pos,
+        sampler,
+        batch_size=len(val_pos),
+        shuffle=True,
+        drop_last=False,
+    )
+    for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
+        blocks = [b.to(device) for b in blocks]
+        input_features = blocks[0].srcdata["f_input"]
+        output_labels = blocks[-1].dstdata[label_name].squeeze(1)
+        embeddings = model(blocks, input_features)
+        print(embeddings)
+        check_distance(embeddings)
+    exit()
     #in_sampler = dgl.dataloading.MultiLayerFullNeighborSampler(in_nlayers + 1)
     if in_nlayers == -1:
         in_nlayers = 0
