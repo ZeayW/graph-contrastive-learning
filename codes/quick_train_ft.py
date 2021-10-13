@@ -524,7 +524,7 @@ def train(options):
             #print(embeddings)
             print('-----------------------------------------------------------------------------------------\n\n')
             #check_distance(pos_embeddings,neg_embeddings)
-        exit()
+    exit()
     #in_sampler = dgl.dataloading.MultiLayerFullNeighborSampler(in_nlayers + 1)
     if in_nlayers == -1:
         in_nlayers = 0
