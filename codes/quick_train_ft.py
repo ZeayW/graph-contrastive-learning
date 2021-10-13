@@ -490,7 +490,7 @@ def train(options):
     val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
 
-    val_nodes = th.tensor(range(val_g.number_of_nodes()))[val_g.ndata['label_o'].squeeze(-1)!=-1]
+    val_nodes = th.tensor(range(val_g.number_of_nodes()))
     pos_mask = (val_g.ndata['label_o'][val_nodes] == 1).squeeze(1)
     neg_mask = (val_g.ndata['label_o'][val_nodes] == 0).squeeze(1)
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
