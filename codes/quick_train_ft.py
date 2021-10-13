@@ -567,8 +567,8 @@ def train(options):
         for ni, (central_nodes,input_nodes,blocks) in enumerate(traindataloader):
             #continue
             #print(in_blocks)
-            print('freeze gate:',model.conv.gate_functions[11].weight)
-            print('not freeze gate:', model.conv.gate_functions[2].weight)
+            # print('freeze gate:',model.conv.gate_functions[11].weight)
+            # print('not freeze gate:', model.conv.gate_functions[2].weight)
             #print(mlp.layers[2].weight)
             if ni == len(traindataloader)-1:
                 continue
