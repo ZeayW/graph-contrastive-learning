@@ -512,6 +512,7 @@ def train(options):
         embeddings = model(blocks, input_features)
 
         pos_embeddings = embeddings[pos_mask]
+        print(sorted(pos_embeddings.numpy().tolist()))
         print(len(pos_embeddings))
         neg_embeddings = embeddings[neg_mask]
         #print(embeddings)
