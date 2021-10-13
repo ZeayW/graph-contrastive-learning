@@ -495,7 +495,7 @@ def train(options):
     neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
     #print('num_val_pos:', len(val_pos))
-    print(th.sum(val_g.ndata['label_o'][val_pos]))
+    #print(th.sum(val_g.ndata['label_o'][val_pos]))
     loader = MyNodeDataLoader(
         True,
         val_g,
