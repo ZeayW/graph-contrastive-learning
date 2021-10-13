@@ -407,7 +407,7 @@ def train(options):
     train_nids = th.tensor(range(train_g.number_of_nodes()))
 
     val_nodes = th.tensor(range(val_g.num_nodes()))
-    val_pos = val_nodes[val_g.ndata['label_o']==1]
+    val_pos = val_nodes[(val_g.ndata['label_o']==1).squeeze(1)]
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
     print('num_val_pos:',len(val_pos))
     loader = MyNodeDataLoader(
