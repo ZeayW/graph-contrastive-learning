@@ -523,7 +523,8 @@ def train(options):
             neg_embeddings = embeddings[neg_mask]
             #print(embeddings)
             print('-----------------------------------------------------------------------------------------\n\n')
-            #check_distance(pos_embeddings,neg_embeddings)
+            check_distance(pos_embeddings,neg_embeddings)
+            print('-----------------------------------------------------------------------------------------\n\n')
     exit()
     #in_sampler = dgl.dataloading.MultiLayerFullNeighborSampler(in_nlayers + 1)
     if in_nlayers == -1:
