@@ -326,15 +326,17 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
     return [loss, acc,recall,precision,F1_score]
 
 def check_distance(embeddings,neg_embeddings):
-    #sim = 0
+    total_pos_sim ,total_neg_sim = 0,0
     num = embeddings.shape[0]
     print(num)
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
         neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
         #distance += d
+        total_pos_sim += sim
+        total_neg_sim += neg_sim
         print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-
+    print('avg pos sim :{}, avg neg sim:{}'.format(total_pos_sim/len(embeddings),total_neg_sim/len(embeddings)))
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
     mask_in = g.ndata['label_i'].squeeze(1) == 1
