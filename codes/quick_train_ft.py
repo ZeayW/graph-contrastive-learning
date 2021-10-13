@@ -491,8 +491,8 @@ def train(options):
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
 
     val_nodes = th.tensor(range(val_g.number_of_nodes()))
-    pos_mask = (val_g.ndata['label_o'][val_nodes] == 1).squeeze(1)
-    neg_mask = (val_g.ndata['label_o'][val_nodes] == 0).squeeze(1)
+    pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
+    neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
     #print('num_val_pos:', len(val_pos))
     #print(th.sum(val_g.ndata['label_o'][val_pos]))
@@ -510,10 +510,12 @@ def train(options):
         input_features = blocks[0].srcdata["f_input"]
         output_labels = blocks[-1].dstdata[label_name].squeeze(1)
         embeddings = model(blocks, input_features)
+
         pos_embeddings = embeddings[pos_mask]
+        print(len(pos_embeddings))
         neg_embeddings = embeddings[neg_mask]
         #print(embeddings)
-        check_distance(embeddings,neg_embeddings)
+        check_distance(pos_embeddings,neg_embeddings)
     exit()
     #in_sampler = dgl.dataloading.MultiLayerFullNeighborSampler(in_nlayers + 1)
     if in_nlayers == -1:
