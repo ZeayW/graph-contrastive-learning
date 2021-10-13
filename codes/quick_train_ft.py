@@ -513,9 +513,11 @@ def train(options):
 
         pos_embeddings = embeddings[pos_mask]
         #print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
-        for embed in sorted(pos_embeddings.cpu().detach().numpy().tolist()):
-            print(embed[:20])
+        for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
+            print(embed[:7])
+
         print(len(pos_embeddings))
+        exit()
         neg_embeddings = embeddings[neg_mask]
         #print(embeddings)
         check_distance(pos_embeddings,neg_embeddings)
