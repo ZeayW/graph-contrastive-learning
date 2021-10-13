@@ -327,7 +327,7 @@ def train(options):
                     loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
                 loss = loss / len(embeddings)
 
-                if indx>=6: print(ni,loss.item())
+                if num_input>=7: print(ni,loss.item())
                 total_num += 1
                 total_loss += loss
                 endtime = time()
