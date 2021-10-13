@@ -501,7 +501,7 @@ def train(options):
         in_sampler,
         batch_size=options.batch_size,
         shuffle=True,
-        drop_last=False,
+        drop_last=True,
     )
     valdataloader = MyNodeDataLoader(
         True,
