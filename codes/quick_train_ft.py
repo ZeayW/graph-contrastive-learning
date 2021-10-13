@@ -521,18 +521,18 @@ def train(options):
     print(options.nlabels)
     print(Loss)
     optim = th.optim.Adam(
-        itertools.chain(mlp.parameters(),
-                        model.conv.gate_functions[2].parameters(),
-                        model.conv.gate_functions[3].parameters(),
-                        model.conv.gate_functions[4].parameters(),
-                        model.conv.gate_functions[8].parameters()),
-        #mlp.parameters(),
+        # itertools.chain(mlp.parameters(),
+        #                 model.conv.gate_functions[2].parameters(),
+        #                 model.conv.gate_functions[3].parameters(),
+        #                 model.conv.gate_functions[4].parameters(),
+        #                 model.conv.gate_functions[8].parameters()),
+        mlp.parameters(),
         options.learning_rate, weight_decay=options.weight_decay
     )
 
-    for i in range(options.in_dim):
-        if i in (2,3,4,8):
-            model.conv.gate_functions[i].train()
+    # for i in range(options.in_dim):
+    #     if i in (2,3,4,8):
+    #         model.conv.gate_functions[i].train()
     #model.train()
     mlp.train()
     # if model.GCN1 is not None:model.GCN1.train()
