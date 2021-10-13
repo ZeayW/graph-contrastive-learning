@@ -326,12 +326,12 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
     return [loss, acc,recall,precision,F1_score]
 
 def check_distance(embeddings):
-    distance = 0
+    #sim = 0
     num = embeddings.shape[0]
     for i in range(num):
-        d = th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1
-        distance += d
-        print('sample {}, sum distance:{}'.format(i,d))
+        sim = th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1
+        #distance += d
+        print('sample {}, sum distance:{}'.format(i,sim))
 
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
@@ -492,6 +492,7 @@ def train(options):
     val_pos = val_nodes[(val_g.ndata['label_o'] == 1).squeeze(1)]
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
     print('num_val_pos:', len(val_pos))
+    print(th.sum(val_g.ndata['label_o'][val_pos]))
     loader = MyNodeDataLoader(
         True,
         val_g,
