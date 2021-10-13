@@ -475,9 +475,7 @@ def train(options):
     # print('adder_inputs:', len(train_g.ndata['adder_i'][train_g.ndata['adder_i'] == 1]))
     #
     # print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
-    val_graphs = dgl.unbatch(val_g)
-    print(len(val_graphs))
-    exit()
+
     train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
 
     rates = cal_ratios(neg_count,pos_count)
@@ -491,39 +489,42 @@ def train(options):
     val_g.ndata['f_input'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
     val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
+    val_graphs = dgl.unbatch(val_g)
+    print(len(val_graphs))
+    for val_g in val_graphs:
+        val_nodes = th.tensor(range(val_g.number_of_nodes()))
+        pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
+        neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
+        sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
+        #print('num_val_pos:', len(val_pos))
+        #print(th.sum(val_g.ndata['label_o'][val_pos]))
+        loader = MyNodeDataLoader(
+            True,
+            val_g,
+            val_nodes,
+            sampler,
+            batch_size=val_g.num_nodes(),
+            shuffle=False,
+            drop_last=False,
+        )
+        for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
+            blocks = [b.to(device) for b in blocks]
+            input_features = blocks[0].srcdata["f_input"]
+            output_labels = blocks[-1].dstdata[label_name].squeeze(1)
+            embeddings = model(blocks, input_features)
 
-    val_nodes = th.tensor(range(val_g.number_of_nodes()))
-    pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
-    neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
-    sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
-    #print('num_val_pos:', len(val_pos))
-    #print(th.sum(val_g.ndata['label_o'][val_pos]))
-    loader = MyNodeDataLoader(
-        True,
-        val_g,
-        val_nodes,
-        sampler,
-        batch_size=val_g.num_nodes(),
-        shuffle=False,
-        drop_last=False,
-    )
-    for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
-        blocks = [b.to(device) for b in blocks]
-        input_features = blocks[0].srcdata["f_input"]
-        output_labels = blocks[-1].dstdata[label_name].squeeze(1)
-        embeddings = model(blocks, input_features)
+            pos_embeddings = embeddings[pos_mask]
+            #print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
+            for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
+                print(ni,embed[:7])
 
-        pos_embeddings = embeddings[pos_mask]
-        #print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
-        for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
-            print(ni,embed[:7])
-
-        print(len(pos_embeddings))
+            print(len(pos_embeddings))
+            #exit()
+            neg_embeddings = embeddings[neg_mask]
+            #print(embeddings)
+            print('-----------------------------------------------------------------------------------------\n\n')
+            #check_distance(pos_embeddings,neg_embeddings)
         exit()
-        neg_embeddings = embeddings[neg_mask]
-        #print(embeddings)
-        check_distance(pos_embeddings,neg_embeddings)
-    exit()
     #in_sampler = dgl.dataloading.MultiLayerFullNeighborSampler(in_nlayers + 1)
     if in_nlayers == -1:
         in_nlayers = 0
