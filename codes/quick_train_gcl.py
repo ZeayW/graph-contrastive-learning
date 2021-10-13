@@ -385,7 +385,7 @@ def train(options):
                   pickle.dump((parameters, model), f)
                print("Model successfully saved")
             if Train_loss.item()<loss_thred:
-                print('train loss beyond thredshold, change to the next dataset: {} {}'.format(indx/3+5,indx-3*(indx/3)+1))
+                print('train loss beyond thredshold, change to the next dataset: {} {}'.format(int(indx/3)+5,indx-3*int(indx/3)+1))
                 break
 
 
