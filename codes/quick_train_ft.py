@@ -404,11 +404,14 @@ def train(options):
     with open(train_data_file,'rb') as f:
         train_g = pickle.load(f)
         train_graphs = dgl.unbatch(train_g)
-        train_graphs = train_graphs[:options.train_percent]
+        temp = []
+        train_graphs.pop(1)
         train_g = dgl.batch(train_graphs)
     with open(val_data_file,'rb') as f:
         val_g = pickle.load(f)
-
+        val_graphs =dgl.unbatch(val_g)
+        val_graphs.pop(1)
+        val_g = dgl.batch(val_graphs)
 
 
     if options.muldiv:
@@ -528,7 +531,7 @@ def train(options):
             check_distance(pos_embeddings,neg_embeddings)
             #print('-----------------------------------------------------------------------------------------\n\n')
     exit()
-    #in_sampler = dgl.dataloading.MultiLayerFullNeighborSampler(in_nlayers + 1)
+    in_sampler = dgl.dataloading.MultiLayerFullNeighborSampler(in_nlayers + 1)
     if in_nlayers == -1:
         in_nlayers = 0
     if out_nlayers == -1:
