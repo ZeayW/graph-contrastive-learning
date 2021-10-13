@@ -335,7 +335,7 @@ def check_distance(embeddings,neg_embeddings):
         #distance += d
         total_pos_sim += sim
         total_neg_sim += neg_sim
-        print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
+        #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
     print('avg pos sim :{}, avg neg sim:{}'.format(total_pos_sim/len(embeddings),total_neg_sim/len(embeddings)))
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
@@ -520,13 +520,13 @@ def train(options):
             for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
                 print(ni,embed[:7])
 
-            print(len(pos_embeddings))
+            #print(len(pos_embeddings))
             #exit()
             neg_embeddings = embeddings[neg_mask]
             #print(embeddings)
-            print('-----------------------------------------------------------------------------------------\n\n')
+            #print('-----------------------------------------------------------------------------------------\n\n')
             check_distance(pos_embeddings,neg_embeddings)
-            print('-----------------------------------------------------------------------------------------\n\n')
+            #print('-----------------------------------------------------------------------------------------\n\n')
     exit()
     #in_sampler = dgl.dataloading.MultiLayerFullNeighborSampler(in_nlayers + 1)
     if in_nlayers == -1:
