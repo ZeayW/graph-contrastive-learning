@@ -237,7 +237,8 @@ def train(options):
         print('num_input{}'.format(num_input))
         origin_file = os.path.join(data_path,'i{}/origin.pkl'.format(num_input))
         aug_files = [os.path.join(data_path,'i{}/aug{}.pkl'.format(num_input,i)) for i in range(start_aug,4)]
-        for file in aug_files:
+        for i ,file in enumerate(aug_files):
+
             with open(file,'rb') as f:
                 train_g,POs,depth = pickle.load(f)
                 train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
@@ -268,7 +269,7 @@ def train(options):
         #print(po_depths)
         #check(train_g,POs,depth)
             data_loaders.append(
-                MyNodeDataLoader(
+                (num_input,i,MyNodeDataLoader(
                     False,
                     train_g,
                     POs,
@@ -276,7 +277,7 @@ def train(options):
                     batch_size=options.batch_size,
                     shuffle=False,
                     drop_last=False,
-                )
+                ))
             )
         # dataloader = MyNodeDataLoader(
         #     False,
@@ -307,7 +308,7 @@ def train(options):
     max_F1_score = 0
     pre_loss = 100
     stop_score = 0
-    for indx,dataloader in enumerate(data_loaders):
+    for num_input,aug_indx,dataloader in data_loaders:
         print(len(dataloader))
         for epoch in range(num_epoch):
             runtime = 0
@@ -385,7 +386,7 @@ def train(options):
                   pickle.dump((parameters, model), f)
                print("Model successfully saved")
             if Train_loss.item()<loss_thred:
-                print('train loss beyond thredshold, change to the next dataset: {} {}'.format(int(indx/3)+5,indx-3*int(indx/3)+1))
+                print('train loss beyond thredshold, change to the next dataset: {} {}'.format(num_input,aug_indx))
                 break
 
 
