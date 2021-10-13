@@ -517,8 +517,8 @@ def train(options):
 
             pos_embeddings = embeddings[pos_mask]
             #print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
-            for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
-                print(ni,embed[:7])
+            # for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
+            #     print(ni,embed[:7])
 
             #print(len(pos_embeddings))
             #exit()
