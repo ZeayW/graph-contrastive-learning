@@ -502,7 +502,7 @@ def train(options):
         val_nodes,
         sampler,
         batch_size=val_g.num_nodes(),
-        shuffle=True,
+        shuffle=False,
         drop_last=False,
     )
     for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
