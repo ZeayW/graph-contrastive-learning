@@ -105,99 +105,72 @@ def load_model(device,options):
             param.alpha = options.alpha
     return param,classifier
 
+def unlabel_low(g,unlabel_threshold):
+    mask_low = g.ndata['position'] <= unlabel_threshold
+    g.ndata['label_o'][mask_low] = 0
+def load_valdata( val_data_file,options):
 
-def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta,depth,width,num_aug,po_depths,query_embedding,thredshold):
+    with open(val_data_file, 'rb') as f:
+        val_g = pickle.load(f)
+        val_graphs = dgl.unbatch(val_g)
+        val_graphs.pop(1)
+        val_g = dgl.batch(val_graphs)
+    unlabel_low(val_g, 1)
+    label_name = 'label_o'
+    val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
+    val_g.ndata['f_input'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+    val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
 
-    total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
-    runtime = 0
-    num_batch = 0
-    with th.no_grad():
-        for vni, (central_nodes,input_nodes,blocks) in enumerate(
-                valid_dataloader
-        ):
-            num_batch += 1
-            start = time()
-            target_embeddings = []
+    val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
+    val_graphs = dgl.unbatch(val_g)
+    return  val_graphs
+def check_sim(embeddings,neg_embeddings):
+    total_pos_sim ,total_neg_sim = 0,0
+    num = embeddings.shape[0]
+    print(num)
+    for i in range(num):
+        sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
+        neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
+        #distance += d
+        total_pos_sim += sim
+        total_neg_sim += neg_sim
+        #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
+    print('avg pos sim :{}, avg neg sim:{}'.format(total_pos_sim/len(embeddings),total_neg_sim/len(embeddings)))
+
+def validate_sim(val_graphs,sampler,device,model):
+    print(len(val_graphs))
+    for val_g in val_graphs:
+        val_nodes = th.tensor(range(val_g.number_of_nodes()))
+        pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
+        neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
+
+        loader = MyNodeDataLoader(
+            True,
+            val_g,
+            val_nodes,
+            sampler,
+            batch_size=val_g.num_nodes(),
+            shuffle=False,
+            drop_last=False,
+        )
+        for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
             blocks = [b.to(device) for b in blocks]
-            input_features = blocks[0].srcdata["ntype"]
-            for i in range(depth):
-                target_embeddings.append(model(blocks[i:],blocks[i].srcdata['ntype']))
-            #query_embedding = model(train_blocks,train_blocks[0].srcdata['ntype'])
-            total_num = len(target_embeddings[0])
-            target_indexs = th.tensor(range(total_num))
-            predicts = th.zeros(total_num, dtype=th.long).to(device)
-            for i in range(num_aug):
-                start = i*width
-                for j in range(width):
-                    if po_depths[start+j] in (0, 1) :
-                        continue
-                    index = blocks[-1].dstdata['label_o'].squeeze(1) == 1
-                    #print(index)
-                    sim1 = th.cosine_similarity(query_embedding[start+j],target_embeddings[depth-po_depths[start+j]][index],dim=-1)
-                    #print(len(sim1),sim1,th.max(sim1))
-
-                    sim = th.cosine_similarity(query_embedding[start+j],
-                                               target_embeddings[depth-po_depths[start+j]],dim=-1)
-                    #print(target_indexs[sim>thredshold])
-                    predicts [target_indexs[sim>thredshold]] = 1
-
+            input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+            embeddings = model(blocks, input_features)
 
-            predict_labels = predicts
-            end = time()
-            runtime += end - start
-            # if alpha != 1 :
-            #     pos_index = (output_labels != 0)
-            #     neg_index = (output_labels == 0)
-            #     pos_loss = Loss(label_hat[pos_index],output_labels[pos_index])*pos_index.sum().item()
-            #     neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
-            #     val_loss = (alpha*pos_loss+neg_loss) / len(output_labels)
-            # else: val_loss = Loss(label_hat, output_labels)
-            #
-            # total_loss += val_loss.item() * len(output_labels)
-            #
-            # error_mask = predict_labels !=output_labels
-            # errors = blocks[-1].dstdata['ntype'][error_mask]
-            # if len(errors) != 0 :
-            #     errors = th.argmax(errors,dim=1)
-            #     num_errors += len(errors)
-            #     type_count(errors, error_count)
-            # fp_mask = (predict_labels != 0 ) & (output_labels == 0)
-            # fn_mask = (predict_labels == 0) & (output_labels != 0)
-            # fps = blocks[-1].dstdata['ntype'][fp_mask]
-            # if len(fps) != 0: fps = th.argmax(fps,dim=1)
-            # fns = blocks[-1].dstdata['ntype'][fn_mask]
-            # if len(fns) != 0: fns = th.argmax(fns, dim=1)
-            # type_count(fps,fp_count)
-            # type_count(fns,fn_count)
+            pos_embeddings = embeddings[pos_mask]
+            #print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
+            # for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
+            #     print(ni,embed[:7])
 
-            #print('predict:',predict_labels)
-            #print("label:",output_labels)
-            correct += (
-                    predict_labels == output_labels
-            ).sum().item()
-
-            fn += ((predict_labels == 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 0 的总数
-            tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
-            tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
-            fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
-    print("num batch:",num_batch)
-    print("validate time:",runtime)
-    #loss = total_loss / total_num
-    acc = correct / total_num
-    recall = 0
-    precision = 0
-    if tp != 0:
-        recall = tp / (tp + fn)
-        precision = tp / (tp + fp)
-    F1_score = 0
-    if precision != 0 or recall != 0:
-        F1_score = 2 * recall * precision / (recall + precision)
-    print("  validate:")
-    print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(precision, 3))
-    print("\tacc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(acc,recall, F1_score))
-    return [acc,recall,precision,F1_score]
-
+            #print(len(pos_embeddings))
+            #exit()
+            neg_embeddings = embeddings[neg_mask]
+            #print(embeddings)
+            #print('-----------------------------------------------------------------------------------------\n\n')
+            check_sim(pos_embeddings,neg_embeddings)
+            #print('-----------------------------------------------------------------------------------------\n\n')
 
 def NCEloss(pos1,pos2,neg,tao):
     pos_similarity  = th.cosine_similarity(pos1,pos2,dim=-1)
@@ -232,6 +205,9 @@ def train(options):
     print(options)
 
     print("Loading data...")
+    val_data_file = os.path.join('../data/simplify9', 'rocket2.pkl')
+    val_graphs = load_valdata(val_data_file,options)
+    val_sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
     data_loaders = []
     for num_input in range(start_input,options.num_input+1):
         print('num_input{}'.format(num_input))
@@ -354,6 +330,7 @@ def train(options):
             print("training runtime: ",runtime)
             print("  train:")
             print("loss:{:.8f}".format(Train_loss.item()))
+            validate_sim(val_graphs,val_sampler,device,model)
             # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
             # print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
             # #if options.weighted:
