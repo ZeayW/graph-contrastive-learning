@@ -8,7 +8,7 @@ import os
 from MyDataLoader_ud import *
 from time import time
 from random import shuffle
-import torch as th
+#import torch as th
 
 def load_model(device,options):
 
