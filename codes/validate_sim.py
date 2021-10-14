@@ -19,7 +19,7 @@ def load_model(device,options):
 
     with open(os.path.join(model_dir,'model.pkl'), 'rb') as f:
         #print(f)
-        param, model,mlp = pickle.load(f)
+        param, model = pickle.load(f)
         #print(classifier)
         param.model_saving_dir = options.model_saving_dir
         model = model.to(device)
@@ -27,7 +27,7 @@ def load_model(device,options):
             param.learning_rate = options.learning_rate
         if options.change_alpha:
             param.alpha = options.alpha
-    return param,model,mlp
+    return param,model
 def validate_sim(val_graphs,sampler,device,model):
     print(len(val_graphs))
     for val_g in val_graphs:
@@ -95,14 +95,13 @@ val_data_file = os.path.join(data_path,'rocket2.pkl')
 label_name = 'label_o'
 
 print(options)
-options, model,mlp = load_model(device, options)
+options, model = load_model(device, options)
 
 if model is None:
     print("No model, please prepocess first , or choose a pretrain model")
     exit()
 print(model)
-mlp = mlp.to(device)
-print(mlp)
+
 in_nlayers = options.in_nlayers if isinstance(options.in_nlayers,int) else options.in_nlayers[0]
 with open(val_data_file, 'rb') as f:
     val_g = pickle.load(f)
