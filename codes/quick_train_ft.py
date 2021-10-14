@@ -359,7 +359,7 @@ def validate_sim(val_graphs,sampler,device,model):
             #print('-----------------------------------------------------------------------------------------\n\n')
             check_sim(pos_embeddings,neg_embeddings)
             #print('-----------------------------------------------------------------------------------------\n\n')
-    exit()
+
 def check_sim(embeddings,neg_embeddings):
     total_pos_sim ,total_neg_sim = 0,0
     num = embeddings.shape[0]
