@@ -438,15 +438,15 @@ def train(options):
     print("Loading data...")
     with open(train_data_file,'rb') as f:
         train_g = pickle.load(f)
-        train_graphs = dgl.unbatch(train_g)
-        temp = []
-        train_graphs.pop(1)
-        train_g = dgl.batch(train_graphs)
+        # train_graphs = dgl.unbatch(train_g)
+        # temp = []
+        # train_graphs.pop(1)
+        # train_g = dgl.batch(train_graphs)
     with open(val_data_file,'rb') as f:
         val_g = pickle.load(f)
-        val_graphs =dgl.unbatch(val_g)
-        val_graphs.pop(1)
-        val_g = dgl.batch(val_graphs)
+        # val_graphs =dgl.unbatch(val_g)
+        # val_graphs.pop(1)
+        # val_g = dgl.batch(val_graphs)
 
 
     if options.muldiv:
