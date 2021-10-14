@@ -325,7 +325,42 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
     print("or error ratio:",error_count[5]/num_errors)
     return [loss, acc,recall,precision,F1_score]
 
-def check_distance(embeddings,neg_embeddings):
+def validate_sim(val_graphs,sampler,device,model):
+    print(len(val_graphs))
+    for val_g in val_graphs:
+        val_nodes = th.tensor(range(val_g.number_of_nodes()))
+        pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
+        neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
+
+        loader = MyNodeDataLoader(
+            True,
+            val_g,
+            val_nodes,
+            sampler,
+            batch_size=val_g.num_nodes(),
+            shuffle=False,
+            drop_last=False,
+        )
+        for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
+            blocks = [b.to(device) for b in blocks]
+            input_features = blocks[0].srcdata["f_input"]
+            output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+            embeddings = model(blocks, input_features)
+
+            pos_embeddings = embeddings[pos_mask]
+            #print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
+            # for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
+            #     print(ni,embed[:7])
+
+            #print(len(pos_embeddings))
+            #exit()
+            neg_embeddings = embeddings[neg_mask]
+            #print(embeddings)
+            #print('-----------------------------------------------------------------------------------------\n\n')
+            check_sim(pos_embeddings,neg_embeddings)
+            #print('-----------------------------------------------------------------------------------------\n\n')
+    exit()
+def check_sim(embeddings,neg_embeddings):
     total_pos_sim ,total_neg_sim = 0,0
     num = embeddings.shape[0]
     print(num)
@@ -493,45 +528,12 @@ def train(options):
     # print(train_g.ndata['ntype2'].shape,train_g.ndata['ntype2'])
     val_g.ndata['f_input'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
     val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
-    # val_graphs = dgl.unbatch(val_g)
-    # print(len(val_graphs))
-    # for val_g in val_graphs:
-    #     val_nodes = th.tensor(range(val_g.number_of_nodes()))
-    #     pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
-    #     neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
-    #     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
-    #     #print('num_val_pos:', len(val_pos))
-    #     #print(th.sum(val_g.ndata['label_o'][val_pos]))
-    #     loader = MyNodeDataLoader(
-    #         True,
-    #         val_g,
-    #         val_nodes,
-    #         sampler,
-    #         batch_size=val_g.num_nodes(),
-    #         shuffle=False,
-    #         drop_last=False,
-    #     )
-    #     for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
-    #         blocks = [b.to(device) for b in blocks]
-    #         input_features = blocks[0].srcdata["f_input"]
-    #         output_labels = blocks[-1].dstdata[label_name].squeeze(1)
-    #         embeddings = model(blocks, input_features)
-    #
-    #         pos_embeddings = embeddings[pos_mask]
-    #         #print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
-    #         # for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
-    #         #     print(ni,embed[:7])
-    #
-    #         #print(len(pos_embeddings))
-    #         #exit()
-    #         neg_embeddings = embeddings[neg_mask]
-    #         #print(embeddings)
-    #         #print('-----------------------------------------------------------------------------------------\n\n')
-    #         check_distance(pos_embeddings,neg_embeddings)
-    #         #print('-----------------------------------------------------------------------------------------\n\n')
-    # exit()
-    in_sampler = dgl.dataloading.MultiLayerFullNeighborSampler(in_nlayers + 1)
+    val_graphs = dgl.unbatch(val_g)
+    sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
+    validate_sim(val_graphs,sampler,device,model)
+
     if in_nlayers == -1:
         in_nlayers = 0
     if out_nlayers == -1:
