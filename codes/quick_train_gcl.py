@@ -127,7 +127,6 @@ def load_valdata( val_data_file,options):
 def check_sim(embeddings,neg_embeddings):
     total_pos_sim ,total_neg_sim = 0,0
     num = embeddings.shape[0]
-    print(num)
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
         neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
@@ -135,7 +134,7 @@ def check_sim(embeddings,neg_embeddings):
         total_pos_sim += sim
         total_neg_sim += neg_sim
         #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    print('avg pos sim :{}, avg neg sim:{}'.format(total_pos_sim/len(embeddings),total_neg_sim/len(embeddings)))
+    print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim/len(embeddings),total_neg_sim/len(embeddings)))
 
 def validate_sim(val_graphs,sampler,device,model):
     print(len(val_graphs))
