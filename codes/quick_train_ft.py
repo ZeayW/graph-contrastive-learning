@@ -532,7 +532,7 @@ def train(options):
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
     val_graphs = dgl.unbatch(val_g)
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
-    validate_sim(val_graphs,sampler,device,model)
+
 
     if in_nlayers == -1:
         in_nlayers = 0
@@ -614,8 +614,7 @@ def train(options):
         #model.parameters(), options.learning_rate, weight_decay=options.weight_decay
         #)
         #model.train()
-        val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
-                                                                              mlp, Loss, options.alpha, beta)
+
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
         for ni, (central_nodes,input_nodes,blocks) in enumerate(traindataloader):
@@ -697,6 +696,7 @@ def train(options):
         if Train_precision != 0 or Train_recall != 0:
             Train_F1_score = 2 * Train_recall * Train_precision / (Train_recall + Train_precision)
 
+
         # if is_FuncGCN1:
         #     print(model.GCN1.conv.gate_functions[13].weight)
         print("epoch[{:d}]".format(epoch))
@@ -704,9 +704,12 @@ def train(options):
         print("  train:")
         print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
         print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
+        print("num of pos: ", pos_count, " num of neg: ", neg_count)
         #if options.weighted:
             #print('alpha = ',model.alpha)
-        print("num of pos: ",pos_count," num of neg: ",neg_count)
+        val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
+                                                                              mlp, Loss, options.alpha, beta)
+        validate_sim(val_graphs, sampler, device, model)
 
         if epoch % 1 == 0 and get_options().rel:
             if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
