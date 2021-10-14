@@ -1,4 +1,3 @@
-
 from model import *
 from options import get_options
 import dgl
@@ -19,16 +18,16 @@ def load_model(device,options):
 
     with open(os.path.join(model_dir,'model.pkl'), 'rb') as f:
         #print(f)
-        param, model = pickle.load(f)
+        param, model1 = pickle.load(f)
         #print(classifier)
         param.model_saving_dir = options.model_saving_dir
-        model = model.to(device)
+        model1 = model1.to(device)
         if options.change_lr:
             param.learning_rate = options.learning_rate
         if options.change_alpha:
             param.alpha = options.alpha
-    return param,model
-def validate_sim(val_graphs,sampler,device,model):
+    return param,model1
+def validate_sim(val_graphs,sampler,device,model1):
     print(len(val_graphs))
     for val_g in val_graphs:
         val_nodes = th.tensor(range(val_g.number_of_nodes()))
@@ -48,7 +47,7 @@ def validate_sim(val_graphs,sampler,device,model):
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
-            embeddings = model(blocks, input_features)
+            embeddings = model1(blocks, input_features)
 
             pos_embeddings = embeddings[pos_mask]
             #print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
@@ -95,12 +94,12 @@ val_data_file = os.path.join(data_path,'rocket2.pkl')
 label_name = 'label_o'
 
 print(options)
-options, model = load_model(device, options)
+options, model1 = load_model(device, options)
 
-if model is None:
+if model1 is None:
     print("No model, please prepocess first , or choose a pretrain model")
     exit()
-print(model)
+print(model1)
 
 in_nlayers = options.in_nlayers if isinstance(options.in_nlayers,int) else options.in_nlayers[0]
 with open(val_data_file, 'rb') as f:
@@ -117,4 +116,4 @@ val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim)
 val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
 val_graphs = dgl.unbatch(val_g)
 sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
-validate_sim(val_graphs,sampler,device,model)
+validate_sim(val_graphs,sampler,device,model1)
