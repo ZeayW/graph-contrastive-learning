@@ -1,5 +1,6 @@
-from model import *
+from dataset_dc import Dataset_dc
 from options import get_options
+from model import *
 import dgl
 import pickle
 import numpy as np
