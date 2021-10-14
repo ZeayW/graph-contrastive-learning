@@ -244,7 +244,7 @@ def train(options):
         #print(po_depths)
         #check(train_g,POs,depth)
             data_loaders.append(
-                (num_input,i,MyNodeDataLoader(
+                (num_input,i+1,MyNodeDataLoader(
                     False,
                     train_g,
                     POs,
