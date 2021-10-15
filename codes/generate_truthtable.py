@@ -93,7 +93,7 @@ if get_options().num_input == 2:
 elif get_options().num_input == 3:
     num_sample = 50
 elif get_options().num_input == 4:
-    num_sample =2000
+    num_sample =3000
 elif get_options().num_input == 5:
     num_sample = 100100
 elif get_options().num_input == 6:
