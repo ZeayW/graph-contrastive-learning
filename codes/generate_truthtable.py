@@ -111,11 +111,8 @@ if not os.path.exists(save_path):
 # if os.path.exists(os.path.join(save_path,'sampled.pkl')):
 #     with open(os.path.join(save_path,'sampled.pkl'),'rb') as f:
 #         sampled = pickle.load(f)
-
+print(len(os.listdir(save_path)))
 for i,vf in enumerate(os.listdir(save_path)):
-    print(i)
-    if i% 500 == 0:
-        print(i)
     if not vf.endswith('.v') :
         continue
     current_num +=1
