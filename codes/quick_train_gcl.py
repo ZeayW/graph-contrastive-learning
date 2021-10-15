@@ -112,9 +112,6 @@ def load_valdata( val_data_file,options):
 
     with open(val_data_file, 'rb') as f:
         val_g = pickle.load(f)
-        val_graphs = dgl.unbatch(val_g)
-        val_graphs.pop(1)
-        val_g = dgl.batch(val_graphs)
     unlabel_low(val_g, 1)
     label_name = 'label_o'
     val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
