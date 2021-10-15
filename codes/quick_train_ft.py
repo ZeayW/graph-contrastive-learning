@@ -438,7 +438,10 @@ def train(options):
     with open(train_data_file,'rb') as f:
         train_g = pickle.load(f)
         train_graphs = dgl.unbatch(train_g)
-        train_graphs.reverse()
+        temp = train_graphs[1]
+        train_graphs[1] = train_graphs[2]
+        train_graphs[2] = temp
+        #train_graphs.reverse()
         train_graphs = train_graphs[:options.train_percent]
         # temp = []
         # train_graphs.pop(1)
@@ -627,7 +630,7 @@ def train(options):
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
         for ni, (central_nodes,input_nodes,blocks) in enumerate(traindataloader):
-           
+
             #continue
             #print(in_blocks)
             # print('freeze gate:',model.conv.gate_functions[11].weight)
