@@ -402,6 +402,7 @@ def train(options):
     # Dump the preprocessing result to save time!
     #data_path = 'data/region/'
     #data_path = 'data/boundary/'
+    freeze = options.freeze
     data_path = options.datapath
     print(data_path)
     train_data_file = os.path.join(data_path,'boom2.pkl')
@@ -573,22 +574,29 @@ def train(options):
     else: Loss = nn.BCEWithLogitsLoss(pos_weight=th.FloatTensor([options.pos_weight]).to(device))
     print(options.nlabels)
     print(Loss)
-    optim = th.optim.Adam(
-        # itertools.chain(mlp.parameters(),
-        #                 model.conv.gate_functions[2].parameters(),
-        #                 model.conv.gate_functions[3].parameters(),
-        #                 model.conv.gate_functions[4].parameters(),
-        #                 model.conv.gate_functions[8].parameters()),
-        itertools.chain(mlp.parameters(),model.parameters()),
-        #mlp.parameters(),
-        options.learning_rate, weight_decay=options.weight_decay
-    )
+    if freeze:
+        optim = th.optim.Adam(
+            mlp.parameters(),
+            options.learning_rate, weight_decay=options.weight_decay
+        )
+        mlp.train()
+    else:
+        optim = th.optim.Adam(
+            # itertools.chain(mlp.parameters(),
+            #                 model.conv.gate_functions[2].parameters(),
+            #                 model.conv.gate_functions[3].parameters(),
+            #                 model.conv.gate_functions[4].parameters(),
+            #                 model.conv.gate_functions[8].parameters()),
+            itertools.chain(mlp.parameters(),model.parameters()),
+            #mlp.parameters(),
+            options.learning_rate, weight_decay=options.weight_decay
+        )
 
-    # for i in range(options.in_dim):
-    #     if i in (2,3,4,8):
-    #         model.conv.gate_functions[i].train()
-    model.train()
-    mlp.train()
+        # for i in range(options.in_dim):
+        #     if i in (2,3,4,8):
+        #         model.conv.gate_functions[i].train()
+        model.train()
+        mlp.train()
     # if model.GCN1 is not None:model.GCN1.train()
     # if model.GCN2 is not None:model.GCN2.train()
     # if model.GCN1 is not None and type(model.GCN1) == FuncGCN:
