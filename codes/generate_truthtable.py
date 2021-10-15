@@ -93,7 +93,7 @@ if get_options().num_input == 2:
 elif get_options().num_input == 3:
     num_sample = 50
 elif get_options().num_input == 4:
-    num_sample = 512
+    num_sample =2000
 elif get_options().num_input == 5:
     num_sample = 100100
 elif get_options().num_input == 6:
@@ -142,6 +142,8 @@ with open(os.path.join(save_path,'visitied.pkl'),'wb') as f:
 print('equal transformation: ',len(equal_arrays))
 size =0
 while current_num<num_sample:
+    if len(visited)> pow(2,pow(2,num_input)):
+        break
     #i = random.randint(1,pow(2,pow(2,num_input))-1)
     num = ''
     postive_postions = []
@@ -186,4 +188,5 @@ while current_num<num_sample:
         f.write('\tendcase\n')
         f.write('endmodule\n')
 
+print(len(os.listdir(save_path)))
 print('num visited:',len(visited),'total',pow(2,pow(2,num_input)))
