@@ -122,7 +122,7 @@ class MyNodeCollator(NodeCollator):
         # TODO(BarclayII) Because DistGraph doesn't have idtype and device implemented,
         # this function does not work.  I'm again skipping this step as a workaround.
         # We need to fix this.
-
+        print(items)
         if isinstance(items, dict):
             items = utils.prepare_tensor_dict(self.g, items, 'items')
         else:
