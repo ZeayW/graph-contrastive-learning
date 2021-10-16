@@ -725,7 +725,7 @@ def train(options):
         for i in range(num):
             sim = (th.sum(th.cosine_similarity(pos_embeddings[i], pos_embeddings, dim=-1)) - 1) / (num - 1)
             total_pos_sim += sim
-        print('\tavg pos_sim:{:.4f}'.format(total_pos_sim.item()/len(pos_embeddings)))
+
         # if is_FuncGCN1:
         #     print(model.GCN1.conv.gate_functions[13].weight)
         print("epoch[{:d}]".format(epoch))
@@ -733,7 +733,7 @@ def train(options):
         print("  train:")
         print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
         print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
-        print('\t avg pos_sim:{}, av neg_sim:{}'.format(pos_sim,neg_sim))
+        print('\tavg pos_sim:{:.4f}'.format(total_pos_sim.item() / len(pos_embeddings)))
         #validate_sim([train_g],sampler,device,model)
         validate_sim(dgl.unbatch(train_g),pos_embeddings,sampler,device,model)
         print("num of pos: ", pos_count, " num of neg: ", neg_count)
