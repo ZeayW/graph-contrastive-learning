@@ -570,6 +570,7 @@ def predict(options):
     print('start')
     with th.no_grad():
         for ni, (central_nodes, input_nodes, blocks) in enumerate(traindataloader):
+            print(ni)
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata[label_name].squeeze(1)
