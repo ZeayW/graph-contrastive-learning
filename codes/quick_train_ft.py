@@ -326,6 +326,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_
     #print("toral num error",num_errors)
     print("\terror count:",error_count)
     #print("or error ratio:",error_count[5]/num_errors)
+
     print('\tavg pos sim :{:.4f}, avg cross sim:{:.4f}, avg neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
     return [loss, acc,recall,precision,F1_score]
 
@@ -371,7 +372,7 @@ def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
         if train_pos_embeddings is not None:
-            cross_sim = (th.sum(th.cosine_similarity(embeddings[i],train_pos_embeddings,dim=-1))-1)/len(train_pos_embeddings)
+            cross_sim = (th.sum(th.cosine_similarity(embeddings[i],train_pos_embeddings,dim=-1)))/len(train_pos_embeddings)
             total_cross_sim += cross_sim
         neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
         #distance += d
