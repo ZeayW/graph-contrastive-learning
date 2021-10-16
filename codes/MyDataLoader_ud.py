@@ -138,7 +138,7 @@ class MyNodeCollator(NodeCollator):
                     items.add(nid)
                     # print(nid)
                 items = torch.tensor(list(items))
-
+        print('hh')
         #print(items)
         blocks = self.block_sampler.sample_blocks(self.g, items)
 
