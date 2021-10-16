@@ -126,10 +126,10 @@ class MyNodeCollator(NodeCollator):
             items = utils.prepare_tensor_dict(self.g, items, 'items')
         else:
             items = utils.prepare_tensor(self.g, items, 'items')
-        print('item', len(set(items.numpy().tolist())))
+        #print('item', len(set(items.numpy().tolist())))
         if self.predict is False:
             if len(set(items.numpy().tolist())) != get_options().batch_size:
-                print('add...')
+                #print('add...')
                 items = set(items.numpy().tolist())
                 while len(items) != get_options().batch_size:
                     nid = randint(0, self.g.num_nodes())
