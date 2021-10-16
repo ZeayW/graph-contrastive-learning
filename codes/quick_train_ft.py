@@ -369,17 +369,21 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
 def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
     total_pos_sim ,total_neg_sim ,total_cross_sim= 0,0,0
     num = embeddings.shape[0]
+    min_pos_sim = 100
+    max_neg_sim = 0
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
         if train_pos_embeddings is not None:
             cross_sim = (th.sum(th.cosine_similarity(embeddings[i],train_pos_embeddings,dim=-1)))/len(train_pos_embeddings)
+            min_pos_sim = min(min_pos_sim,cross_sim.item())
             total_cross_sim += cross_sim
         neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
         #distance += d
         total_pos_sim += sim
         total_neg_sim += neg_sim
         #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    return total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings),total_cross_sim/len(embeddings)
+    print('min_pos_sim:',min_pos_sim)
+    return total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings),total_cross_sim/num
     #print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
