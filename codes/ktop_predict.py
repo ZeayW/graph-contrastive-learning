@@ -542,7 +542,7 @@ def predict(options):
         train_nodes,
         in_sampler,
         batch_size=options.batch_size,
-        shuffle=False,
+        shuffle=True,
         drop_last=False,
     )
     valdataloader = MyNodeDataLoader(
@@ -570,7 +570,7 @@ def predict(options):
     labels = train_g.ndata[label_name]
     print('start')
     with th.no_grad():
-        print('aa')
+
         for ni, (central_nodes, input_nodes, blocks) in enumerate(traindataloader):
             print(ni)
             blocks = [b.to(device) for b in blocks]
