@@ -236,7 +236,7 @@ def get_reverse_graph(g):
         # print(key,value)
         rg.edata[key] = value
     return rg
-def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embeddings):
+def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embeddings,train_embeddings,train_labels):
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
     error_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
@@ -255,14 +255,13 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_
             output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             total_num += len(output_labels)
             embedding = model(blocks, input_features)
-
+            label_hat = topk(embedding,train_embeddings,train_labels)
             pos_mask = output_labels == 1
             neg_mask = output_labels == 0
             pos_embeddings = embedding[pos_mask]
             neg_embeddings = embedding[neg_mask]
             pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
 
-            label_hat = mlp(embedding)
             if get_options().nlabels != 1:
                 pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
             else:
@@ -399,6 +398,17 @@ def replaceDFF(g):
     type_tensor[2] = 1
     g.ndata['ntype'][dff_mask1] = type_tensor
     g.ndata['ntype'][dff_mask2] = type_tensor
+
+def topk(val_embeddings,train_embeddings,train_labels):
+    predict_labels = th.zeros(size=(len(val_embeddings),1))
+    for i  in range(len(val_embeddings)):
+        cos_sim =th.cosine_similarity(val_embeddings[i],train_embeddings,dim=-1)
+        topk_indices = th.topk(cos_sim,100).indices
+        topk_labels = train_labels[topk_indices]
+        num_pos = len(topk_labels[topk_labels==1])
+        num_neg = len(topk_labels[topk_labels == 0])
+        predict_labels[i] = 1 if num_pos>num_neg else 0
+    return predict_labels
 def predict(options):
 
     th.multiprocessing.set_sharing_strategy('file_system')
@@ -573,13 +583,16 @@ def predict(options):
             neg_mask = output_labels == 0
             neg_masks = th.cat((neg_masks,neg_mask),dim=0)
             neg_embeddings = th.cat((neg_embeddings, embedding[neg_mask]), dim=0)
+        train_embeddings = th.cat((pos_embeddings,neg_embeddings),dim=0)
+
         pos_labels = labels[pos_masks]
         neg_labels = labels[neg_masks]
         print(len(pos_labels),th.sum(pos_labels))
         print(len(neg_labels), th.sum(neg_labels))
+
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta,
-                                                                              pos_embeddings)
+                                                                              pos_embeddings,train_embeddings,labels)
         validate_sim(val_graphs, pos_embeddings, sampler, device, model)
     exit()
     print(options.alpha)
