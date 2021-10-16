@@ -562,6 +562,7 @@ def predict(options):
     else: Loss = nn.BCEWithLogitsLoss(pos_weight=th.FloatTensor([options.pos_weight]).to(device))
     print(options.nlabels)
     print(Loss)
+    print('batch_size:',options.batch_size)
     pos_embeddings = th.tensor([]).to(device)
     #pos_masks = th.tensor([])
     neg_embeddings = th.tensor([]).to(device)
