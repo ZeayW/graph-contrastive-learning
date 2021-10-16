@@ -635,8 +635,8 @@ def train(options):
 
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
-        pos_embeddings= th.tensor([])
-        neg_embeddings = th.tensor([])
+        pos_embeddings= th.tensor([]).to(device)
+        neg_embeddings = th.tensor([]).to(device)
         for ni, (central_nodes,input_nodes,blocks) in enumerate(traindataloader):
 
             #continue
