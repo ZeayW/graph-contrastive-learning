@@ -262,6 +262,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_
             neg_embeddings = embedding[neg_mask]
             pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
             print('----------------------------------------')
+            exit()
             label_hat = mlp(embedding)
             if get_options().nlabels != 1:
                 pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
@@ -370,7 +371,8 @@ def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
     total_pos_sim ,total_neg_sim ,total_cross_sim= 0,0,0
     num = embeddings.shape[0]
     min_pos_sim = 100
-    max_neg_sim = 0
+    max_neg_sim = -100
+    print(num)
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
         if train_pos_embeddings is not None:
@@ -381,8 +383,12 @@ def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
         #distance += d
         total_pos_sim += sim
         total_neg_sim += neg_sim
+    for j in range(len(neg_embeddings)):
+        cross_neg_sim = (th.sum(th.cosine_similarity(neg_embeddings[j],train_pos_embeddings,dim=-1)))/len(train_pos_embeddings)
+        max_neg_sim = max(max_neg_sim,cross_neg_sim)
         #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
     print('min_pos_sim:',min_pos_sim)
+    print('max_neg_sim',max_neg_sim)
     return total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings),total_cross_sim/num
     #print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
 def change_label(g,label_name,options):
