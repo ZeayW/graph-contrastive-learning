@@ -129,7 +129,7 @@ class MyNodeCollator(NodeCollator):
         print('item', len(set(items.numpy().tolist())))
         if self.predict is False:
             if len(set(items.numpy().tolist())) != get_options().batch_size:
-                # print('add...')
+                print('add...')
                 items = set(items.numpy().tolist())
                 while len(items) != get_options().batch_size:
                     nid = randint(0, self.g.num_nodes())
@@ -138,7 +138,7 @@ class MyNodeCollator(NodeCollator):
                     items.add(nid)
                     # print(nid)
                 items = torch.tensor(list(items))
-        print('hh')
+        #print('hh')
         #print(items)
         blocks = self.block_sampler.sample_blocks(self.g, items)
 
