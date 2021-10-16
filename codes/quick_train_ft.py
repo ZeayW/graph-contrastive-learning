@@ -261,7 +261,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_
             pos_embeddings = embedding[pos_mask]
             neg_embeddings = embedding[neg_mask]
             pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
-
+            print('----------------------------------------')
             label_hat = mlp(embedding)
             if get_options().nlabels != 1:
                 pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
