@@ -412,21 +412,12 @@ def predict(options):
     train_data_file = os.path.join(data_path,'boom2.pkl')
     val_data_file = os.path.join(data_path,'rocket2.pkl')
     #split_dir = 'splits/rokcet'
-    if options.region:
-        label_name = 'label_ad'
-    elif options.label == 'in':
-        label_name = 'label_i'
-    else:
-        label_name = 'label_o'
     if options.preprocess :
         preprocess(data_path,device,options,options.in_dim)
         return
-    print(options)
+
     options, model,mlp = load_model(device, options)
-    # for i in range(in_nlayers+1):
-    #     model.GCN1.layers[i].weight = model.GCN1.layers[i].weight.to(device)
-    # for i in range(out_nlayers+1):
-    #     model.GCN2.layers[i].weight = model.GCN2.layers[i].weight.to(device)
+    print(options)
 
     if model is None:
         print("No model, please prepocess first , or choose a pretrain model")
