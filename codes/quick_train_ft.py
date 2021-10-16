@@ -720,8 +720,12 @@ def train(options):
         Train_F1_score = 0
         if Train_precision != 0 or Train_recall != 0:
             Train_F1_score = 2 * Train_recall * Train_precision / (Train_recall + Train_precision)
-
-        pos_sim,neg_sim = check_sim(pos_embeddings,neg_embeddings)
+        total_pos_sim = 0
+        num = pos_embeddings.shape[0]
+        for i in range(num):
+            sim = (th.sum(th.cosine_similarity(pos_embeddings[i], pos_embeddings, dim=-1)) - 1) / (num - 1)
+            total_pos_sim += sim
+        print('\tavg pos_sim:{:.4f}'.format(total_pos_sim.item()/len(pos_embeddings)))
         # if is_FuncGCN1:
         #     print(model.GCN1.conv.gate_functions[13].weight)
         print("epoch[{:d}]".format(epoch))
