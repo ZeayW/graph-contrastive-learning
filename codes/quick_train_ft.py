@@ -729,7 +729,7 @@ def train(options):
         print("num of pos: ", pos_count, " num of neg: ", neg_count)
         #if options.weighted:
             #print('alpha = ',model.alpha)
-        validate_sim([dgl.batch(val_graphs)], pos_embeddings,sampler, device, model)
+        validate_sim(val_g, pos_embeddings,sampler, device, model)
         validate_sim(val_graphs, pos_embeddings, sampler, device, model)
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta)
