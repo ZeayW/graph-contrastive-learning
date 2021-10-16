@@ -237,7 +237,6 @@ def get_reverse_graph(g):
         rg.edata[key] = value
     return rg
 def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
-    print('beta:',beta)
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
     error_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
@@ -261,7 +260,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
             neg_mask = output_labels == 0
             pos_embeddings = embedding[pos_mask]
             neg_embeddings = embedding[neg_mask]
-            check_sim(pos_embeddings, neg_embeddings)
+            pos_sim,neg_sim = check_sim(pos_embeddings, neg_embeddings)
 
             label_hat = mlp(embedding)
             if get_options().nlabels != 1:
@@ -310,7 +309,6 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
             tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
             tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
             fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
-    print("num batch:",num_batch)
     print("validate time:",runtime)
     loss = total_loss / total_num
     acc = correct / total_num
@@ -328,6 +326,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
     print("toral num error",num_errors)
     print("error count:",error_count)
     print("or error ratio:",error_count[5]/num_errors)
+    print('\tavg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(pos_sim,neg_sim))
     return [loss, acc,recall,precision,F1_score]
 
 def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
@@ -363,7 +362,8 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
             neg_embeddings = embeddings[neg_mask]
             #print(embeddings)
             #print('-----------------------------------------------------------------------------------------\n\n')
-            check_sim(pos_embeddings,neg_embeddings)
+            pos_sim,neg_sim = check_sim(pos_embeddings,neg_embeddings)
+            print('\t   avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(pos_sim,neg_sim))
             #print('-----------------------------------------------------------------------------------------\n\n')
 
 def check_sim(embeddings,neg_embeddings):
@@ -376,7 +376,8 @@ def check_sim(embeddings,neg_embeddings):
         total_pos_sim += sim
         total_neg_sim += neg_sim
         #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
+    return total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)
+    #print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
     mask_in = g.ndata['label_i'].squeeze(1) == 1
