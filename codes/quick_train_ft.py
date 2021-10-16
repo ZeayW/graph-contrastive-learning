@@ -260,6 +260,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_
             neg_mask = output_labels == 0
             pos_embeddings = embedding[pos_mask]
             neg_embeddings = embedding[neg_mask]
+            print('num_neg:',len(neg_embeddings))
             pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
             print('----------------------------------------')
             exit()
