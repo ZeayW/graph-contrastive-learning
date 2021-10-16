@@ -408,6 +408,7 @@ def topk(val_embeddings,train_embeddings,train_labels):
         num_pos = len(topk_labels[topk_labels==1])
         num_neg = len(topk_labels[topk_labels == 0])
         predict_labels[i] = 1 if num_pos>num_neg else 0
+        print(i)
     return predict_labels
 def predict(options):
 
