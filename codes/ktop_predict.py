@@ -587,7 +587,7 @@ def predict(options):
         #neg_labels = labels[neg_masks]
         #print(len(pos_labels),th.sum(pos_labels))
         #print(len(neg_labels), th.sum(neg_labels))
-
+        print('predict...')
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta,
                                                                               pos_embeddings,train_embeddings,labels)
