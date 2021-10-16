@@ -570,9 +570,7 @@ def predict(options):
     labels = train_g.ndata[label_name]
     print('start')
     with th.no_grad():
-        print('aa')
         for ni, (central_nodes, input_nodes, blocks) in enumerate(traindataloader):
-            print(ni)
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata[label_name].squeeze(1)
@@ -580,7 +578,6 @@ def predict(options):
             pos_mask = output_labels == 1
             #pos_masks = th.cat((pos_masks,pos_mask),dim=0)
             pos_embeddings = th.cat((pos_embeddings, embedding[pos_mask]), dim=0)
-            print(ni)
             neg_mask = output_labels == 0
             #neg_masks = th.cat((neg_masks,neg_mask),dim=0)
             neg_embeddings = th.cat((neg_embeddings, embedding[neg_mask]), dim=0)
