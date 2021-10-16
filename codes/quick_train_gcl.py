@@ -325,9 +325,9 @@ def train(options):
             sim_scores = {}
             total_sim = {}
             validate_sim(val_graphs1,val_sampler,device,model,sim_scores)
-            validate_sim(dgl.batch(val_graphs1),val_sampler,device,model,total_sim)
+            validate_sim([dgl.batch(val_graphs1)],val_sampler,device,model,total_sim)
             validate_sim(val_graphs2, val_sampler, device, model,sim_scores)
-            validate_sim(dgl.batch(val_graphs2), val_sampler, device, model,total_sim)
+            validate_sim([dgl.batch(val_graphs2)], val_sampler, device, model,total_sim)
             print('total_sim: train_pos:{} train_neg:{};  val_pos:{} val_neg:{};'.format(total_sim[0][0],
                                                                                          total_sim[0][1],total_sim[0][2],total_sim[0][3]))
             for i in range(len(val_graphs1)):
