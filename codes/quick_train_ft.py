@@ -326,7 +326,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_
     #print("toral num error",num_errors)
     print("\terror count:",error_count)
     #print("or error ratio:",error_count[5]/num_errors)
-    print('\tavg pos sim :{:.4f}, avg cross sim:{}, avg neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
+    print('\tavg pos sim :{:.4f}, avg cross sim:{:.4f}, avg neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
     return [loss, acc,recall,precision,F1_score]
 
 def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
