@@ -360,9 +360,9 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
             neg_embeddings = embeddings[neg_mask]
             #print(embeddings)
             #print('-----------------------------------------------------------------------------------------\n\n')
-            pos_sim,neg_sim = check_sim(pos_embeddings,neg_embeddings,train_pos_embeddings)
+            pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings,neg_embeddings,train_pos_embeddings)
 
-            print('\t   pos sim :{:.4f}, neg sim:{:.4f}'.format(pos_sim,neg_sim))
+            print('\t   pos sim :{:.4f}, cross_sim:{:.4f}, neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
             #print('-----------------------------------------------------------------------------------------\n\n')
 
 def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
