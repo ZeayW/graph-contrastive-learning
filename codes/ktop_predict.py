@@ -563,32 +563,28 @@ def predict(options):
     print(options.nlabels)
     print(Loss)
     pos_embeddings = th.tensor([]).to(device)
-    pos_masks = th.tensor([])
+    #pos_masks = th.tensor([])
     neg_embeddings = th.tensor([]).to(device)
-    pos_masks = th.tensor([])
+    #pos_masks = th.tensor([])
     labels = train_g.ndata[label_name]
     with th.no_grad():
         for ni, (central_nodes, input_nodes, blocks) in enumerate(traindataloader):
-
-            if ni == len(traindataloader) - 1:
-                continue
-            start_time = time()
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             embedding = model(blocks, input_features)
             pos_mask = output_labels == 1
-            pos_masks = th.cat((pos_masks,pos_mask),dim=0)
+            #pos_masks = th.cat((pos_masks,pos_mask),dim=0)
             pos_embeddings = th.cat((pos_embeddings, embedding[pos_mask]), dim=0)
             neg_mask = output_labels == 0
-            neg_masks = th.cat((neg_masks,neg_mask),dim=0)
+            #neg_masks = th.cat((neg_masks,neg_mask),dim=0)
             neg_embeddings = th.cat((neg_embeddings, embedding[neg_mask]), dim=0)
         train_embeddings = th.cat((pos_embeddings,neg_embeddings),dim=0)
 
-        pos_labels = labels[pos_masks]
-        neg_labels = labels[neg_masks]
-        print(len(pos_labels),th.sum(pos_labels))
-        print(len(neg_labels), th.sum(neg_labels))
+        #pos_labels = labels[pos_masks]
+        #neg_labels = labels[neg_masks]
+        #print(len(pos_labels),th.sum(pos_labels))
+        #print(len(neg_labels), th.sum(neg_labels))
 
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta,
