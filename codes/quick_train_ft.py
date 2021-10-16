@@ -636,7 +636,7 @@ def train(options):
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
         pos_embeddings= th.tensor([]).to(device)
-        neg_embeddings = th.tensor([]).to(device)
+        #neg_embeddings = th.tensor([]).to(device)
         for ni, (central_nodes,input_nodes,blocks) in enumerate(traindataloader):
 
             #continue
@@ -654,8 +654,8 @@ def train(options):
             embedding = model(blocks,input_features)
             pos_mask = output_labels == 1
             pos_embeddings = th.cat((pos_embeddings,embedding[pos_mask]),dim=0)
-            neg_mask = output_labels == 0
-            neg_embeddings = th.cat((neg_embeddings, embedding[neg_mask]), dim=0)
+            #neg_mask = output_labels == 0
+            #neg_embeddings = th.cat((neg_embeddings, embedding[neg_mask]), dim=0)
             label_hat = mlp(embedding)
 
             if get_options().nlabels != 1:
