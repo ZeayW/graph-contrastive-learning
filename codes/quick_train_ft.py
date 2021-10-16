@@ -323,8 +323,9 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
     print("or error ratio:",error_count[5]/num_errors)
     return [loss, acc,recall,precision,F1_score]
 
-def validate_sim(val_graphs,sampler,device,model):
+def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
     print(len(val_graphs))
+    print('train_sim:')
     for val_g in val_graphs:
         val_nodes = th.tensor(range(val_g.number_of_nodes()))
         pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
@@ -628,6 +629,7 @@ def train(options):
 
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
+        pos_embeddings= None
         for ni, (central_nodes,input_nodes,blocks) in enumerate(traindataloader):
 
             #continue
@@ -643,6 +645,12 @@ def train(options):
             output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             total_num += len(output_labels)
             embedding = model(blocks,input_features)
+            pos_mask = output_labels == 1
+            if pos_embeddings is None:
+                pos_embeddings = embedding[pos_mask]
+            else:
+                pos_embeddings = th.cat((pos_embeddings,embedding[pos_mask]),dim=0)
+
             label_hat = mlp(embedding)
 
             if get_options().nlabels != 1:
@@ -721,10 +729,12 @@ def train(options):
         print("num of pos: ", pos_count, " num of neg: ", neg_count)
         #if options.weighted:
             #print('alpha = ',model.alpha)
+        validate_sim([dgl.batch(val_graphs)], pos_embeddings,sampler, device, model)
+        validate_sim(val_graphs, pos_embeddings, sampler, device, model)
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta)
-        validate_sim([dgl.batch(val_graphs)],sampler,device,model)
-        validate_sim(val_graphs, sampler, device, model)
+        #validate_sim([dgl.batch(val_graphs)],sampler,device,model)
+        #validate_sim(val_graphs, pos_embeddings,sampler, device, model)
 
         if epoch % 1 == 0 and get_options().rel:
             if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
