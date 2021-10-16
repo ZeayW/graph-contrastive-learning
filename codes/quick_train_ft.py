@@ -323,9 +323,9 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
     print("  validate:")
     print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(precision, 3))
     print("\tloss:{:.3f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(loss, acc,recall, F1_score))
-    print("toral num error",num_errors)
-    print("error count:",error_count)
-    print("or error ratio:",error_count[5]/num_errors)
+    #print("toral num error",num_errors)
+    print("\terror count:",error_count)
+    #print("or error ratio:",error_count[5]/num_errors)
     print('\tavg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(pos_sim,neg_sim))
     return [loss, acc,recall,precision,F1_score]
 
