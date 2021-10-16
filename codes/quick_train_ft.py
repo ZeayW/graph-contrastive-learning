@@ -330,8 +330,6 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
     return [loss, acc,recall,precision,F1_score]
 
 def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
-    print(len(val_graphs))
-    print('train_sim:')
     for val_g in val_graphs:
         val_nodes = th.tensor(range(val_g.number_of_nodes()))
         pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
@@ -363,7 +361,7 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
             #print(embeddings)
             #print('-----------------------------------------------------------------------------------------\n\n')
             pos_sim,neg_sim = check_sim(pos_embeddings,neg_embeddings)
-            print('\t   avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(pos_sim,neg_sim))
+            print('\t   pos sim :{:.4f}, neg sim:{:.4f}'.format(pos_sim,neg_sim))
             #print('-----------------------------------------------------------------------------------------\n\n')
 
 def check_sim(embeddings,neg_embeddings):
@@ -637,7 +635,8 @@ def train(options):
 
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
-        pos_embeddings= None
+        pos_embeddings= th.tensor([])
+        neg_embeddings = th.tensor([])
         for ni, (central_nodes,input_nodes,blocks) in enumerate(traindataloader):
 
             #continue
@@ -654,11 +653,9 @@ def train(options):
             total_num += len(output_labels)
             embedding = model(blocks,input_features)
             pos_mask = output_labels == 1
-            if pos_embeddings is None:
-                pos_embeddings = embedding[pos_mask]
-            else:
-                pos_embeddings = th.cat((pos_embeddings,embedding[pos_mask]),dim=0)
-
+            pos_embeddings = th.cat((pos_embeddings,embedding[pos_mask]),dim=0)
+            neg_mask = output_labels == 0
+            neg_embeddings = th.cat((neg_embeddings, embedding[neg_mask]), dim=0)
             label_hat = mlp(embedding)
 
             if get_options().nlabels != 1:
@@ -724,7 +721,7 @@ def train(options):
         if Train_precision != 0 or Train_recall != 0:
             Train_F1_score = 2 * Train_recall * Train_precision / (Train_recall + Train_precision)
 
-
+        pos_sim,neg_sim = check_sim(pos_embeddings,neg_embeddings)
         # if is_FuncGCN1:
         #     print(model.GCN1.conv.gate_functions[13].weight)
         print("epoch[{:d}]".format(epoch))
@@ -732,8 +729,9 @@ def train(options):
         print("  train:")
         print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
         print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
+        print('\t avg pos_sim:{}, av neg_sim:{}'.format(pos_sim,neg_sim))
         #validate_sim([train_g],sampler,device,model)
-        #validate_sim(dgl.unbatch(train_g),sampler,device,model)
+        validate_sim(dgl.unbatch(train_g),pos_embeddings,sampler,device,model)
         print("num of pos: ", pos_count, " num of neg: ", neg_count)
         #if options.weighted:
             #print('alpha = ',model.alpha)
