@@ -309,7 +309,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
             tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
             tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
             fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
-    print("validate time:",runtime)
+    #print("validate time:",runtime)
     loss = total_loss / total_num
     acc = correct / total_num
     recall = 0
@@ -360,21 +360,24 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
             neg_embeddings = embeddings[neg_mask]
             #print(embeddings)
             #print('-----------------------------------------------------------------------------------------\n\n')
-            pos_sim,neg_sim = check_sim(pos_embeddings,neg_embeddings)
+            pos_sim,neg_sim = check_sim(pos_embeddings,neg_embeddings,train_pos_embeddings)
+
             print('\t   pos sim :{:.4f}, neg sim:{:.4f}'.format(pos_sim,neg_sim))
             #print('-----------------------------------------------------------------------------------------\n\n')
 
-def check_sim(embeddings,neg_embeddings):
-    total_pos_sim ,total_neg_sim = 0,0
+def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
+    total_pos_sim ,total_neg_sim ,total_cross_sim= 0,0,0
     num = embeddings.shape[0]
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
+        cross_sim = (th.sum(th.cosine_similarity(embeddings[i],train_pos_embeddings,dim=-1))-1)/(num-1)
         neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
         #distance += d
         total_pos_sim += sim
         total_neg_sim += neg_sim
+        total_cross_sim += cross_sim
         #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    return total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)
+    return total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings),total_cross_sim.item()/len(embeddings)
     #print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
@@ -736,7 +739,7 @@ def train(options):
         print('\tavg pos_sim:{:.4f}'.format(total_pos_sim.item() / len(pos_embeddings)))
         #validate_sim([train_g],sampler,device,model)
         #validate_sim(dgl.unbatch(train_g),pos_embeddings,sampler,device,model)
-        print("num of pos: ", pos_count, " num of neg: ", neg_count)
+        #print("num of pos: ", pos_count, " num of neg: ", neg_count)
         #if options.weighted:
             #print('alpha = ',model.alpha)
         #validate_sim([val_g], pos_embeddings,sampler, device, model)
