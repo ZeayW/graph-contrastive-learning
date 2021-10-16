@@ -256,6 +256,13 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
             output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             total_num += len(output_labels)
             embedding = model(blocks, input_features)
+
+            pos_mask = output_labels == 1
+            neg_mask = output_labels == 0
+            pos_embeddings = embedding[pos_mask]
+            neg_embeddings = embedding[neg_mask]
+            check_sim(pos_embeddings, neg_embeddings)
+            
             label_hat = mlp(embedding)
             if get_options().nlabels != 1:
                 pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
@@ -729,10 +736,11 @@ def train(options):
         print("num of pos: ", pos_count, " num of neg: ", neg_count)
         #if options.weighted:
             #print('alpha = ',model.alpha)
-        validate_sim([val_g], pos_embeddings,sampler, device, model)
-        validate_sim(val_graphs, pos_embeddings, sampler, device, model)
+        #validate_sim([val_g], pos_embeddings,sampler, device, model)
+
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta)
+        validate_sim(val_graphs, pos_embeddings, sampler, device, model)
         #validate_sim([dgl.batch(val_graphs)],sampler,device,model)
         #validate_sim(val_graphs, pos_embeddings,sampler, device, model)
 
