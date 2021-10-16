@@ -260,7 +260,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
             neg_mask = output_labels == 0
             pos_embeddings = embedding[pos_mask]
             neg_embeddings = embedding[neg_mask]
-            pos_sim,neg_sim = check_sim(pos_embeddings, neg_embeddings)
+            pos_sim,neg_sim,_ = check_sim(pos_embeddings, neg_embeddings,None)
 
             label_hat = mlp(embedding)
             if get_options().nlabels != 1:
@@ -370,14 +370,15 @@ def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
     num = embeddings.shape[0]
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
-        cross_sim = (th.sum(th.cosine_similarity(embeddings[i],train_pos_embeddings,dim=-1))-1)/(num-1)
+        if train_pos_embeddings is not None:
+            cross_sim = (th.sum(th.cosine_similarity(embeddings[i],train_pos_embeddings,dim=-1))-1)/(num-1)
+            total_cross_sim += cross_sim
         neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
         #distance += d
         total_pos_sim += sim
         total_neg_sim += neg_sim
-        total_cross_sim += cross_sim
         #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    return total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings),total_cross_sim.item()/len(embeddings)
+    return total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings),total_cross_sim/len(embeddings)
     #print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
