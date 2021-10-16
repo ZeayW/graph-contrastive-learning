@@ -236,7 +236,7 @@ def get_reverse_graph(g):
         # print(key,value)
         rg.edata[key] = value
     return rg
-def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
+def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embeddings):
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
     error_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
@@ -260,7 +260,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
             neg_mask = output_labels == 0
             pos_embeddings = embedding[pos_mask]
             neg_embeddings = embedding[neg_mask]
-            pos_sim,neg_sim,_ = check_sim(pos_embeddings, neg_embeddings,None)
+            pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
 
             label_hat = mlp(embedding)
             if get_options().nlabels != 1:
@@ -326,7 +326,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
     #print("toral num error",num_errors)
     print("\terror count:",error_count)
     #print("or error ratio:",error_count[5]/num_errors)
-    print('\tavg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(pos_sim,neg_sim))
+    print('\tavg pos sim :{:.4f}, avg cross sim:{}, avg neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
     return [loss, acc,recall,precision,F1_score]
 
 def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
@@ -746,7 +746,7 @@ def train(options):
         #validate_sim([val_g], pos_embeddings,sampler, device, model)
 
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
-                                                                              mlp, Loss, options.alpha, beta)
+                                                                              mlp, Loss, options.alpha, beta,pos_embeddings)
         validate_sim(val_graphs, pos_embeddings, sampler, device, model)
         #validate_sim([dgl.batch(val_graphs)],sampler,device,model)
         #validate_sim(val_graphs, pos_embeddings,sampler, device, model)
