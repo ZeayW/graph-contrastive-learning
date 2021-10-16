@@ -567,6 +567,7 @@ def predict(options):
     neg_embeddings = th.tensor([]).to(device)
     #pos_masks = th.tensor([])
     labels = train_g.ndata[label_name]
+    print('start')
     with th.no_grad():
         for ni, (central_nodes, input_nodes, blocks) in enumerate(traindataloader):
             blocks = [b.to(device) for b in blocks]
@@ -576,6 +577,7 @@ def predict(options):
             pos_mask = output_labels == 1
             #pos_masks = th.cat((pos_masks,pos_mask),dim=0)
             pos_embeddings = th.cat((pos_embeddings, embedding[pos_mask]), dim=0)
+            print(ni)
             neg_mask = output_labels == 0
             #neg_masks = th.cat((neg_masks,neg_mask),dim=0)
             neg_embeddings = th.cat((neg_embeddings, embedding[neg_mask]), dim=0)
