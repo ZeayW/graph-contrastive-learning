@@ -735,7 +735,7 @@ def train(options):
         print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
         print('\tavg pos_sim:{:.4f}'.format(total_pos_sim.item() / len(pos_embeddings)))
         #validate_sim([train_g],sampler,device,model)
-        validate_sim(dgl.unbatch(train_g),pos_embeddings,sampler,device,model)
+        #validate_sim(dgl.unbatch(train_g),pos_embeddings,sampler,device,model)
         print("num of pos: ", pos_count, " num of neg: ", neg_count)
         #if options.weighted:
             #print('alpha = ',model.alpha)
