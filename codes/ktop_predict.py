@@ -537,12 +537,12 @@ def predict(options):
     val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1)!=-1]
     print(len(val_nids))
     traindataloader = MyNodeDataLoader(
-        False,
+        True,
         train_g,
         train_nodes,
         in_sampler,
         batch_size=options.batch_size,
-        shuffle=True,
+        shuffle=False,
         drop_last=False,
     )
     valdataloader = MyNodeDataLoader(
