@@ -262,7 +262,7 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta):
             pos_embeddings = embedding[pos_mask]
             neg_embeddings = embedding[neg_mask]
             check_sim(pos_embeddings, neg_embeddings)
-            
+
             label_hat = mlp(embedding)
             if get_options().nlabels != 1:
                 pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
@@ -376,7 +376,7 @@ def check_sim(embeddings,neg_embeddings):
         total_pos_sim += sim
         total_neg_sim += neg_sim
         #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    print('avg pos sim :{.4f}, avg neg sim:{.4f}'.format(total_pos_sim/len(embeddings),total_neg_sim/len(embeddings)))
+    print('avg pos sim :{.4f}, avg neg sim:{.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
     mask_in = g.ndata['label_i'].squeeze(1) == 1
