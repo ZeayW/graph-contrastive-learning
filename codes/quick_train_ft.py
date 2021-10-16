@@ -717,11 +717,14 @@ def train(options):
         print("  train:")
         print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
         print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
+        validate_sim(train_g,sampler,device,model)
+        validate_sim(dgl.unbatch(train_g),sampler,device,model)
         print("num of pos: ", pos_count, " num of neg: ", neg_count)
         #if options.weighted:
             #print('alpha = ',model.alpha)
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta)
+        validate_sim(dgl.batch(val_graphs),sampler,device,model)
         validate_sim(val_graphs, sampler, device, model)
 
         if epoch % 1 == 0 and get_options().rel:
