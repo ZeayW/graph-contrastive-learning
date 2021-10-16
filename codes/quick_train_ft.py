@@ -361,7 +361,6 @@ def validate_sim(val_graphs,sampler,device,model):
 def check_sim(embeddings,neg_embeddings):
     total_pos_sim ,total_neg_sim = 0,0
     num = embeddings.shape[0]
-    print(num)
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
         neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
@@ -369,7 +368,7 @@ def check_sim(embeddings,neg_embeddings):
         total_pos_sim += sim
         total_neg_sim += neg_sim
         #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    print('avg pos sim :{}, avg neg sim:{}'.format(total_pos_sim/len(embeddings),total_neg_sim/len(embeddings)))
+    print('avg pos sim :{.4f}, avg neg sim:{.4f}'.format(total_pos_sim/len(embeddings),total_neg_sim/len(embeddings)))
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
     mask_in = g.ndata['label_i'].squeeze(1) == 1
@@ -718,7 +717,7 @@ def train(options):
         print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
         print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
         #validate_sim([train_g],sampler,device,model)
-        validate_sim(dgl.unbatch(train_g),sampler,device,model)
+        #validate_sim(dgl.unbatch(train_g),sampler,device,model)
         print("num of pos: ", pos_count, " num of neg: ", neg_count)
         #if options.weighted:
             #print('alpha = ',model.alpha)
