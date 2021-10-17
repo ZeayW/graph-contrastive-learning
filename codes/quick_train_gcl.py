@@ -217,7 +217,7 @@ def train(options):
                     val_graph1,
                     val1_pos_nodes,
                     val_sampler,
-                    batch_size=len(val1_pos_nodes),
+                    batch_size=1024,
                     shuffle=False,
                     drop_last=False,
                 )
