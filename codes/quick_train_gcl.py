@@ -134,8 +134,8 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
             shuffle=False,
             drop_last=False,
         )
-        pos_embeddings = th.tensor().to(device)
-        neg_embeddings = th.tensor().to(device)
+        pos_embeddings = th.tensor([]).to(device)
+        neg_embeddings = th.tensor([]).to(device)
         for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
@@ -351,12 +351,12 @@ def train(options):
             print("training runtime: ",runtime)
             print("  train:")
             print("loss:{:.8f}".format(Train_loss.item()))
-            val1_pos_embeddings = th.tensor().to(device)
+            val1_pos_embeddings = th.tensor([]).to(device)
             for _,_,val1_pos_blocks in val_dataloader1:
                 val1_pos_blocks = [b.to(device) for b in val1_pos_blocks]
                 input_features =  val1_pos_blocks[0].srcdata["f_input"]
                 val1_pos_embeddings = th.cat((val1_pos_embeddings,model(val1_pos_blocks, input_features)),dim=0)
-        
+
             val1_pos_sim,_,_ = check_sim(val1_pos_embeddings,None,None)
             print('\ttrain pos sim: {:.4f}'.format(val1_pos_sim))
             #validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
