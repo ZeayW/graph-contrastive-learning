@@ -220,15 +220,15 @@ def train(options):
     val_graphs2 = load_valdata(val_data_file2, options)
     val_graph2 = dgl.batch(val_graphs2)
     #val2_pos_nodes = th.tensor(range(val_graph2.number_of_nodes()))[val_graph2.ndata['label_o'] == 1]
-    # val_dataloader2 = MyNodeDataLoader(
-    #     False,
-    #     val_graph2,
-    #     val2_pos_nodes,
-    #     val_sampler,
-    #     batch_size=len(val2_pos_nodes),
-    #     shuffle=False,
-    #     drop_last=False,
-    # )
+    val_dataloader2 = MyNodeDataLoader(
+        False,
+        val_graph2,
+        th.tensor(range(val_graph2.number_of_nodes())),
+        val_sampler,
+        batch_size=val_graph2.number_of_nodes(),
+        shuffle=False,
+        drop_last=False,
+    )
     data_loaders = []
     for num_input in range(start_input,options.num_input+1):
         print('num_input{}'.format(num_input))
@@ -359,6 +359,23 @@ def train(options):
 
             val1_pos_sim,_,_ = check_sim(val1_pos_embeddings,None,None)
             print('\ttrain pos sim: {:.4f}'.format(val1_pos_sim))
+            val_nodes = th.tensor(range(val_graph2.number_of_nodes()))
+            pos_embeddings = th.tensor([]).to(device)
+            neg_embeddings = th.tensor([]).to(device)
+            for ni, (central_nodes, input_nodes, blocks) in enumerate(val_dataloader2):
+                blocks = [b.to(device) for b in blocks]
+                input_features = blocks[0].srcdata["f_input"]
+                output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+                embeddings = model(blocks, input_features)
+                pos_mask = (output_labels == 1)
+                neg_mask = (output_labels == 0)
+                pos_embeddings = th.cat((pos_embeddings, embeddings[pos_mask]), dim=0)
+                neg_embeddings = th.cat((neg_embeddings, embeddings[neg_mask]), dim=0)
+                # print(embeddings)
+                # print('-----------------------------------------------------------------------------------------\n\n')
+            pos_sim, neg_sim, cross_sim = check_sim(pos_embeddings, neg_embeddings, val1_pos_embeddings)
+
+            print('\t  pos sim :{:.4f}, cross_sim:{:.4f}, neg sim:{:.4f}'.format(pos_sim, cross_sim, neg_sim))
             validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
             #validate_sim(val_graphs2, val1_pos_embeddings,val_sampler, device, model)
 
