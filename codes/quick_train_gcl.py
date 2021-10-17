@@ -121,21 +121,8 @@ def load_valdata( val_data_file,options):
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
     val_graphs = dgl.unbatch(val_g)
     return  val_graphs
-def check_sim(embeddings,neg_embeddings):
-    total_pos_sim ,total_neg_sim = 0,0
-    num = embeddings.shape[0]
-    for i in range(num):
-        sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
-        neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
-        #distance += d
-        total_pos_sim += sim
-        total_neg_sim += neg_sim
-        #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    return total_pos_sim/len(embeddings),total_neg_sim/len(embeddings)
-    #print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim/len(embeddings),total_neg_sim/len(embeddings)))
-
-def validate_sim(val_graphs,sampler,device,model,sim_scores):
-    for i,val_g in enumerate(val_graphs):
+def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
+    for val_g in val_graphs:
         val_nodes = th.tensor(range(val_g.number_of_nodes()))
         pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
         neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
@@ -149,18 +136,43 @@ def validate_sim(val_graphs,sampler,device,model,sim_scores):
             shuffle=False,
             drop_last=False,
         )
-        _,_,val_blocks = loader[0]
-        val_blocks = [b.to(device) for b in val_blocks]
-        val_embeddings = model(val_blocks,  val_blocks[0].srcdata["f_input"])
-        val_pos_embeddings = val_embeddings[pos_mask]
-        val_neg_embeddings = val_embeddings[neg_mask]
-        # print(embeddings)
-        # print('-----------------------------------------------------------------------------------------\n\n')
-        pos_sim,neg_sim = check_sim(val_pos_embeddings, val_neg_embeddings)
-        sim_scores[i] = sim_scores.get(i,[])
-        sim_scores[i].append(pos_sim)
-        sim_scores[i].append(neg_sim)
+        for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
+            blocks = [b.to(device) for b in blocks]
+            input_features = blocks[0].srcdata["f_input"]
+            output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+            embeddings = model(blocks, input_features)
 
+            pos_embeddings = embeddings[pos_mask]
+            #print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
+            # for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
+            #     print(ni,embed[:7])
+
+            #print(len(pos_embeddings))
+            #exit()
+            neg_embeddings = embeddings[neg_mask]
+            #print(embeddings)
+            #print('-----------------------------------------------------------------------------------------\n\n')
+            pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings,neg_embeddings,train_pos_embeddings)
+
+            print('\t  pos sim :{:.4f}, cross_sim:{:.4f}, neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
+            #print('-----------------------------------------------------------------------------------------\n\n')
+
+def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
+    total_pos_sim ,total_neg_sim ,total_cross_sim= 0,0,0
+    num = embeddings.shape[0]
+    print(num)
+    for i in range(num):
+        sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
+        total_pos_sim += sim
+        if train_pos_embeddings is not None:
+            cross_sim = (th.sum(th.cosine_similarity(embeddings[i],train_pos_embeddings,dim=-1)))/len(train_pos_embeddings)
+            total_cross_sim += cross_sim
+        if neg_embeddings is not None:
+            neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
+            total_neg_sim += neg_sim
+
+    return total_pos_sim.item()/num,total_neg_sim.item()/num,total_cross_sim/num
+    #print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
 
 def NCEloss(pos1,pos2,neg,tao):
     pos_similarity  = th.cosine_similarity(pos1,pos2,dim=-1)
@@ -195,11 +207,33 @@ def train(options):
     print(options)
 
     print("Loading data...")
+    val_sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
     val_data_file1 = os.path.join('../data/simplify9', 'rocket2.pkl')
     val_graphs1 = load_valdata(val_data_file1,options)
+    val_graph1 = dgl.batch(val_graphs1)
+    val1_pos_nodes = th.tensor(range(val_graph1.number_of_nodes()))[val_graph1.ndata['label_o']==1]
+    val_dataloader1 = MyNodeDataLoader(
+                    False,
+                    val_graph1,
+                    val1_pos_nodes,
+                    val_sampler,
+                    batch_size=len(val1_pos_nodes),
+                    shuffle=False,
+                    drop_last=False,
+                )
     val_data_file2 = os.path.join('../data/simplify9', 'boom2.pkl')
     val_graphs2 = load_valdata(val_data_file2, options)
-    val_sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
+    val_graph2 = dgl.batch(val_graphs2)
+    val2_pos_nodes = th.tensor(range(val_graph2.number_of_nodes()))[val_graph2.ndata['label_o'] == 1]
+    val_dataloader2 = MyNodeDataLoader(
+        False,
+        val_graph2,
+        val2_pos_nodes,
+        val_sampler,
+        batch_size=len(val2_pos_nodes),
+        shuffle=False,
+        drop_last=False,
+    )
     data_loaders = []
     for num_input in range(start_input,options.num_input+1):
         print('num_input{}'.format(num_input))
@@ -322,17 +356,14 @@ def train(options):
             print("training runtime: ",runtime)
             print("  train:")
             print("loss:{:.8f}".format(Train_loss.item()))
-            sim_scores = {}
-            total_sim = {}
-            validate_sim(val_graphs1,val_sampler,device,model,sim_scores)
-            validate_sim([dgl.batch(val_graphs1)],val_sampler,device,model,total_sim)
-            validate_sim(val_graphs2, val_sampler, device, model,sim_scores)
-            validate_sim([dgl.batch(val_graphs2)], val_sampler, device, model,total_sim)
-            print('total_sim: train_pos:{} train_neg:{};  val_pos:{} val_neg:{};'.format(total_sim[0][0],
-                                                                                         total_sim[0][1],total_sim[0][2],total_sim[0][3]))
-            for i in range(len(val_graphs1)):
-                print('aug{}, train_sim: pos={}, neg={},  val_sim: pos={}, neg={}'.format(i,
-                    sim_scores[i][0],sim_scores[i][1],sim_scores[i][2],sim_scores[i][3]))
+
+            _,_,val1_pos_blocks = val_dataloader1[0]
+            val1_pos_blocks = [b.to(device) for b in val1_pos_blocks]
+            val1_pos_embeddings = model(val1_pos_blocks, val1_pos_blocks[0].srcdata['f_input'])
+            val1_pos_sim,_,_ = check_sim(val1_pos_embeddings,None,None)
+            print('\ttrain pos sim: {:.4f}'.format(val1_pos_sim))
+            validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
+            validate_sim(val_graphs2, val1_pos_embeddings,val_sampler, device, model)
 
             # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
             # print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
