@@ -130,7 +130,7 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
             val_g,
             val_nodes,
             sampler,
-            batch_size=1024,
+            batch_size=len(val_nodes),
             shuffle=False,
             drop_last=False,
         )
