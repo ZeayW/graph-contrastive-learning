@@ -134,8 +134,8 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
             shuffle=False,
             drop_last=False,
         )
-        pos_embeddings = th.tensor([]).to(device)
-        neg_embeddings = th.tensor([]).to(device)
+        #pos_embeddings = th.tensor([]).to(device)
+        #neg_embeddings = th.tensor([]).to(device)
         for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
@@ -143,13 +143,13 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
             embeddings = model(blocks, input_features)
             pos_mask = (output_labels == 1)
             neg_mask = (output_labels == 0)
-            pos_embeddings = th.cat((pos_embeddings,embeddings[pos_mask]),dim=0)
-            neg_embeddings = th.cat((neg_embeddings,embeddings[neg_mask]),dim=0)
+            pos_embeddings = embeddings[pos_mask]
+            neg_embeddings = embeddings[neg_mask]
             #print(embeddings)
             #print('-----------------------------------------------------------------------------------------\n\n')
-        pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings,neg_embeddings,train_pos_embeddings)
+            pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings,neg_embeddings,train_pos_embeddings)
 
-        print('\t  pos sim :{:.4f}, cross_sim:{:.4f}, neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
+            print('\t  pos sim :{:.4f}, cross_sim:{:.4f}, neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
             #print('-----------------------------------------------------------------------------------------\n\n')
 
 def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
