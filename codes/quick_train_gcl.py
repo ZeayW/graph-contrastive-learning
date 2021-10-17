@@ -213,7 +213,7 @@ def train(options):
     val_graph1 = dgl.batch(val_graphs1)
     val1_pos_nodes = th.tensor(range(val_graph1.number_of_nodes()))[val_graph1.ndata['label_o'].squeeze(1)==1]
     val_dataloader1 = MyNodeDataLoader(
-                    False,
+                    True,
                     val_graph1,
                     val1_pos_nodes,
                     val_sampler,
