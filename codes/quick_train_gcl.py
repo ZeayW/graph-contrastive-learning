@@ -124,37 +124,32 @@ def load_valdata( val_data_file,options):
 def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
     for val_g in val_graphs:
         val_nodes = th.tensor(range(val_g.number_of_nodes()))
-        pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
-        neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
 
         loader = MyNodeDataLoader(
             True,
             val_g,
             val_nodes,
             sampler,
-            batch_size=val_g.num_nodes(),
+            batch_size=1024,
             shuffle=False,
             drop_last=False,
         )
+        pos_embeddings = th.tensor().to(device)
+        neg_embeddings = th.tensor().to(device)
         for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
             embeddings = model(blocks, input_features)
-
-            pos_embeddings = embeddings[pos_mask]
-            #print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
-            # for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
-            #     print(ni,embed[:7])
-
-            #print(len(pos_embeddings))
-            #exit()
-            neg_embeddings = embeddings[neg_mask]
+            pos_mask = (output_labels == 1).squeeze(1)
+            neg_mask = (output_labels == 0).squeeze(1)
+            pos_embeddings = th.cat((pos_embeddings,embeddings[pos_mask]),dim=0)
+            neg_embeddings = th.cat((neg_embeddings,embeddings[neg_mask]),dim=0)
             #print(embeddings)
             #print('-----------------------------------------------------------------------------------------\n\n')
-            pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings,neg_embeddings,train_pos_embeddings)
+        pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings,neg_embeddings,train_pos_embeddings)
 
-            print('\t  pos sim :{:.4f}, cross_sim:{:.4f}, neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
+        print('\t  pos sim :{:.4f}, cross_sim:{:.4f}, neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
             #print('-----------------------------------------------------------------------------------------\n\n')
 
 def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
@@ -356,11 +351,12 @@ def train(options):
             print("training runtime: ",runtime)
             print("  train:")
             print("loss:{:.8f}".format(Train_loss.item()))
-
+            val1_pos_embeddings = th.tensor().to(device)
             for _,_,val1_pos_blocks in val_dataloader1:
-                print('a')
                 val1_pos_blocks = [b.to(device) for b in val1_pos_blocks]
-                val1_pos_embeddings = model(val1_pos_blocks, val1_pos_blocks[0].srcdata['f_input'])
+                input_features =  val1_pos_blocks[0].srcdata["f_input"]
+                val1_pos_embeddings = th.cat((val1_pos_embeddings,model(val1_pos_blocks, input_features)),dim=0)
+        
             val1_pos_sim,_,_ = check_sim(val1_pos_embeddings,None,None)
             print('\ttrain pos sim: {:.4f}'.format(val1_pos_sim))
             #validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
