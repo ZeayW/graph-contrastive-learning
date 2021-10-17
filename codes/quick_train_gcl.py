@@ -221,7 +221,7 @@ def train(options):
     val_graph2 = dgl.batch(val_graphs2)
     #val2_pos_nodes = th.tensor(range(val_graph2.number_of_nodes()))[val_graph2.ndata['label_o'] == 1]
     val_dataloader2 = MyNodeDataLoader(
-        False,
+        True,
         val_graph2,
         th.tensor(range(val_graph2.number_of_nodes())),
         val_sampler,
@@ -359,7 +359,7 @@ def train(options):
 
             val1_pos_sim,_,_ = check_sim(val1_pos_embeddings,None,None)
             print('\ttrain pos sim: {:.4f}'.format(val1_pos_sim))
-            val_nodes = th.tensor(range(val_graph2.number_of_nodes()))
+
             pos_embeddings = th.tensor([]).to(device)
             neg_embeddings = th.tensor([]).to(device)
             for ni, (central_nodes, input_nodes, blocks) in enumerate(val_dataloader2):
@@ -376,7 +376,7 @@ def train(options):
             pos_sim, neg_sim, cross_sim = check_sim(pos_embeddings, neg_embeddings, val1_pos_embeddings)
 
             print('\t  pos sim :{:.4f}, cross_sim:{:.4f}, neg sim:{:.4f}'.format(pos_sim, cross_sim, neg_sim))
-            validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
+            #validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
             #validate_sim(val_graphs2, val1_pos_embeddings,val_sampler, device, model)
 
             # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
