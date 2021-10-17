@@ -363,7 +363,7 @@ def train(options):
                 val1_pos_embeddings = model(val1_pos_blocks, val1_pos_blocks[0].srcdata['f_input'])
             val1_pos_sim,_,_ = check_sim(val1_pos_embeddings,None,None)
             print('\ttrain pos sim: {:.4f}'.format(val1_pos_sim))
-            validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
+            #validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
             validate_sim(val_graphs2, val1_pos_embeddings,val_sampler, device, model)
 
             # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
