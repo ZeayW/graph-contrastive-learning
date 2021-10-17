@@ -359,8 +359,8 @@ def train(options):
 
             val1_pos_sim,_,_ = check_sim(val1_pos_embeddings,None,None)
             print('\ttrain pos sim: {:.4f}'.format(val1_pos_sim))
-            #validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
-            validate_sim(val_graphs2, val1_pos_embeddings,val_sampler, device, model)
+            validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
+            #validate_sim(val_graphs2, val1_pos_embeddings,val_sampler, device, model)
 
             # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
             # print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
