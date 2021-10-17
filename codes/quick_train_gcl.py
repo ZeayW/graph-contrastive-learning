@@ -171,7 +171,7 @@ def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
             neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
             total_neg_sim += neg_sim
 
-    return total_pos_sim.item()/num,total_neg_sim.item()/num,total_cross_sim/num
+    return total_pos_sim/num,total_neg_sim/num,total_cross_sim/num
     #print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
 
 def NCEloss(pos1,pos2,neg,tao):
