@@ -463,7 +463,7 @@ def train(options):
         train_graphs[2] = temp
         #train_graphs.reverse()
         if options.train_percent == 1:
-            train_graphs = [train_graphs[1]]
+            train_graphs = [train_graphs[5]]
         else:
             train_graphs = train_graphs[:options.train_percent]
         # temp = []
