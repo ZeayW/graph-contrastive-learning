@@ -371,26 +371,26 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
 def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
     total_pos_sim ,total_neg_sim ,total_cross_sim= 0,0,0
     num = embeddings.shape[0]
-    pos_sims = []
-    neg_sims = []
+    #pos_sims = []
+    #neg_sims = []
     max_neg_sim = -100
     print(num)
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
         if train_pos_embeddings is not None:
             cross_sim = (th.sum(th.cosine_similarity(embeddings[i],train_pos_embeddings,dim=-1)))/len(train_pos_embeddings)
-            pos_sims.append(cross_sim.item())
+            #pos_sims.append(cross_sim.item())
             total_cross_sim += cross_sim
         neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
         #distance += d
         total_pos_sim += sim
         total_neg_sim += neg_sim
-    for j in range(len(neg_embeddings)):
-        cross_neg_sim = (th.sum(th.cosine_similarity(neg_embeddings[j],train_pos_embeddings,dim=-1)))/len(train_pos_embeddings)
-        neg_sims.append(cross_neg_sim.item())
-        #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    print('pos_sim: ',sorted(pos_sims))
-    print('max_neg_sim',sorted(neg_sims))
+    # for j in range(len(neg_embeddings)):
+    #     cross_neg_sim = (th.sum(th.cosine_similarity(neg_embeddings[j],train_pos_embeddings,dim=-1)))/len(train_pos_embeddings)
+    #     neg_sims.append(cross_neg_sim.item())
+    #     #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
+    # print('pos_sim: ',sorted(pos_sims))
+    # print('max_neg_sim',sorted(neg_sims))
     return total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings),total_cross_sim/num
     #print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
 def change_label(g,label_name,options):
