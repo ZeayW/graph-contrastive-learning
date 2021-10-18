@@ -463,6 +463,8 @@ def train(options):
         train_graphs[2] = temp
         #train_graphs.reverse()
         train_graphs = train_graphs[:options.train_percent]
+        if options.train_percent == 1:
+            train_graphs = train_graphs[1]
         # temp = []
         # train_graphs.pop(1)
         train_g = dgl.batch(train_graphs)
