@@ -372,7 +372,6 @@ def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
     #pos_sims = []
     #neg_sims = []
     max_neg_sim = -100
-    print(num)
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
         if train_pos_embeddings is not None:
