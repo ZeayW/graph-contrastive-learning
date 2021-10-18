@@ -757,6 +757,7 @@ def train(options):
 
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta,pos_embeddings)
+        #max_F1_score = max(max_F1_score,val_F1_score)
         validate_sim(val_graphs, pos_embeddings, sampler, device, model)
         #validate_sim([dgl.batch(val_graphs)],sampler,device,model)
         #validate_sim(val_graphs, pos_embeddings,sampler, device, model)
@@ -776,7 +777,7 @@ def train(options):
             f.write('\n')
 
         judgement = val_F1_score > max_F1_score
-        judgement = True
+        #judgement = True
         if judgement:
            max_F1_score = val_F1_score
            print("Saving model.... ", os.path.join(options.model_saving_dir))
