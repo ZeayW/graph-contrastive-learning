@@ -81,6 +81,7 @@ class Dataset_gcl(DGLDataset):
 
         with open(os.path.join(self.datapath,'split{}.pkl'.format(self.split)),'rb') as f:
             filelist = pickle.load(f)
+        print(len(filelist))
         print('file list{} start with {}'.format(self.split,filelist[0]))
         for vf in filelist:
             if not vf.endswith('.v') or not os.path.exists(os.path.join(self.datapath,vf)):
