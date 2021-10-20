@@ -45,12 +45,9 @@ def load_model(device,options):
     return param, classifier
 
 
-def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
+def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta,is_FuncGCN1,is_FuncGCN2):
     print('beta:',beta)
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
-
-    score_list = []
-    label_list = []
 
     error_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
     fp_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
@@ -59,7 +56,7 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
     runtime = 0
     num_batch = 0
     with th.no_grad():
-        for vni, (central_nodes,in_input_nodes,in_blocks,out_input_nodes,out_blocks) in enumerate(
+        for vni, (in_blocks,out_blocks) in enumerate(
                 valid_dataloader
         ):
             num_batch += 1
@@ -67,21 +64,24 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
             in_blocks = [b.to(device) for b in in_blocks]
 
             out_blocks = [b.to(device) for b in out_blocks]
-            in_input_features = in_blocks[0].srcdata["ntype"]
-            out_input_features = out_blocks[0].srcdata["ntype"]
+            if is_FuncGCN1:
+                in_input_features = in_blocks[0].srcdata["f_input"]
+            else:
+                in_input_features = in_blocks[0].srcdata["ntype"]
+            if is_FuncGCN2:
+                out_input_features = out_blocks[0].srcdata["f_input"]
+            else:
+                out_input_features = out_blocks[0].srcdata["ntype"]
             #print(out_blocks[0],len(out_input_features))
             # print(blocks[-1].dstdata["label")
             output_labels = in_blocks[-1].dstdata[label_name].squeeze(1)
             total_num += len(output_labels)
             label_hat = model(in_blocks, in_input_features, out_blocks, out_input_features)
-
             if get_options().nlabels != 1:
                 pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
             else:
                 pos_prob = th.sigmoid(label_hat)
             #print(pos_prob)
-            score_list.extend(pos_prob.cpu().numpy().tolist())
-            label_list.extend(output_labels.cpu().numpy().tolist())
             pos_prob[pos_prob >= beta] = 1
             pos_prob[pos_prob < beta] = 0
             # pos_prob = label_hat
@@ -123,7 +123,8 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
             tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
             tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
             fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
-
+    print("num batch:",num_batch)
+    print("validate time:",runtime)
     loss = total_loss / total_num
     acc = correct / total_num
     recall = 0
@@ -140,29 +141,6 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
     print("toral num error",num_errors)
     print("error count:",error_count)
     print("or error ratio:",error_count[5]/num_errors)
-
-    label_tensor = th.tensor(label_list)
-    label_tensor = label_tensor.reshape((label_tensor.shape[0], 1))
-    label_onehot = th.zeros(label_tensor.shape[0], 1)
-    label_onehot.scatter_(dim=0, index=label_tensor, value=1)
-    label_onehot = np.array(label_onehot)
-    print(label_onehot)
-    precision_list, recall_list, _ = precision_recall_curve(label_list, score_list)
-    average_precision = average_precision_score(label_list,score_list)
-    plt.figure()
-    plt.step(recall_list, precision_list, where='post')
-
-    plt.xlabel('Recall')
-    plt.ylabel('Precision')
-    plt.ylim([0.0, 1.05])
-    plt.xlim([0.0, 1.0])
-    plt.title(
-        'Pr curve, AP={0:0.2f}'
-            .format(average_precision))
-    if os.path.exists('plots/final/') is False:
-        os.makedirs('plots/final')
-    plt.savefig("plots/final/PR_curve.jpg")
-
     return [loss, acc,recall,precision,F1_score]
 def unlabel_low(g,unlabel_threshold):
     mask_low = g.ndata['position'] <= unlabel_threshold
@@ -177,6 +155,10 @@ def main(options):
         print("No model, please prepocess first , or choose a pretrain model")
         return
     #print(model)
+    if model.GCN1 is not None and type(model.GCN1) == FuncGCN:
+        is_FuncGCN1 = True
+    if model.GCN2 is not None and type(model.GCN2) == FuncGCN:
+        is_FuncGCN2 = True
     beta = options.beta
     # Dump the preprocessing result to save time!
     data_path = options.datapath
@@ -255,8 +237,7 @@ def main(options):
     else:
         Loss = nn.BCEWithLogitsLoss(pos_weight=th.FloatTensor([options.pos_weight]).to(device))
 
-    val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
-                                                                          Loss, options.alpha, beta)
+    val_loss, val_acc, val_recall,val_precision, val_F1_score = validate(valdataloader, label_name,device, model, Loss,options.alpha,beta,is_FuncGCN1,is_FuncGCN2)
     # predict_single("./dataset/test/data/adder.data",get_options())
 if __name__ == "__main__":
     main(get_options())
