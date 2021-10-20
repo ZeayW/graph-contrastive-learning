@@ -7,6 +7,10 @@ bin-release/
 # Other files and folders
 .settings/
 
+# tables
+*.xlsx
+*.csv
+
 # Executables
 *.swf
 *.air
@@ -40,5 +44,6 @@ log.txt
 *.xml
 
 test.py
+test2.py
 
 *.pyc
