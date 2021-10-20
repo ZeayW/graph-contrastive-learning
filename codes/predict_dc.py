@@ -164,6 +164,9 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
     plt.savefig("plots/final/PR_curve.jpg")
 
     return [loss, acc,recall,precision,F1_score]
+def unlabel_low(g,unlabel_threshold):
+    mask_low = g.ndata['position'] <= unlabel_threshold
+    g.ndata['label_o'][mask_low] = 0
 
 def main(options):
     th.multiprocessing.set_sharing_strategy('file_system')
