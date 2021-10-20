@@ -39,7 +39,7 @@ def preprocess(data_path,device,options):
     #     with open(val_data_file,'wb') as f:
     #         pickle.dump(g,f)
     if os.path.exists(data_file) is False:
-        datapath = "../truthtables/i{}/implementation/".format(options.num_input)
+        datapath = "../truthtables/i{}/implementation2/".format(options.num_input)
         th.multiprocessing.set_sharing_strategy('file_system')
         #print(dataset_not_edge.Dataset_n)
         dataset = Dataset_gcl(datapath,options.split)
@@ -305,6 +305,7 @@ def train(options):
     max_F1_score = 0
     pre_loss = 100
     stop_score = 0
+
     for num_input,aug_indx,dataloader in data_loaders:
         print(len(dataloader))
         for epoch in range(num_epoch):
