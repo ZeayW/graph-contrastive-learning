@@ -172,7 +172,7 @@ def main(options):
     th.multiprocessing.set_sharing_strategy('file_system')
     device = th.device("cuda:" + str(options.gpu) if th.cuda.is_available() else "cpu")
     label = options.label
-    data_path = options.datapath
+    
     options, model,mlp = load_model(device, options)
     if model is None:
         print("No model, please prepocess first , or choose a pretrain model")
@@ -180,7 +180,7 @@ def main(options):
     #print(model)
     beta = options.beta
     # Dump the preprocessing result to save time!
-    #data_path = options.datapath
+    data_path = options.datapath
     # if options.region:
     #     data_path= 'data/region/'
     val_data_file = os.path.join(data_path, 'rocket2.pkl')
