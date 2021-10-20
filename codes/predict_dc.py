@@ -176,7 +176,7 @@ def main(options):
     #print(model)
     beta = options.beta
     # Dump the preprocessing result to save time!
-    data_path = 'data/fadd/'
+    data_path = options.datapath
     # if options.region:
     #     data_path= 'data/region/'
     val_data_file = os.path.join(data_path, 'rocket2.pkl')
@@ -202,7 +202,22 @@ def main(options):
         val_g = pickle.load(f)
         # val_g.ndata['label_i'] = th.FloatTensor(val_g.ndata['label_i'].float())
         # val_g.ndata['label_i'] = th.FloatTensor(val_g.ndata['label_o'].float())
+    val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    if in_nlayers == -1:
+        in_nlayers = 0
+    if out_nlayers == -1:
+        out_nlayers = 0
+    unlabel_low(val_g, options.unlabel)
+    if options.add == -1:
+        label_name = 'label_o'
+        val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
+    val_g.ndata['f_input'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+    val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
 
+    val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
+    val_nids = th.tensor(range(val_g.number_of_nodes()))
+    print(len(val_nids))
+    val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1) != -1]
     # or_mask = th.argmax(g.ndata['ntype'],dim=1) == 5
     # num_or = len(g.ndata['ntype'][or_mask])
     # print("ratio of or gate: ",num_or/g.num_nodes())
@@ -217,7 +232,7 @@ def main(options):
         True,
         val_g,
         get_reverse_graph(val_g),
-        list(range(val_g.num_nodes())),
+        val_nids,
         in_sampler,
         out_sampler,
         batch_size=val_g.num_nodes(),
