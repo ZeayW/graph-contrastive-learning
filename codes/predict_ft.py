@@ -172,7 +172,7 @@ def main(options):
     th.multiprocessing.set_sharing_strategy('file_system')
     device = th.device("cuda:" + str(options.gpu) if th.cuda.is_available() else "cpu")
     label = options.label
-    
+
     options, model,mlp = load_model(device, options)
     if model is None:
         print("No model, please prepocess first , or choose a pretrain model")
@@ -208,6 +208,7 @@ def main(options):
     # or_mask = th.argmax(g.ndata['ntype'],dim=1) == 5
     # num_or = len(g.ndata['ntype'][or_mask])
     # print("ratio of or gate: ",num_or/g.num_nodes())
+    val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
     if in_nlayers == -1:
         in_nlayers = 0
     if out_nlayers == -1:
