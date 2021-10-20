@@ -155,8 +155,11 @@ def main(options):
         print("No model, please prepocess first , or choose a pretrain model")
         return
     #print(model)
+    is_FuncGCN1, is_FuncGCN2 = False,False
+    print(model)
     if model.GCN1 is not None and type(model.GCN1) == FuncGCN:
         is_FuncGCN1 = True
+
     if model.GCN2 is not None and type(model.GCN2) == FuncGCN:
         is_FuncGCN2 = True
     beta = options.beta
