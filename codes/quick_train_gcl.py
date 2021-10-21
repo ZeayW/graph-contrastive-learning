@@ -187,9 +187,9 @@ def train(options):
     # Dump the preprocessing result to save time!
     # for region detecion, the data_path is 'data/region', for boundary(io) detection, the data_path is 'data/boundary'
     data_path = '../data/gcl_new/'
-    train_data_files = []
-    for i in range(5,options.num_input+1):
-        train_data_files.append((i,os.path.join(data_path,'i{}/merge.pkl'.format(i))))
+    # train_data_files = []
+    # for i in range(5,options.num_input+1):
+    #     train_data_files.append((i,os.path.join(data_path,'i{}/merge.pkl'.format(i))))
     #train_data_file = os.path.join(data_path,'i{}.pkl'.format(options.num_input))W
     # neg_data_file = os.path.join(data_path, 'rocket2.pkl')
     # val_data_file = os.path.join(data_path,'rocket2.pkl')
@@ -232,8 +232,10 @@ def train(options):
     data_loaders = []
     for num_input in range(start_input,options.num_input+1):
         print('num_input{}'.format(num_input))
-        origin_file = os.path.join(data_path,'i{}/origin.pkl'.format(num_input))
-        aug_files = [os.path.join(data_path,'i{}/aug{}.pkl'.format(num_input,i)) for i in range(start_aug,4)]
+        if num_input!=5:
+            break
+        origin_file = os.path.join(data_path,'i{}/new_origin.pkl'.format(num_input))
+        aug_files = [os.path.join(data_path,'i{}/new_aug{}.pkl'.format(num_input,i)) for i in range(start_aug,4)]
         for i ,file in enumerate(aug_files):
 
             with open(file,'rb') as f:
