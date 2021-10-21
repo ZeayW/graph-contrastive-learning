@@ -52,14 +52,14 @@ for k in range(int(num_split)):
 
     print('split{}, num_nodes:{}, num_pos:{}'.format(k,graph.number_of_nodes(),len(POs)))
 
-with open(os.path.join(datapath, 'origin.pkl'.format(num_input)), 'wb') as f:
+with open(os.path.join(datapath, 'new_origin.pkl'.format(num_input)), 'wb') as f:
     pickle.dump((dgl.batch(orignal_graphs), original_nids, original_depth), f)
 
 for i in range(3):
     batch_graph = dgl.batch(aug_graphs[i])
     aug_POs = aug_nids[i]
     print(aug_POs)
-    with open(os.path.join(datapath, 'aug{}.pkl'.format(i + 1)), 'wb') as f:
+    with open(os.path.join(datapath, 'new_aug{}.pkl'.format(i + 1)), 'wb') as f:
         pickle.dump((batch_graph, aug_POs, depths[i]), f)
     print('aug{}, depth:{},num_nodes:{}, num_pos:{}'.format(i, depths[i], batch_graph.number_of_nodes(), len(aug_POs)))
 
