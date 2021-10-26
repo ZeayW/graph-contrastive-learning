@@ -121,7 +121,7 @@ def load_valdata( val_data_file,options):
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
     val_graphs = dgl.unbatch(val_g)
     return  val_graphs
-def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
+def validate_sim(val_graphs,sampler,device,model):
     for val_g in val_graphs:
         val_nodes = th.tensor(range(val_g.number_of_nodes()))
 
@@ -147,21 +147,21 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
             neg_embeddings = embeddings[neg_mask]
             #print(embeddings)
             #print('-----------------------------------------------------------------------------------------\n\n')
-            pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings,neg_embeddings,train_pos_embeddings)
+            pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings,neg_embeddings)
 
             print('\t  pos sim :{:.4f}, cross_sim:{:.4f}, neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
             #print('-----------------------------------------------------------------------------------------\n\n')
 
-def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
+def check_sim(embeddings,neg_embeddings):
     total_pos_sim ,total_neg_sim ,total_cross_sim= 0,0,0
     num = embeddings.shape[0]
     print(num)
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
         total_pos_sim += sim
-        if train_pos_embeddings is not None:
-            cross_sim = (th.sum(th.cosine_similarity(embeddings[i],train_pos_embeddings,dim=-1)))/len(train_pos_embeddings)
-            total_cross_sim += cross_sim
+        # if train_pos_embeddings is not None:
+        #     cross_sim = (th.sum(th.cosine_similarity(embeddings[i],train_pos_embeddings,dim=-1)))/len(train_pos_embeddings)
+        #     total_cross_sim += cross_sim
         if neg_embeddings is not None:
             neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
             total_neg_sim += neg_sim
@@ -315,7 +315,7 @@ def train(options):
             for ni, (central_nodes, input_nodes, blocks) in enumerate(dataloader):
                 # continue
                 start_time = time()
-                neg_embeddings = []
+                #neg_embeddings = []
                 blocks = [b.to(device) for b in blocks]
                 loss = 0
 
@@ -361,7 +361,7 @@ def train(options):
             # val1_pos_sim,_,_ = check_sim(val1_pos_embeddings,None,None)
             # print('\ttrain pos sim: {:.4f}'.format(val1_pos_sim))
             #validate_sim([val_graph2], val1_pos_embeddings,val_sampler,device, model)
-            #validate_sim(val_graphs2, None,val_sampler, device, model)
+            validate_sim(val_graphs2, val_sampler, device, model)
 
             # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
             # print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
