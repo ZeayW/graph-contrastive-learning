@@ -130,7 +130,7 @@ def validate_sim(val_graphs,sampler,device,model):
             val_g,
             val_nodes,
             sampler,
-            batch_size=len(val_nodes),
+            batch_size=val_g.number_of_nodes(),
             shuffle=False,
             drop_last=False,
         )
@@ -155,7 +155,6 @@ def validate_sim(val_graphs,sampler,device,model):
 def check_sim(embeddings,neg_embeddings):
     total_pos_sim ,total_neg_sim ,total_cross_sim= 0,0,0
     num = embeddings.shape[0]
-    print(num)
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i],embeddings,dim=-1))-1)/(num-1)
         total_pos_sim += sim
@@ -203,32 +202,32 @@ def train(options):
 
     print("Loading data...")
     val_sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
-    val_data_file1 = os.path.join('../data/simplify9', 'rocket2.pkl')
-    val_graphs1 = load_valdata(val_data_file1,options)
-    val_graph1 = dgl.batch(val_graphs1)
-    val1_pos_nodes = th.tensor(range(val_graph1.number_of_nodes()))[val_graph1.ndata['label_o'].squeeze(1)==1]
-    val_dataloader1 = MyNodeDataLoader(
-                    True,
-                    val_graph1,
-                    val1_pos_nodes,
-                    val_sampler,
-                    batch_size=1024,
-                    shuffle=False,
-                    drop_last=False,
-                )
+    # val_data_file1 = os.path.join('../data/simplify9', 'rocket2.pkl')
+    # val_graphs1 = load_valdata(val_data_file1,options)
+    # val_graph1 = dgl.batch(val_graphs1)
+    # val1_pos_nodes = th.tensor(range(val_graph1.number_of_nodes()))[val_graph1.ndata['label_o'].squeeze(1)==1]
+    # val_dataloader1 = MyNodeDataLoader(
+    #                 True,
+    #                 val_graph1,
+    #                 val1_pos_nodes,
+    #                 val_sampler,
+    #                 batch_size=1024,
+    #                 shuffle=False,
+    #                 drop_last=False,
+    #             )
     val_data_file2 = os.path.join('../data/simplify9', 'boom2.pkl')
     val_graphs2 = load_valdata(val_data_file2, options)
-    val_graph2 = dgl.batch(val_graphs2)
+    # val_graph2 = dgl.batch(val_graphs2)
     #val2_pos_nodes = th.tensor(range(val_graph2.number_of_nodes()))[val_graph2.ndata['label_o'] == 1]
-    val_dataloader2 = MyNodeDataLoader(
-        True,
-        val_graph2,
-        th.tensor(range(val_graph2.number_of_nodes())),
-        val_sampler,
-        batch_size=val_graph2.number_of_nodes(),
-        shuffle=False,
-        drop_last=False,
-    )
+    # val_dataloader2 = MyNodeDataLoader(
+    #     True,
+    #     val_graph2,
+    #     th.tensor(range(val_graph2.number_of_nodes())),
+    #     val_sampler,
+    #     batch_size=val_graph2.number_of_nodes(),
+    #     shuffle=False,
+    #     drop_last=False,
+    # )
     data_loaders = []
     for num_input in range(start_input,options.num_input+1):
         print('num_input{}'.format(num_input))
