@@ -350,7 +350,8 @@ def train(options):
                 f.write('\n')
 
             # judgement = val_F1_score > max_F1_score
-            judgement = Train_loss < 100
+            judgement = True
+            #judgement = Train_loss < 100
             if judgement:
                 # max_F1_score = val_F1_score
                 print("Saving model.... ", os.path.join(options.model_saving_dir))
