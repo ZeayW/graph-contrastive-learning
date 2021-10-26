@@ -213,8 +213,8 @@ def train(options):
     data_loaders = []
     for num_input in range(start_input, options.num_input + 1):
         print('num_input{}'.format(num_input))
-        origin_file = os.path.join(data_path, 'i{}/new_origin.pkl'.format(num_input))
-        aug_files = [os.path.join(data_path, 'i{}/new_aug{}.pkl'.format(num_input, i)) for i in range(start_aug, 4)]
+        origin_file = os.path.join(data_path, 'i{}/origin.pkl'.format(num_input))
+        aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(start_aug, 4)]
         for i, file in enumerate(aug_files):
 
             with open(file, 'rb') as f:
@@ -362,6 +362,7 @@ def train(options):
                 print("Model successfully saved")
             if Train_loss.item() < loss_thred:
                 print('train loss beyond thredshold, change to the next dataset: {} {}'.format(num_input, aug_indx))
+                exit()
                 break
 
 
