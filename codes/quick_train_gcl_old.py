@@ -368,7 +368,7 @@ def train(options):
                 print("Model successfully saved")
             if Train_loss.item() < loss_thred:
                 print('train loss beyond thredshold, change to the next dataset: {} {}'.format(num_input, aug_indx))
-                exit()
+                #exit()
                 break
 
 
