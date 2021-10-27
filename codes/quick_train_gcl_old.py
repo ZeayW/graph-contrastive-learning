@@ -133,12 +133,14 @@ def check_sim(embeddings, neg_embeddings):
         total_pos_sim += sim
         total_neg_sim += neg_sim
         # print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim / len(embeddings),
-                                                           total_neg_sim / len(embeddings)))
+    avg_pos_sim = total_pos_sim / len(embeddings)
+    avg_neg_sim = total_neg_sim / len(embeddings)
+    print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(avg_pos_sim,
+                                                           avg_neg_sim))
 
-
+    return avg_pos_sim,avg_neg_sim
 def validate_sim(val_graphs, sampler, device, model):
-    print(len(val_graphs))
+    res_sim = []
     for val_g in val_graphs:
         val_nodes = th.tensor(range(val_g.number_of_nodes()))
         pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
@@ -169,9 +171,10 @@ def validate_sim(val_graphs, sampler, device, model):
             neg_embeddings = embeddings[neg_mask]
             # print(embeddings)
             # print('-----------------------------------------------------------------------------------------\n\n')
-            check_sim(pos_embeddings, neg_embeddings)
+            pos_sim,neg_sim = check_sim(pos_embeddings, neg_embeddings)
+            res_sim.append((pos_sim,neg_sim))
             # print('-----------------------------------------------------------------------------------------\n\n')
-
+    return res_sim
 
 def NCEloss(pos1, pos2, neg, tao):
     pos_similarity = th.cosine_similarity(pos1, pos2, dim=-1)
@@ -328,7 +331,7 @@ def train(options):
             print("training runtime: ", runtime)
             print("  train:")
             print("loss:{:.8f}".format(Train_loss.item()))
-            validate_sim(val_graphs, val_sampler, device, model)
+            res_sims = validate_sim(val_graphs, val_sampler, device, model)
             # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
             # print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
             # #if options.weighted:
@@ -347,6 +350,8 @@ def train(options):
                 # f.write(str(round(val_loss, 3)) + " " + str(round(val_acc, 3)) + " " + str(
                 #     round(val_recall, 3)) + " "+ str(round(val_precision,3))+" " + str(round(val_F1_score, 3)) + "\n")
                 f.write(str(round(Train_loss.item(), 3)))
+                for pos_sim,neg_sim in res_sims:
+                    f.write(str(round(pos_sim,4)),str(round(neg_sim,4)))
                 f.write('\n')
 
             # judgement = val_F1_score > max_F1_score
