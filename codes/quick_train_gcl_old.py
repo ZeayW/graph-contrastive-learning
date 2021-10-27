@@ -351,7 +351,7 @@ def train(options):
                 #     round(val_recall, 3)) + " "+ str(round(val_precision,3))+" " + str(round(val_F1_score, 3)) + "\n")
                 f.write(str(round(Train_loss.item(), 3)))
                 for pos_sim,neg_sim in res_sims:
-                    f.write(str(round(pos_sim.item(),4)),str(round(neg_sim.item(),4)))
+                    f.write(str(round(pos_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
                 f.write('\n')
 
             # judgement = val_F1_score > max_F1_score
