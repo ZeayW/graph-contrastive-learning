@@ -18,7 +18,7 @@ def load_model(device,options):
 
     with open(os.path.join(model_dir,'model.pkl'), 'rb') as f:
         #print(f)
-        param, classifier = pickle.load(f)
+        param, classifier,mlp = pickle.load(f)
         #print(classifier)
         param.model_saving_dir = options.model_saving_dir
         classifier = classifier.to(device)
