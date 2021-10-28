@@ -17,8 +17,11 @@ def load_model(device,options):
 
     with open(os.path.join(model_dir,'model.pkl'), 'rb') as f:
         #print(f)
-        param, classifier,mlp = pickle.load(f)
         #print(classifier)
+        if 'gcl' in model_dir:
+            param, classifier = pickle.load(f)
+        else:
+            param, classifier, mlp = pickle.load(f)
         param.model_saving_dir = options.model_saving_dir
         classifier = classifier.to(device)
         if options.change_lr:
