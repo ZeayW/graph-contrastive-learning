@@ -197,6 +197,7 @@ def NCEloss(pos1, pos2, neg, tao):
 
 def train(options):
     start_input, start_aug = options.start[0], options.start[1]
+    end_input, end_aug = options.end[0], options.end[1]
     loss_thred = options.loss_thred
     th.multiprocessing.set_sharing_strategy('file_system')
     device = th.device("cuda:" + str(options.gpu) if th.cuda.is_available() else "cpu")
@@ -239,9 +240,14 @@ def train(options):
     for num_input in range(start_input, options.num_input + 1):
         print('num_input{}'.format(num_input))
         origin_file = os.path.join(data_path, 'i{}/origin.pkl'.format(num_input))
-        aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(start_aug, 4)]
+        if num_input == start_input:
+            aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(start_aug, 4)]
+        elif num_input == end_input:
+            aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(1, end_aug + 1)]
+        else:
+            aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(1, 4)]
         for i, file in enumerate(aug_files):
-
+            num_aug = int(file.split('/')[-1].split('.')[-1])
             with open(file, 'rb') as f:
                 train_g, POs, depth = pickle.load(f)
                 train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
@@ -271,7 +277,7 @@ def train(options):
             # print(po_depths)
             # check(train_g,POs,depth)
             data_loaders.append(
-                (num_input, i + 1, MyNodeDataLoader(
+                (num_input, num_aug, MyNodeDataLoader(
                     False,
                     train_g,
                     POs,
