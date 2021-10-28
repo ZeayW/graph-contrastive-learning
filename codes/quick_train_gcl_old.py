@@ -213,6 +213,20 @@ def train(options):
     val_data_file = os.path.join('../data/simplify9', 'rocket2.pkl')
     val_graphs = load_valdata(val_data_file, options)
     val_sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
+
+    val_data_file1 = os.path.join('../data/simplify9', 'boom2.pkl')
+    val_graphs1 = load_valdata(val_data_file1,options)
+    val_graph1 = dgl.batch(val_graphs1)
+    val1_pos_nodes = th.tensor(range(val_graph1.number_of_nodes()))[val_graph1.ndata['label_o'].squeeze(1)==1]
+    val_dataloader1 = MyNodeDataLoader(
+                    True,
+                    val_graph1,
+                    val1_pos_nodes,
+                    val_sampler,
+                    batch_size=1024,
+                    shuffle=False,
+                    drop_last=False,
+                )
     data_loaders = []
     for num_input in range(start_input, options.num_input + 1):
         print('num_input{}'.format(num_input))
@@ -293,17 +307,14 @@ def train(options):
             runtime = 0
             total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
             pos_count, neg_count = 0, 0
-            pos_embeddings = th.tensor([]).to(device)
             for ni, (central_nodes, input_nodes, blocks) in enumerate(dataloader):
                 # continue
                 start_time = time()
                 neg_embeddings = []
                 blocks = [b.to(device) for b in blocks]
                 loss = 0
-                output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+
                 embeddings = model(blocks, blocks[0].srcdata['f_input'])
-                pos_mask = output_labels == 1
-                pos_embeddings = th.cat((pos_embeddings, embeddings[pos_mask]), dim=0)
                 for i in range(0, len(embeddings), 2):
                     loss += NCEloss(embeddings[i], embeddings[i + 1], embeddings, options.tao)
                     loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
@@ -334,13 +345,6 @@ def train(options):
             print("training runtime: ", runtime)
             print("  train:")
             print("loss:{:.8f}".format(Train_loss.item()))
-
-            total_pos_sim = 0
-            num = pos_embeddings.shape[0]
-            for i in range(num):
-                sim = (th.sum(th.cosine_similarity(pos_embeddings[i], pos_embeddings, dim=-1)) - 1) / (num - 1)
-                total_pos_sim += sim
-            print('\tavg train pos_sim:{:.4f}'.format(total_pos_sim / len(pos_embeddings)))
             res_sims = validate_sim(val_graphs, val_sampler, device, model)
             # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
             # print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
@@ -378,7 +382,7 @@ def train(options):
                 print("Model successfully saved")
             if Train_loss.item() < loss_thred:
                 print('train loss beyond thredshold, change to the next dataset: {} {}'.format(num_input, aug_indx))
-                #exit()
+                exit()
                 break
 
 
