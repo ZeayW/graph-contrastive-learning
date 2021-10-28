@@ -123,7 +123,7 @@ def load_valdata(val_data_file, options):
     return val_graphs
 
 
-def check_sim(embeddings, neg_embeddings):
+def check_sim(embeddings, neg_embeddings,boom_embeddings):
     total_pos_sim, total_neg_sim = 0, 0
     num = embeddings.shape[0]
     for i in range(num):
@@ -171,7 +171,7 @@ def validate_sim(val_graphs, boom_embeddings,sampler, device, model):
             neg_embeddings = embeddings[neg_mask]
             # print(embeddings)
             # print('-----------------------------------------------------------------------------------------\n\n')
-            pos_sim,neg_sim = check_sim(pos_embeddings, neg_embeddings)
+            pos_sim,neg_sim = check_sim(pos_embeddings, neg_embeddings,boom_embeddings)
             res_sim.append((pos_sim,neg_sim))
             # print('-----------------------------------------------------------------------------------------\n\n')
     return res_sim
