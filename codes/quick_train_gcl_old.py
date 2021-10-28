@@ -127,6 +127,7 @@ def check_sim(embeddings, neg_embeddings,boom_embeddings):
     total_pos_sim, total_neg_sim = 0, 0
     total_cross_sim = 0
     num = embeddings.shape[0]
+    avg_cross_sim = 0
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i], embeddings, dim=-1)) - 1) / (num - 1)
         neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
@@ -140,12 +141,12 @@ def check_sim(embeddings, neg_embeddings,boom_embeddings):
     avg_pos_sim = total_pos_sim / len(embeddings)
     avg_neg_sim = total_neg_sim / len(embeddings)
     if boom_embeddings is not None:
-        avg_cross_sim = total_cross_sim / len(boom_embeddings)
+        avg_cross_sim = total_cross_sim / len(embeddings)
     # print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(avg_pos_sim,
     #                                                        avg_neg_sim))
-    print('avg pos sim :{:.4f}, avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(avg_pos_sim, avg_cross_sim,
+    print('avg pos sim :{:.4f}, avg cross sim :{:.4f}, avg neg sim:{:.4f}'.format(avg_pos_sim, avg_cross_sim,
                                                            avg_neg_sim))
-    return avg_pos_sim,avg_neg_sim
+    return avg_pos_sim,avg_cross_sim,avg_neg_sim
 def validate_sim(val_graphs, boom_embeddings,sampler, device, model):
     res_sim = []
     for val_g in val_graphs:
@@ -178,8 +179,8 @@ def validate_sim(val_graphs, boom_embeddings,sampler, device, model):
             neg_embeddings = embeddings[neg_mask]
             # print(embeddings)
             # print('-----------------------------------------------------------------------------------------\n\n')
-            pos_sim,neg_sim = check_sim(pos_embeddings, neg_embeddings,boom_embeddings)
-            res_sim.append((pos_sim,neg_sim))
+            pos_sim,cross_sim,neg_sim = check_sim(pos_embeddings, neg_embeddings,boom_embeddings)
+            res_sim.append((pos_sim,cross_sim,neg_sim))
             # print('-----------------------------------------------------------------------------------------\n\n')
     return res_sim
 
@@ -374,8 +375,8 @@ def train(options):
                 # f.write(str(round(val_loss, 3)) + " " + str(round(val_acc, 3)) + " " + str(
                 #     round(val_recall, 3)) + " "+ str(round(val_precision,3))+" " + str(round(val_F1_score, 3)) + "\n")
                 f.write(str(round(Train_loss.item(), 3)))
-                for pos_sim,neg_sim in res_sims:
-                    f.write('\n'+str(round(pos_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
+                for pos_sim,cross_sim,neg_sim in res_sims:
+                    f.write('\n'+str(round(pos_sim.item(),4))+'\t'+str(round(cross_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
                 f.write('\n')
 
             # judgement = val_F1_score > max_F1_score
