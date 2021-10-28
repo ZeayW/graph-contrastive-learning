@@ -247,7 +247,7 @@ def train(options):
         else:
             aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(1, 4)]
         for i, file in enumerate(aug_files):
-            num_aug = int(file.split('/')[-1].split('.')[-1])
+            num_aug = int(file.split('/')[-1].split('.')[-2][-1])
             with open(file, 'rb') as f:
                 train_g, POs, depth = pickle.load(f)
                 train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
