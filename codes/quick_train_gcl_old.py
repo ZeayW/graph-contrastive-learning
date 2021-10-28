@@ -223,7 +223,7 @@ def train(options):
                     val_graph1,
                     val1_pos_nodes,
                     val_sampler,
-                    batch_size=1024,
+                    batch_size=len(val1_pos_nodes),
                     shuffle=False,
                     drop_last=False,
                 )
@@ -340,7 +340,10 @@ def train(options):
                 runtime += endtime - start_time
 
             Train_loss = total_loss / total_num
-
+            boom_embeddings = None
+            for _,_, blocks in val_dataloader1:
+                blocks = [b.to(device) for b in blocks]
+                boom_embeddings = model(blocks,blocks[0].srcdata['f_input'])
             print("epoch[{:d}]".format(epoch))
             print("training runtime: ", runtime)
             print("  train:")
