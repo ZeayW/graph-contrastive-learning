@@ -1,5 +1,4 @@
 from dataset_quick import Dataset_q
-from dataset_not_edge import Dataset_n
 from options import get_options
 from model import *
 
