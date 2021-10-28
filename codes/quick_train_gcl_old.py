@@ -139,7 +139,7 @@ def check_sim(embeddings, neg_embeddings):
                                                            avg_neg_sim))
 
     return avg_pos_sim,avg_neg_sim
-def validate_sim(val_graphs, sampler, device, model):
+def validate_sim(val_graphs, boom_embeddings,sampler, device, model):
     res_sim = []
     for val_g in val_graphs:
         val_nodes = th.tensor(range(val_g.number_of_nodes()))
@@ -348,7 +348,7 @@ def train(options):
             print("training runtime: ", runtime)
             print("  train:")
             print("loss:{:.8f}".format(Train_loss.item()))
-            res_sims = validate_sim(val_graphs, val_sampler, device, model)
+            res_sims = validate_sim(val_graphs,boom_embeddings, val_sampler, device, model)
             # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
             # print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
             # #if options.weighted:
