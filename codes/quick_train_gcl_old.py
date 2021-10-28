@@ -125,19 +125,26 @@ def load_valdata(val_data_file, options):
 
 def check_sim(embeddings, neg_embeddings,boom_embeddings):
     total_pos_sim, total_neg_sim = 0, 0
+    total_cross_sim = 0
     num = embeddings.shape[0]
     for i in range(num):
         sim = (th.sum(th.cosine_similarity(embeddings[i], embeddings, dim=-1)) - 1) / (num - 1)
         neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
         # distance += d
+        if boom_embeddings is not None:
+            cross_sim =  (th.sum(th.cosine_similarity(embeddings[i], boom_embeddings, dim=-1))) / len(boom_embeddings)
+            total_cross_sim += cross_sim
         total_pos_sim += sim
         total_neg_sim += neg_sim
         # print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
     avg_pos_sim = total_pos_sim / len(embeddings)
     avg_neg_sim = total_neg_sim / len(embeddings)
-    print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(avg_pos_sim,
+    if boom_embeddings is not None:
+        avg_cross_sim = total_cross_sim / len(boom_embeddings)
+    # print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(avg_pos_sim,
+    #                                                        avg_neg_sim))
+    print('avg pos sim :{:.4f}, avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(avg_pos_sim, avg_cross_sim,
                                                            avg_neg_sim))
-
     return avg_pos_sim,avg_neg_sim
 def validate_sim(val_graphs, boom_embeddings,sampler, device, model):
     res_sim = []
