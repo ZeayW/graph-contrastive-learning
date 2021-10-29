@@ -198,6 +198,8 @@ def NCEloss(pos1, pos2, neg, tao):
 def train(options):
     start_input, start_aug = options.start[0], options.start[1]
     end_input, end_aug = options.end[0], options.end[1]
+    print(start_input,start_aug)
+    print(end_input,end_aug)
     loss_thred = options.loss_thred
     th.multiprocessing.set_sharing_strategy('file_system')
     device = th.device("cuda:" + str(options.gpu) if th.cuda.is_available() else "cpu")
