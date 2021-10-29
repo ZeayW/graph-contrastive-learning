@@ -226,7 +226,7 @@ def train(options):
     val_data_file1 = os.path.join('../data/simplify9', 'boom2.pkl')
     val_graphs1 = load_valdata(val_data_file1,options)
     val_graph1 = dgl.batch(val_graphs1)
-    val1_pos_nodes = th.tensor(range(val_graph1.number_of_nodes()))[val_graph1.ndata['label_o'].squeeze(1)==1]
+    val1_pos_nodes = th.tensor(range(val_graph1.number_of_nodes()))[val_graph1.ndata['label_o'].squeeze(1)>=1]
     val_dataloader1 = MyNodeDataLoader(
                     True,
                     val_graph1,
@@ -316,7 +316,7 @@ def train(options):
     pre_loss = 100
     stop_score = 0
     for num_input, aug_indx, dataloader in data_loaders:
-        print(len(dataloader))
+        print('dataset:',num_input,aug_indx)
         for epoch in range(num_epoch):
             runtime = 0
             total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0

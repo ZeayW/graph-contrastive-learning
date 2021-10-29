@@ -42,15 +42,23 @@ class MLP(nn.Module):
         gain = nn.init.calculate_gain('relu')
         for layer in self.layers:
             nn.init.xavier_uniform_(layer.weight, gain=gain)
+    # def forward(self,features):
+    #     h = features
+    #     for i,layer in enumerate(self.layers):
+    #         if i!=len(self.layers)-1:
+    #             h = self.activation(layer(h))
+    #         else:
+    #             h = layer(h)
+    #     return h
     def forward(self,features):
         h = features
         for i,layer in enumerate(self.layers):
-            if i!=len(self.layers)-1:
-                h = self.activation(layer(h))
-            else:
-                h = layer(h)
+            h= layer(self.activation(h))
+            # if i!=len(self.layers)-1:
+            #     h = self.activation(layer(h))
+            # else:
+            #     h = layer(h)
         return h
-
 class RGCN(nn.Module):
     def __init__(
         self,
