@@ -211,7 +211,7 @@ def train(options):
         for num_input in range(5, 8):
             train_data_files.append((num_input,num_aug))
     start_pos,end_pos = 0,0
-    for i , num_input,num_aug in enumerate(train_data_files):
+    for i , (num_input,num_aug) in enumerate(train_data_files):
         if num_input == start_input and num_aug == start_aug:
             start_pos = i
         if num_input == end_input and num_aug == end_aug:
