@@ -222,9 +222,9 @@ def train(options):
         if num_aug == 1:
             batch_sizes.append(350)
         elif num_aug == 2:
-            batch_sizes.append(400)
+            batch_sizes.append(350)
         elif num_aug == 3:
-            batch_sizes.append(512)
+            batch_sizes.append(350)
 
     #print(train_data_files)
     #exit()
