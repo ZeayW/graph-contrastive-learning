@@ -211,7 +211,7 @@ def train(options):
             if num_input == end_input and num_aug ==end_aug:
                 break_flag = True
                 break
-            elif num_aug < start_input or (num_aug==start_aug and num_input<start_input):
+            elif num_aug < start_aug or (num_aug==start_aug and num_input<start_input):
                 continue
             train_data_files.append((num_input,num_aug))
         if break_flag:
