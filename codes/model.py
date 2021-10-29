@@ -50,14 +50,19 @@ class MLP(nn.Module):
     #         else:
     #             h = layer(h)
     #     return h
-    def forward(self,features):
+    # def forward(self,features):
+    #     h = features
+    #     for i,layer in enumerate(self.layers):
+    #         h= layer(self.activation(h))
+    #     return h
+    def foward(self,features):
         h = features
-        for i,layer in enumerate(self.layers):
-            h= layer(self.activation(h))
-            # if i!=len(self.layers)-1:
-            #     h = self.activation(layer(h))
-            # else:
-            #     h = layer(h)
+        for i in range(len(self.layers)-1):
+            #h = self.dropout(self.activation(self.layers3[i](h)))
+            h = self.dropout(h)
+            h = self.layers[i](self.activation(h))
+        if len(self.layers)>= 1:
+            h = self.layers[-1](h).squeeze(-1)
         return h
 class RGCN(nn.Module):
     def __init__(
@@ -151,6 +156,7 @@ class GAT(nn.Module):
 
     def forward(self, blocks, features):
         h = features
+
         for i, layer in enumerate(self.layers):
             if i != 0:
                 h = self.dropout(h)
