@@ -205,8 +205,19 @@ def train(options):
     # for region detecion, the data_path is 'data/region', for boundary(io) detection, the data_path is 'data/boundary'
     data_path = '../data/gcl_new/'
     train_data_files = []
-    for i in range(5, options.num_input + 1):
-        train_data_files.append((i, os.path.join(data_path, 'i{}/merge.pkl'.format(i))))
+    break_flag = False
+    for num_aug in range(1,4):
+        for num_input in range(start_input, options.num_input + 1):
+            if num_input == end_input and num_aug ==end_aug:
+                break_flag = True
+                break
+            elif num_aug < start_input or (num_aug==start_aug and num_input<start_input):
+                continue
+            train_data_files.append((num_input,num_aug))
+        if break_flag:
+            break
+    print(train_data_files)
+    exit()
     # train_data_file = os.path.join(data_path,'i{}.pkl'.format(options.num_input))W
     # neg_data_file = os.path.join(data_path, 'rocket2.pkl')
     # val_data_file = os.path.join(data_path,'rocket2.pkl')
@@ -237,6 +248,7 @@ def train(options):
                     drop_last=False,
                 )
     data_loaders = []
+    train_data_d
     for num_input in range(start_input, options.num_input + 1):
         print('num_input{}'.format(num_input))
         origin_file = os.path.join(data_path, 'i{}/origin.pkl'.format(num_input))
