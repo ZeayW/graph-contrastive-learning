@@ -196,6 +196,7 @@ def NCEloss(pos1, pos2, neg, tao):
 
 
 def train(options):
+    batch_sizes = []
     start_input, start_aug = options.start[0], options.start[1]
     end_input, end_aug = options.end[0], options.end[1]
     print(start_input,start_aug)
@@ -217,6 +218,14 @@ def train(options):
         if num_input == end_input and num_aug == end_aug:
             end_pos = i
     train_data_files = train_data_files[start_pos:end_pos+1]
+    for num_input,num_aug in train_data_files:
+        if num_aug == 1:
+            batch_sizes.append(350)
+        elif num_aug == 2:
+            batch_sizes.append(400)
+        elif num_aug == 3:
+            batch_sizes.append(512)
+
     #print(train_data_files)
     #exit()
     # train_data_file = os.path.join(data_path,'i{}.pkl'.format(options.num_input))W
@@ -249,7 +258,7 @@ def train(options):
                     drop_last=False,
                 )
     data_loaders = []
-    for num_input,num_aug in train_data_files:
+    for i,(num_input,num_aug) in enumerate(train_data_files):
         file = os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, num_aug))
         with open(file, 'rb') as f:
             train_g, POs, depth = pickle.load(f)
@@ -285,7 +294,7 @@ def train(options):
                 train_g,
                 POs,
                 sampler,
-                batch_size=options.batch_size,
+                batch_size=batch_sizes[i],
                 shuffle=False,
                 drop_last=False,
             ))
@@ -349,7 +358,7 @@ def train(options):
     #     #     shuffle=False,
     #     #     drop_last=False,
     #     # )
-    
+
     print("Data successfully loaded")
 
     options, model = load_model(device, options)
@@ -407,35 +416,21 @@ def train(options):
                 runtime += endtime - start_time
 
             Train_loss = total_loss / total_num
-            boom_embeddings = None
-            for _,_, blocks in val_dataloader1:
-                blocks = [b.to(device) for b in blocks]
-                boom_embeddings = model(blocks,blocks[0].srcdata['f_input'])
+            # boom_embeddings = None
+            # for _,_, blocks in val_dataloader1:
+            #     blocks = [b.to(device) for b in blocks]
+            #     boom_embeddings = model(blocks,blocks[0].srcdata['f_input'])
             print("epoch[{:d}]".format(epoch))
             print("training runtime: ", runtime)
             print("  train:")
             print("loss:{:.8f}".format(Train_loss.item()))
-            res_sims = validate_sim(val_graphs,boom_embeddings, val_sampler, device, model)
-            # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
-            # print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
-            # #if options.weighted:
-            #     #print('alpha = ',model.alpha)
-            # print("num of pos: ",pos_count," num of neg: ",neg_count)
-            # val_acc, val_recall,val_precision, val_F1_score = validate(valdataloader, label_name,device,
-            #                                                                      model, Loss,options.alpha,beta,
-            #                                                                      depth,width,num_aug,query_embedding,thredshold=0.75)
-            # if epoch % 1 == 0 and get_options().rel:
-            #     #if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
-            #     #print(model.GCN1.layer
+            #res_sims = validate_sim(val_graphs,boom_embeddings, val_sampler, device, model)
+
 
             with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
-                # f.write(str(round(Train_loss, 3)) + " " + str(round(Train_acc, 3)) + " " + str(
-                #     round(Train_recall, 3)) + " " + str(round(Train_precision,3))+" " + str(round(Train_F1_score, 3)) + "\n")
-                # f.write(str(round(val_loss, 3)) + " " + str(round(val_acc, 3)) + " " + str(
-                #     round(val_recall, 3)) + " "+ str(round(val_precision,3))+" " + str(round(val_F1_score, 3)) + "\n")
                 f.write(str(round(Train_loss.item(), 3)))
-                for pos_sim,cross_sim,neg_sim in res_sims:
-                    f.write('\n'+str(round(pos_sim.item(),4))+'\t'+str(round(cross_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
+                # for pos_sim,cross_sim,neg_sim in res_sims:
+                #     f.write('\n'+str(round(pos_sim.item(),4))+'\t'+str(round(cross_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
                 f.write('\n')
 
             # judgement = val_F1_score > max_F1_score
