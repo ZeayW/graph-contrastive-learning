@@ -214,6 +214,7 @@ def train(options):
                 break_flag = True
                 break
             elif num_aug < start_aug or (num_aug==start_aug and num_input<start_input):
+                print(num_input,num_aug)
                 continue
             train_data_files.append((num_input,num_aug))
         if break_flag:
