@@ -207,18 +207,16 @@ def train(options):
     # for region detecion, the data_path is 'data/region', for boundary(io) detection, the data_path is 'data/boundary'
     data_path = '../data/gcl_new/'
     train_data_files = []
-    break_flag = False
     for num_aug in range(1,4):
-        for num_input in range(start_input, 8):
-            if num_input == end_input and num_aug ==end_aug:
-                break_flag = True
-                break
-            elif num_aug < start_aug or (num_aug==start_aug and num_input<start_input):
-                print(num_input,num_aug)
-                continue
+        for num_input in range(5, 8):
             train_data_files.append((num_input,num_aug))
-        if break_flag:
-            break
+    start_pos,end_pos = 0,0
+    for i , num_input,num_aug in enumerate(train_data_files):
+        if num_input == start_input and num_aug == start_aug:
+            start_pos = i
+        if num_input == end_input and num_aug == end_aug:
+            end_pos = i
+    train_data_files = train_data_files[start_pos:end_pos+1]
     print(train_data_files)
     exit()
     # train_data_file = os.path.join(data_path,'i{}.pkl'.format(options.num_input))W
