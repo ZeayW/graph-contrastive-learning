@@ -209,7 +209,7 @@ def train(options):
     train_data_files = []
     break_flag = False
     for num_aug in range(1,4):
-        for num_input in range(start_input, options.num_input + 1):
+        for num_input in range(start_input, 8):
             if num_input == end_input and num_aug ==end_aug:
                 break_flag = True
                 break
