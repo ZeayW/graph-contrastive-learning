@@ -217,8 +217,8 @@ def train(options):
         if num_input == end_input and num_aug == end_aug:
             end_pos = i
     train_data_files = train_data_files[start_pos:end_pos+1]
-    print(train_data_files)
-    exit()
+    #print(train_data_files)
+    #exit()
     # train_data_file = os.path.join(data_path,'i{}.pkl'.format(options.num_input))W
     # neg_data_file = os.path.join(data_path, 'rocket2.pkl')
     # val_data_file = os.path.join(data_path,'rocket2.pkl')
@@ -249,67 +249,107 @@ def train(options):
                     drop_last=False,
                 )
     data_loaders = []
-    train_data_d
-    for num_input in range(start_input, options.num_input + 1):
-        print('num_input{}'.format(num_input))
-        origin_file = os.path.join(data_path, 'i{}/origin.pkl'.format(num_input))
-        if num_input == start_input:
-            aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(start_aug, 4)]
-        elif num_input == end_input:
-            aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(1, end_aug + 1)]
+    for num_input,num_aug in train_data_files:
+        file = os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, num_aug))
+        with open(file, 'rb') as f:
+            train_g, POs, depth = pickle.load(f)
+            train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+            train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+            train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
+
+        data_size = len(POs)
+        # for po in POs.keys():
+
+        for po in POs:
+            assert len(train_g.successors(po)) == 0
+        if data_size > options.batch_size:
+            data_size = int(len(POs) / options.batch_size) * options.batch_size
+        POs = POs[:data_size]
+        if options.gat:
+            add_self_loop = True
         else:
-            aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(1, 4)]
-        for i, file in enumerate(aug_files):
-            num_aug = int(file.split('/')[-1].split('.')[-2][-1])
-            with open(file, 'rb') as f:
-                train_g, POs, depth = pickle.load(f)
-                train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-                train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-                train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
-
-            data_size = len(POs)
-            # for po in POs.keys():
-
-            for po in POs:
-                assert len(train_g.successors(po)) == 0
-            if data_size > options.batch_size:
-                data_size = int(len(POs) / options.batch_size) * options.batch_size
-            POs = POs[:data_size]
-            if options.gat:
-                add_self_loop = True
-            else:
-                add_self_loop = False
-            sampler = Sampler(depth * [options.degree], include_dst_in_src=options.include, add_self_loop=add_self_loop)
-            print('aug{}, depth:{},num_nodes:{}, num_pos:{}'.format(i, depth, train_g.number_of_nodes(), len(POs)))
-            # train_blocks = sampler.sample_blocks(train_g,POs)
-            # train_blocks = [b.to(device) for b in train_blocks]
-            # pos_pairs = None
-            #
-            # print(train_blocks)
-            # print(pos_pairs)
-            # print(po_depths)
-            # check(train_g,POs,depth)
-            data_loaders.append(
-                (num_input, num_aug, MyNodeDataLoader(
-                    False,
-                    train_g,
-                    POs,
-                    sampler,
-                    batch_size=options.batch_size,
-                    shuffle=False,
-                    drop_last=False,
-                ))
-            )
-        # dataloader = MyNodeDataLoader(
-        #     False,
-        #     train_g,
-        #     aug_nids,
-        #     sampler,
-        #     batch_size=options.batch_size,
-        #     shuffle=False,
-        #     drop_last=False,
-        # )
-
+            add_self_loop = False
+        sampler = Sampler(depth * [options.degree], include_dst_in_src=options.include, add_self_loop=add_self_loop)
+        print('aug{}, depth:{},num_nodes:{}, num_pos:{}'.format(num_aug, depth, train_g.number_of_nodes(), len(POs)))
+        # train_blocks = sampler.sample_blocks(train_g,POs)
+        # train_blocks = [b.to(device) for b in train_blocks]
+        # pos_pairs = None
+        #
+        # print(train_blocks)
+        # print(pos_pairs)
+        # print(po_depths)
+        # check(train_g,POs,depth)
+        data_loaders.append(
+            (num_input, num_aug, MyNodeDataLoader(
+                False,
+                train_g,
+                POs,
+                sampler,
+                batch_size=options.batch_size,
+                shuffle=False,
+                drop_last=False,
+            ))
+        )
+    # for num_input in range(start_input, options.num_input + 1):
+    #     print('num_input{}'.format(num_input))
+    #     origin_file = os.path.join(data_path, 'i{}/origin.pkl'.format(num_input))
+    #     if num_input == start_input:
+    #         aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(start_aug, 4)]
+    #     elif num_input == end_input:
+    #         aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(1, end_aug + 1)]
+    #     else:
+    #         aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(1, 4)]
+    #     for i, file in enumerate(aug_files):
+    #         num_aug = int(file.split('/')[-1].split('.')[-2][-1])
+    #         with open(file, 'rb') as f:
+    #             train_g, POs, depth = pickle.load(f)
+    #             train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+    #             train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+    #             train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
+    #
+    #         data_size = len(POs)
+    #         # for po in POs.keys():
+    #
+    #         for po in POs:
+    #             assert len(train_g.successors(po)) == 0
+    #         if data_size > options.batch_size:
+    #             data_size = int(len(POs) / options.batch_size) * options.batch_size
+    #         POs = POs[:data_size]
+    #         if options.gat:
+    #             add_self_loop = True
+    #         else:
+    #             add_self_loop = False
+    #         sampler = Sampler(depth * [options.degree], include_dst_in_src=options.include, add_self_loop=add_self_loop)
+    #         print('aug{}, depth:{},num_nodes:{}, num_pos:{}'.format(i, depth, train_g.number_of_nodes(), len(POs)))
+    #         # train_blocks = sampler.sample_blocks(train_g,POs)
+    #         # train_blocks = [b.to(device) for b in train_blocks]
+    #         # pos_pairs = None
+    #         #
+    #         # print(train_blocks)
+    #         # print(pos_pairs)
+    #         # print(po_depths)
+    #         # check(train_g,POs,depth)
+    #         data_loaders.append(
+    #             (num_input, num_aug, MyNodeDataLoader(
+    #                 False,
+    #                 train_g,
+    #                 POs,
+    #                 sampler,
+    #                 batch_size=options.batch_size,
+    #                 shuffle=False,
+    #                 drop_last=False,
+    #             ))
+    #         )
+    #     # dataloader = MyNodeDataLoader(
+    #     #     False,
+    #     #     train_g,
+    #     #     aug_nids,
+    #     #     sampler,
+    #     #     batch_size=options.batch_size,
+    #     #     shuffle=False,
+    #     #     drop_last=False,
+    #     # )
+    
     print("Data successfully loaded")
 
     options, model = load_model(device, options)
