@@ -124,7 +124,7 @@ def load_valdata(val_data_file, options):
 
 
 def check_sim(embeddings, neg_embeddings,boom_embeddings):
-    total_pos_sim, total_neg_sim = th.tensor([0]) ,th.tensor([0])
+    total_pos_sim, total_neg_sim = 0,0
     total_cross_sim = th.tensor([0])
     num = embeddings.shape[0]
     avg_cross_sim = 0
@@ -436,7 +436,7 @@ def train(options):
             with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
                 f.write(str(round(Train_loss.item(), 3)))
                 for pos_sim,cross_sim,neg_sim in res_sims:
-                    f.write('\n'+str(round(pos_sim.item(),4))+'\t'+str(round(cross_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
+                    f.write('\n'+str(round(cross_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
                 f.write('\n')
 
             # judgement = val_F1_score > max_F1_score
