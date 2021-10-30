@@ -31,25 +31,23 @@ def load_model(device,options):
 def check_sim(embeddings, neg_embeddings,boom_embeddings):
     total_pos_sim, total_neg_sim = 0, 0
     total_cross_sim = 0
-    num = embeddings.shape[0]
+    num = boom_embeddings.shape[0]
     avg_cross_sim = 0
     for i in range(num):
-        sim = (th.sum(th.cosine_similarity(embeddings[i], embeddings, dim=-1)) - 1) / (num - 1)
-        neg_sim = (th.sum(th.cosine_similarity(embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
+        pos_sim = (th.sum(th.cosine_similarity(boom_embeddings[i], embeddings, dim=-1)) - 1) / len(embeddings)
+        neg_sim = (th.sum(th.cosine_similarity(boom_embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
         # distance += d
-        if boom_embeddings is not None:
-            cross_sim =  (th.sum(th.cosine_similarity(embeddings[i], boom_embeddings, dim=-1))) / len(boom_embeddings)
-            total_cross_sim += cross_sim
-        total_pos_sim += sim
+        # if boom_embeddings is not None:
+        #     cross_sim =  (th.sum(th.cosine_similarity(embeddings[i], boom_embeddings, dim=-1))) / len(boom_embeddings)
+        #     total_cross_sim += cross_sim
+        total_pos_sim += pos_sim
         total_neg_sim += neg_sim
         # print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
-    avg_pos_sim = total_pos_sim / len(embeddings)
-    avg_neg_sim = total_neg_sim / len(embeddings)
-    if boom_embeddings is not None:
-        avg_cross_sim = total_cross_sim / len(embeddings)
+    avg_pos_sim = total_pos_sim / len(boom_embeddings)
+    avg_neg_sim = total_neg_sim / len(boom_embeddings)
     # print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(avg_pos_sim,
     #                                                        avg_neg_sim))
-    print('avg pos sim :{:.4f}, avg cross sim :{:.4f}, avg neg sim:{:.4f}'.format(avg_pos_sim, avg_cross_sim,
+    print('cross pos sim :{:.4f}, cross neg sim:{:.4f}'.format(avg_pos_sim,
                                                            avg_neg_sim))
     return avg_pos_sim,avg_cross_sim,avg_neg_sim
 def validate_sim(val_graphs, boom_embeddings,sampler, device, model):
