@@ -50,42 +50,42 @@ def check_sim(embeddings, neg_embeddings,boom_embeddings):
     print('cross pos sim :{:.4f}, cross neg sim:{:.4f}'.format(avg_pos_sim,
                                                            avg_neg_sim))
     return avg_pos_sim,avg_cross_sim,avg_neg_sim
-def validate_sim(val_graphs, boom_embeddings,sampler, device, model):
+def validate_sim(val_g, boom_embeddings,sampler, device, model):
     res_sim = []
-    for val_g in val_graphs:
-        val_nodes = th.tensor(range(val_g.number_of_nodes()))
-        pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
-        neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
+    val_nodes = th.tensor(range(val_g.number_of_nodes()))
+    pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
+    neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
 
-        loader = MyNodeDataLoader(
-            True,
-            val_g,
-            val_nodes,
-            sampler,
-            bs=val_g.num_nodes(),
-            batch_size=val_g.num_nodes(),
-            shuffle=False,
-            drop_last=False,
-        )
-        for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
-            blocks = [b.to(device) for b in blocks]
-            input_features = blocks[0].srcdata["f_input"]
-            output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
-            embeddings = model(blocks, input_features)
+    loader = MyNodeDataLoader(
+        True,
+        val_g,
+        val_nodes,
+        sampler,
+        bs=val_g.num_nodes(),
+        batch_size=val_g.num_nodes(),
+        shuffle=False,
+        drop_last=False,
+    )
+    for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
+        blocks = [b.to(device) for b in blocks]
+        input_features = blocks[0].srcdata["f_input"]
+        output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+        embeddings = model(blocks, input_features)
 
-            pos_embeddings = embeddings[pos_mask]
-            # print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
-            # for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
-            #     print(ni,embed[:7])
+        pos_embeddings = embeddings[pos_mask]
+        # print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
+        # for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
+        #     print(ni,embed[:7])
 
-            # print(len(pos_embeddings))
-            # exit()
-            neg_embeddings = embeddings[neg_mask]
-            # print(embeddings)
-            # print('-----------------------------------------------------------------------------------------\n\n')
-            pos_sim,cross_sim,neg_sim = check_sim(pos_embeddings, neg_embeddings,boom_embeddings)
-            res_sim.append((pos_sim,cross_sim,neg_sim))
-            # print('-----------------------------------------------------------------------------------------\n\n')
+        # print(len(pos_embeddings))
+        # exit()
+        neg_embeddings = embeddings[neg_mask]
+        # print(embeddings)
+        # print('-----------------------------------------------------------------------------------------\n\n')
+        pos_sim, cross_sim, neg_sim = check_sim(pos_embeddings, neg_embeddings, boom_embeddings)
+        res_sim.append((pos_sim, cross_sim, neg_sim))
+        # print('-----------------------------------------------------------------------------------------\n\n')
+
     return res_sim
 
 
@@ -153,4 +153,5 @@ for _,_, blocks in val_dataloader1:
     blocks = [b.to(device) for b in blocks]
     boom_embeddings = model1(blocks,blocks[0].srcdata['f_input'])
 
-res_sims = validate_sim(val_graphs,boom_embeddings, val_sampler, device, model1)
+for val_g in val_graphs:
+    res_sims = validate_sim(val_g,boom_embeddings, val_sampler, device, model1)
