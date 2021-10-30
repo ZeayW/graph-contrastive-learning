@@ -696,7 +696,7 @@ def train(options):
                 train_loss = (options.alpha*pos_loss+neg_loss) / len(output_labels)
             else:
                 train_loss = Loss(label_hat, output_labels)
-            print(ni,train_loss.item())
+            #print(ni,train_loss.item())
             total_loss += train_loss.item() * len(output_labels)
             endtime = time()
             runtime += endtime - start_time
