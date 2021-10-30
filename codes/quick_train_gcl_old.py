@@ -222,9 +222,9 @@ def train(options):
         if num_aug == 1:
             batch_sizes.append(350)
         elif num_aug == 2:
-            batch_sizes.append(350)
+            batch_sizes.append(400)
         elif num_aug == 3:
-            batch_sizes.append(350)
+            batch_sizes.append(512)
 
     #print(train_data_files)
     #exit()
@@ -396,7 +396,7 @@ def train(options):
                     loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
                 loss = loss / len(embeddings)
 
-                if num_input >= 7: print(ni, loss.item())
+                #if num_input >= 7: print(ni, loss.item())
                 total_num += 1
                 total_loss += loss
                 endtime = time()
