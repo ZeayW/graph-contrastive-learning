@@ -226,7 +226,7 @@ def train(options):
         elif num_aug == 3:
             batch_sizes.append(512)
 
-    #print(train_data_files)
+    print(train_data_files)
     #exit()
     # train_data_file = os.path.join(data_path,'i{}.pkl'.format(options.num_input))W
     # neg_data_file = os.path.join(data_path, 'rocket2.pkl')
@@ -416,21 +416,21 @@ def train(options):
                 runtime += endtime - start_time
 
             Train_loss = total_loss / total_num
-            # boom_embeddings = None
-            # for _,_, blocks in val_dataloader1:
-            #     blocks = [b.to(device) for b in blocks]
-            #     boom_embeddings = model(blocks,blocks[0].srcdata['f_input'])
+            boom_embeddings = None
+            for _,_, blocks in val_dataloader1:
+                blocks = [b.to(device) for b in blocks]
+                boom_embeddings = model(blocks,blocks[0].srcdata['f_input'])
             print("epoch[{:d}]".format(epoch))
             print("training runtime: ", runtime)
             print("  train:")
             print("loss:{:.8f}".format(Train_loss.item()))
-            #res_sims = validate_sim(val_graphs,boom_embeddings, val_sampler, device, model)
+            res_sims = validate_sim(val_graphs,boom_embeddings, val_sampler, device, model)
 
 
             with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
                 f.write(str(round(Train_loss.item(), 3)))
-                # for pos_sim,cross_sim,neg_sim in res_sims:
-                #     f.write('\n'+str(round(pos_sim.item(),4))+'\t'+str(round(cross_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
+                for pos_sim,cross_sim,neg_sim in res_sims:
+                    f.write('\n'+str(round(pos_sim.item(),4))+'\t'+str(round(cross_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
                 f.write('\n')
 
             # judgement = val_F1_score > max_F1_score
