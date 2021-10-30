@@ -181,7 +181,7 @@ class MyNodeDataLoader:
 
     collator_arglist = inspect.getfullargspec(NodeCollator).args
 
-    def __init__(self, predict,g, nids, block_sampler, **kwargs):
+    def __init__(self, predict,g, nids, block_sampler,bs=get_options().batch_size, **kwargs):
         collator_kwargs = {}
         dataloader_kwargs = {}
         for k, v in kwargs.items():
@@ -190,8 +190,8 @@ class MyNodeDataLoader:
             else:
                 dataloader_kwargs[k] = v
 
-
-        self.collator = MyNodeCollator(predict,g, nids, block_sampler, self.batch_size,**collator_kwargs)
+        self.bs = bs
+        self.collator = MyNodeCollator(predict,g, nids, block_sampler, self.bs,**collator_kwargs)
 
         self.dataloader = DataLoader(self.collator.dataset,
                                     collate_fn=self.collator.collate,
