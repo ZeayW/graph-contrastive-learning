@@ -34,7 +34,7 @@ def check_sim(embeddings, neg_embeddings,boom_embeddings):
     num = boom_embeddings.shape[0]
     avg_cross_sim = 0
     for i in range(num):
-        pos_sim = (th.sum(th.cosine_similarity(boom_embeddings[i], embeddings, dim=-1)) - 1) / len(embeddings)
+        pos_sim = (th.sum(th.cosine_similarity(boom_embeddings[i], embeddings, dim=-1))) / len(embeddings)
         neg_sim = (th.sum(th.cosine_similarity(boom_embeddings[i], neg_embeddings, dim=-1))) / len(neg_embeddings)
         # distance += d
         # if boom_embeddings is not None:
