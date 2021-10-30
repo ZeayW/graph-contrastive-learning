@@ -120,13 +120,13 @@ device = th.device("cuda:"+str(options.gpu) if th.cuda.is_available() else "cpu"
 
 label_name = 'label_o'
 
-print(options)
+#print(options)
 options, model1 = load_model(device, options)
 
 if model1 is None:
     print("No model, please prepocess first , or choose a pretrain model")
     exit()
-print(model1)
+#print(model1)
 
 in_nlayers = options.in_nlayers if isinstance(options.in_nlayers,int) else options.in_nlayers[0]
 val_data_file = os.path.join('../data/simplify9', 'rocket2.pkl')
