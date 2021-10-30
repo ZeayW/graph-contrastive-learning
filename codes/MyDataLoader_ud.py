@@ -108,12 +108,13 @@ class Sampler(BlockSampler):
         
 class MyNodeCollator(NodeCollator):
 
-    def __init__(self,predict,g, nids,block_sampler):
+    def __init__(self,predict,g, nids,block_sampler,batch_size):
         self.nids = nids
         self.block_sampler = block_sampler
         self._dataset = nids
         self.g = g
         self.predict = predict
+        self.batch_size = batch_size
     def collate(self, items):
         if isinstance(items[0], tuple):
             # returns a list of pairs: group them by node types into a dict
@@ -128,10 +129,10 @@ class MyNodeCollator(NodeCollator):
             items = utils.prepare_tensor(self.g, items, 'items')
         #print('item', len(set(items.numpy().tolist())))
         if self.predict is False:
-            if len(set(items.numpy().tolist())) != get_options().batch_size:
+            if len(set(items.numpy().tolist())) != self.batch_size:
                 #print('add...')
                 items = set(items.numpy().tolist())
-                while len(items) != get_options().batch_size:
+                while len(items) != self.batch_size:
                     nid = randint(0, self.g.num_nodes())
                     if nid not in self._dataset:
                         continue
@@ -190,7 +191,7 @@ class MyNodeDataLoader:
                 dataloader_kwargs[k] = v
 
 
-        self.collator = MyNodeCollator(predict,g, nids, block_sampler, **collator_kwargs)
+        self.collator = MyNodeCollator(predict,g, nids, block_sampler, self.batch_size,**collator_kwargs)
 
         self.dataloader = DataLoader(self.collator.dataset,
                                     collate_fn=self.collator.collate,
