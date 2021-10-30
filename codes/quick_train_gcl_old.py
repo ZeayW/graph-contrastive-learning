@@ -383,10 +383,13 @@ def train(options):
     for num_input, aug_indx, dataloader in data_loaders:
         print('dataset:',num_input,aug_indx)
         for epoch in range(num_epoch):
+
             runtime = 0
             total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
             pos_count, neg_count = 0, 0
             for ni, (central_nodes, input_nodes, blocks) in enumerate(dataloader):
+                if ni==len(dataloader)-1:
+                    continue
                 # continue
                 start_time = time()
                 neg_embeddings = []
