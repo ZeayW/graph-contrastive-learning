@@ -214,8 +214,11 @@ def train(options):
     # for region detecion, the data_path is 'data/region', for boundary(io) detection, the data_path is 'data/boundary'
     data_path = '../data/gcl_new/'
     train_data_files = []
-    for num_aug in range(1,4):
-        for num_input in range(5, 8):
+    # for num_aug in range(1,4):
+    #     for num_input in range(5, 8):
+    #         train_data_files.append((num_input,num_aug))
+    for num_input in range(5,8):
+        for num_aug in range(1,4):
             train_data_files.append((num_input,num_aug))
     start_pos,end_pos = 0,0
     for i , (num_input,num_aug) in enumerate(train_data_files):
@@ -224,12 +227,17 @@ def train(options):
         if num_input == end_input and num_aug == end_aug:
             end_pos = i
     train_data_files = train_data_files[start_pos:end_pos+1]
+    # for num_input,num_aug in train_data_files:
+    #     if num_aug == 1:
+    #         batch_sizes.append(350)
+    #     elif num_aug == 2:
+    #         batch_sizes.append(400)
+    #     elif num_aug == 3:
+    #         batch_sizes.append(512)
     for num_input,num_aug in train_data_files:
-        if num_aug == 1:
+        if num_input == 5:
             batch_sizes.append(350)
-        elif num_aug == 2:
-            batch_sizes.append(400)
-        elif num_aug == 3:
+        else:
             batch_sizes.append(512)
 
     print(train_data_files)
