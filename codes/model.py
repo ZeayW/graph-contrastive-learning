@@ -40,7 +40,7 @@ class Projection_Head(nn.Module):
         for layer in self.layers:
             nn.init.xavier_uniform_(layer.weight, gain=gain)
 
-    def foward(self, features):
+    def forward(self, features):
         h = features
         h = self.activation(self.layers[0](h))
         h = self.layers[1](h).squeeze(-1)
@@ -81,7 +81,7 @@ class MLP(nn.Module):
     #     for i,layer in enumerate(self.layers):
     #         h= layer(self.activation(h))
     #     return h
-    def foward(self,features):
+    def forward(self,features):
         h = features
         for i in range(len(self.layers)-1):
             #h = self.dropout(self.activation(self.layers3[i](h)))
