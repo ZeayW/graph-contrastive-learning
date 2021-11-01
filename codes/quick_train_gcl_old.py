@@ -374,6 +374,7 @@ def train(options):
         print("No model, please prepocess first , or choose a pretrain model")
         return
     print(model)
+    print(proj_head)
     optim = th.optim.Adam(
         model.parameters(), options.learning_rate, weight_decay=options.weight_decay
     )
