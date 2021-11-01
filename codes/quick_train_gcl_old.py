@@ -130,7 +130,7 @@ def load_valdata(val_data_file, options):
 
 def check_sim(embeddings, neg_embeddings,boom_embeddings):
     total_pos_sim, total_neg_sim = 0,0
-    total_cross_sim = th.tensor([0])
+    total_cross_sim = 0
     num = embeddings.shape[0]
     avg_cross_sim = 0
     for i in range(num):
