@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 import sys
 
-InputStra = sys.argv[1]
 
 
 # InputStrb = sys.argv[2]
