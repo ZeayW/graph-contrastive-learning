@@ -74,7 +74,7 @@ def preprocess(data_path, device, options):
             aggregation_type=options.agg_type,
             combine_type=options.combine,
         )
-        proj_head = Projection_head(
+        proj_head = Projection_Head(
             in_feats=options.out_dim,
             out_feats=options.out_dim
         )
