@@ -56,7 +56,7 @@ def preprocess(data_path, device, options):
 
     if options.pre_train:
         with open(os.path.join(options.pre_model_dir, 'model.pkl'), 'rb') as f:
-            _, model = pickle.load(f)
+            _, model,proj_head = pickle.load(f)
     else:
         network = FuncGCN
         num_heads = options.num_heads
@@ -74,14 +74,17 @@ def preprocess(data_path, device, options):
             aggregation_type=options.agg_type,
             combine_type=options.combine,
         )
-
+        proj_head = Projection_head(
+            in_feats=options.out_dim,
+            out_feats=options.out_dim
+        )
     print("creating model in:", options.model_saving_dir)
     print(model)
     if os.path.exists(options.model_saving_dir) is False:
         os.makedirs(options.model_saving_dir)
         with open(os.path.join(options.model_saving_dir, 'model.pkl'), 'wb') as f:
             parameters = options
-            pickle.dump((parameters, model), f)
+            pickle.dump((parameters, model,proj_head), f)
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'w') as f:
             pass
 
@@ -364,7 +367,7 @@ def train(options):
 
     print("Data successfully loaded")
 
-    options, model = load_model(device, options)
+    options, model,proj_head = load_model(device, options)
     if model is None:
         print("No model, please prepocess first , or choose a pretrain model")
         return
@@ -397,6 +400,7 @@ def train(options):
                 loss = 0
 
                 embeddings = model(blocks, blocks[0].srcdata['f_input'])
+                embeddings = proj_head(embeddings)
                 for i in range(0, len(embeddings), 2):
                     loss += NCEloss(embeddings[i], embeddings[i + 1], embeddings, options.tao)
                     loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
@@ -449,7 +453,7 @@ def train(options):
                     os.makedirs(options.model_saving_dir)
                 with open(os.path.join(options.model_saving_dir, 'model.pkl'), 'wb') as f:
                     parameters = options
-                    pickle.dump((parameters, model), f)
+                    pickle.dump((parameters, model,proj_head), f)
                 print("Model successfully saved")
             if Train_loss.item() < loss_thred:
                 print('train loss beyond thredshold, change to the next dataset: {} {}'.format(num_input, aug_indx))

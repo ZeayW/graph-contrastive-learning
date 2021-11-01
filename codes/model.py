@@ -21,6 +21,32 @@ from torch.nn.parameter import Parameter
 from options import get_options
 from time import time
 #  GCN Model\
+
+class Projection_Head(nn.Module):
+    def __init__(self,
+                 in_feats,
+                 out_feats,
+                 bias=True,
+                 activation=th.nn.functional.relu,
+                 ):
+        super(MLP, self).__init__()
+        self.layers = nn.ModuleList()
+        self.activation = activation
+
+        hidden_feats = int(in_feats / 2)
+        self.layers.append(nn.Linear(in_feats, hidden_feats, bias=bias))
+        self.layers.append(nn.Linear(hidden_feats, out_feats, bias=bias))
+        gain = nn.init.calculate_gain('relu')
+        for layer in self.layers:
+            nn.init.xavier_uniform_(layer.weight, gain=gain)
+
+    def foward(self, features):
+        h = features
+        h = self.activation(self.layers[0](h))
+        h = self.layers[1](h).squeeze(-1)
+        return h
+
+
 class MLP(nn.Module):
     def __init__(self,
                  in_feats,
@@ -34,8 +60,8 @@ class MLP(nn.Module):
         self.activation = activation
 
         for i in range(n_layers-1):
-            #hidden_feats = int(in_feats / 2)
-            hidden_feats = in_feats
+            hidden_feats = int(in_feats / 2)
+            #hidden_feats = in_feats
             self.layers.append(nn.Linear(in_feats,hidden_feats,bias=bias))
             in_feats = hidden_feats
         self.layers.append(nn.Linear(hidden_feats,out_feats,bias=bias))
