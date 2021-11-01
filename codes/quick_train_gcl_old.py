@@ -89,23 +89,25 @@ def preprocess(data_path, device, options):
             pass
 
 
-def load_model(device, options):
+def load_model(device,options):
+
     model_dir = options.model_saving_dir
     if os.path.exists(os.path.join(model_dir, 'model.pkl')) is False:
-        return None, None
+        return None,None
 
-    with open(os.path.join(model_dir, 'model.pkl'), 'rb') as f:
-        # print(f)
-        param, classifier = pickle.load(f)
-        # print(classifier)
+
+    with open(os.path.join(model_dir,'model.pkl'), 'rb') as f:
+        #print(f)
+        param, classifier,proj_head = pickle.load(f)
+        #print(classifier)
         param.model_saving_dir = options.model_saving_dir
         classifier = classifier.to(device)
+        proj_head = proj_head.to(device)
         if options.change_lr:
             param.learning_rate = options.learning_rate
         if options.change_alpha:
             param.alpha = options.alpha
-    return param, classifier
-
+    return param,classifier,proj_head
 
 def unlabel_low(g, unlabel_threshold):
     mask_low = g.ndata['position'] <= unlabel_threshold
