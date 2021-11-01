@@ -77,7 +77,7 @@ def preprocess(data_path, device, options):
         proj_head = Projection_Head(
             in_feats=options.out_dim,
             out_feats=options.out_dim
-        )
+        ).to(device)
     print("creating model in:", options.model_saving_dir)
     print(model)
     if os.path.exists(options.model_saving_dir) is False:

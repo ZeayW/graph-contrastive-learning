@@ -41,7 +41,6 @@ class Projection_Head(nn.Module):
             nn.init.xavier_uniform_(layer.weight, gain=gain)
 
     def foward(self, features):
-        print('aaa')
         h = features
         h = self.activation(self.layers[0](h))
         h = self.layers[1](h).squeeze(-1)
