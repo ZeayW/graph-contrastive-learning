@@ -29,7 +29,7 @@ class Projection_Head(nn.Module):
                  bias=True,
                  activation=th.nn.functional.relu,
                  ):
-        super(MLP, self).__init__()
+        super(Projection_Head, self).__init__()
         self.layers = nn.ModuleList()
         self.activation = activation
 
