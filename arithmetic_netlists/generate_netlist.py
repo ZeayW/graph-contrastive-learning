@@ -13,7 +13,8 @@ for module_dir in os.listdir('./'):
         for design_dir in os.listdir(module_dir):
             dir = os.path.join(module_dir,design_dir)
             if os.path.isdir(dir):
-                design_list = os.listdir(dir)
+                design_list = fnmatch.filter(os.listdir(dir),'*.v')
+
                 df = pd.DataFrame(np.arange(len(design_list)).reshape((len(design_list), 1)), columns=['Addr'])
                 df.Addr = design_list
                 # print(df.head())
