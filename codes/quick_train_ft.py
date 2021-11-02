@@ -574,7 +574,13 @@ def train(options):
 
 
     if options.add == 1:
-        boom_val_nodes = split_val(train_g)
+        if os.path.exists(os.path.join(data_path,'boom_vals.pkl')):
+            with open(os.path.join(data_path,'boom_vals.pkl'),'rb') as f:
+                boom_val_nodes = pickle.load(f)
+        else:
+            boom_val_nodes = split_val(train_g)
+            with open(os.path.join(data_path,'boom_vals.pkl'),'wb') as f:
+                pickle.dump(boom_val_nodes,f)
         #print(len(train_g.ndata['label_o']==0))
         valdataloader2 = MyNodeDataLoader(
             True,
