@@ -53,7 +53,7 @@ def oversample(g,options,in_dim):
     lowbit_mask = g.ndata['position']<=3
     # unlabel the nodes in muldiv
     no_muldiv_mask = labels.squeeze(-1)!=-1
-    print('no_mul_mask',len(no_muldiv_mask))
+    print('no_mul',len(labels[no_muldiv_mask]))
     nodes = th.tensor(range(g.num_nodes()))
     nodes = nodes[no_muldiv_mask]
     labels = labels[no_muldiv_mask]
