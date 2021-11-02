@@ -352,13 +352,21 @@ def train(options):
     max_F1_score = 0
     pre_loss = 100
     stop_score = 0
+    dic = {}
     for num_input, aug_indx, dataloader in data_loaders:
         print('dataset:',num_input,aug_indx)
         for epoch in range(num_epoch):
             POs = dataloader.nids
-            print(POs)
+            for i in range(0,len(POs),2):
+                dic[POs[i]] = POs[i+1]
+
+            #print(POs)
             POs = shuffle_nids(POs)
-            print(POs)
+            for i in range(0, len(POs), 2):
+                if dic[POs[i]] != POs[i + 1]:
+                    print(POs[i],POs[i+1])
+                    exit()
+            print(POs[:100])
             sampler = dataloader.block_sampler
             dataloader = MyNodeDataLoader(
                 False,
