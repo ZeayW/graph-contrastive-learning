@@ -179,10 +179,9 @@ def preprocess(data_path,device,options,in_dim):
             _,model = pickle.load(f)
 
     mlp = MLP(
-        in_dim = model.out_dim,
-        out_dim = options.nlabels,
-        nlayers = options.n_fcn,
-        dropout = options.mlp_dropout
+        in_feat = model.out_dim,
+        out_feat = options.nlabels,
+        nlayers = options.n_fcn
     ).to(device)
     print(model)
     print(mlp)
