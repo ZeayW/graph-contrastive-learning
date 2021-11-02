@@ -575,9 +575,6 @@ def train(options):
     if options.add == 1:
         boom_val_nodes = split_val(train_g)
         #print(len(train_g.ndata['label_o']==0))
-        train_g.ndata['label_o'][boom_val_nodes] = -1
-        print('ignore',len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == -1]))
-        print('boom val',len(boom_val_nodes))
         valdataloader2 = MyNodeDataLoader(
             True,
             train_g,
@@ -587,7 +584,7 @@ def train(options):
             shuffle=True,
             drop_last=False
         )
-
+        train_g.ndata['label_o'][boom_val_nodes] = -1
 
     train_graphs = dgl.unbatch(train_g)
     temp = train_graphs[1]
