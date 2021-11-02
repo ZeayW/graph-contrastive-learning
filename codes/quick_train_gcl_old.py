@@ -365,7 +365,7 @@ def train(options):
             #                         collate_fn=data_loader.collator.collate,
             #                         **dataloader_kwargs)
             sampler = data_loader.block_sampler
-            datal_oader = MyNodeDataLoader(
+            data_loader = MyNodeDataLoader(
                 False,
                 g,
                 POs,
