@@ -598,7 +598,7 @@ def train(options):
     train_g = dgl.batch(train_graphs)
 
     train_nodes, pos_count, neg_count = oversample(train_g, options, options.in_dim)
-
+    print('train_nodes',len(train_nodes))
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
 
 
