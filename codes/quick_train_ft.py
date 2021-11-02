@@ -576,9 +576,10 @@ def train(options):
     if options.add == 1:
         boom_val_nodes = split_val(train_g)
         #print(len(train_g.ndata['label_o']==0))
+        train_g1=train_g.copy()
         valdataloader2 = MyNodeDataLoader(
             True,
-            train_g,
+            train_g1,
             boom_val_nodes,
             Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
             batch_size=len(boom_val_nodes),
