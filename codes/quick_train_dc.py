@@ -471,7 +471,18 @@ def train(options):
 
     in_nlayers = options.in_nlayers if isinstance(options.in_nlayers,int) else options.in_nlayers[0]
     out_nlayers = options.out_nlayers if isinstance(options.out_nlayers,int) else options.out_nlayers[0]
-
+    if in_nlayers == -1:
+        in_nlayers = 0
+    if out_nlayers == -1:
+        out_nlayers = 0
+    print(options.degree)
+    in_sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
+    out_sampler = Sampler([None] * (out_nlayers + 1), include_dst_in_src=options.include)
+    if options.bag:
+        graph_function = DAG2UDG
+        out_sampler.include_dst_in_src = True
+    else:
+        graph_function = get_reverse_graph
 
     print("Loading data...")
     with open(train_data_file,'rb') as f:
@@ -573,11 +584,13 @@ def train(options):
         valdataloader2 = MyNodeDataLoader(
             True,
             train_g,
+            graph_function(val_g),
             boom_val_nodes,
-            Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
+            in_sampler,
+            out_sampler,
             batch_size=len(boom_val_nodes),
             shuffle=True,
-            drop_last=False
+            drop_last=False,
         )
 
         train_graphs = dgl.unbatch(train_g)
@@ -603,18 +616,7 @@ def train(options):
     if model.GCN2 is not None and type(model.GCN2) == FuncGCN:
         is_FuncGCN2 = True
     #in_sampler = dgl.dataloading.MultiLayerFullNeighborSampler(in_nlayers + 1)
-    if in_nlayers == -1:
-        in_nlayers = 0
-    if out_nlayers == -1:
-        out_nlayers = 0
-    print(options.degree)
-    in_sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
-    out_sampler = Sampler([None] * (out_nlayers + 1), include_dst_in_src=options.include)
-    if options.bag:
-        graph_function = DAG2UDG
-        out_sampler.include_dst_in_src = True
-    else:
-        graph_function = get_reverse_graph
+
     print(len(train_nodes))
     val_nids = th.tensor(range(val_g.number_of_nodes()))
     print(len(val_nids))
