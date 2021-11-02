@@ -181,7 +181,7 @@ def preprocess(data_path,device,options,in_dim):
     mlp = MLP(
         in_feats = model.out_dim,
         out_feats = options.nlabels,
-        nlayers = options.n_fcn
+        n_layers = options.n_fcn
     ).to(device)
     print(model)
     print(mlp)
