@@ -20,7 +20,7 @@ def load_model(device,options):
     with open(os.path.join(model_dir,'model.pkl'), 'rb') as f:
         #print(f)
         if 'proj' in model_dir:
-            param,model2,proj_head = pickle.load(f)
+            param,model1,proj_head = pickle.load(f)
         else:
             param, model1 = pickle.load(f)
         #print(classifier)
