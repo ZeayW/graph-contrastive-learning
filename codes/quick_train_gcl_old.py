@@ -389,7 +389,7 @@ def train(options):
                 loss = 0
 
                 embeddings = model(blocks, blocks[0].srcdata['f_input'])
-                embeddings = proj_head(embeddings)
+                #embeddings = proj_head(embeddings)
                 for i in range(0, len(embeddings), 2):
                     loss += NCEloss(embeddings[i], embeddings[i + 1], embeddings, options.tao)
                     loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
