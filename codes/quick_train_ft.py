@@ -344,7 +344,7 @@ def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embed
     print('\tavg pos sim :{:.4f}, avg cross sim:{:.4f}, avg neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
     return [loss, acc,recall,precision,F1_score]
 
-def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
+def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model,options):
     for val_g in val_graphs:
         val_nodes = th.tensor(range(val_g.number_of_nodes()))
         pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
@@ -361,7 +361,10 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model):
         )
         for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
             blocks = [b.to(device) for b in blocks]
-            input_features = blocks[0].srcdata["f_input"]
+            if options.gnn:
+                input_features = blocks[0].srcdata["ntype"]
+            else:
+                input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
             embeddings = model(blocks, input_features)
 
@@ -828,7 +831,7 @@ def train(options):
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(loaders,label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta,pos_embeddings,options)
         #max_F1_score = max(max_F1_score,val_F1_score)
-        validate_sim(val_graphs, pos_embeddings, sampler, device, model)
+        validate_sim(val_graphs, pos_embeddings, sampler, device, model,options)
         #validate_sim([dgl.batch(val_graphs)],sampler,device,model)
         #validate_sim(val_graphs, pos_embeddings,sampler, device, model)
 
