@@ -581,7 +581,7 @@ def train(options):
             boom_val_nodes = split_val(train_g)
             with open(os.path.join(data_path,'boom_vals.pkl'),'wb') as f:
                 pickle.dump(boom_val_nodes,f)
-        print(boom_val_nodes)
+        #print(boom_val_nodes)
         #print(len(train_g.ndata['label_o']==0))
         valdataloader2 = MyNodeDataLoader(
             True,
