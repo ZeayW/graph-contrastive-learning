@@ -152,43 +152,43 @@ def check_sim(embeddings, neg_embeddings,boom_embeddings):
     print('avg pos sim :{:.4f}, avg cross sim :{:.4f}, avg neg sim:{:.4f}'.format(avg_pos_sim, avg_cross_sim,
                                                            avg_neg_sim))
     return avg_pos_sim,avg_cross_sim,avg_neg_sim
-def validate_sim(val_graphs, boom_embeddings,sampler, device, model):
-    res_sim = []
-    for val_g in val_graphs:
-        val_nodes = th.tensor(range(val_g.number_of_nodes()))
-        pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
-        neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
+def validate_sim(val_g, boom_embeddings,sampler, device, model,res_sim):
+    #res_sim = []
+    val_nodes = th.tensor(range(val_g.number_of_nodes()))
+    pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
+    neg_mask = (val_g.ndata['label_o'] == 0).squeeze(1)
 
-        loader = MyNodeDataLoader(
-            True,
-            val_g,
-            val_nodes,
-            sampler,
-            bs=val_g.num_nodes(),
-            batch_size=val_g.num_nodes(),
-            shuffle=False,
-            drop_last=False,
-        )
-        for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
-            blocks = [b.to(device) for b in blocks]
-            input_features = blocks[0].srcdata["f_input"]
-            output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
-            embeddings = model(blocks, input_features)
+    loader = MyNodeDataLoader(
+        True,
+        val_g,
+        val_nodes,
+        sampler,
+        bs=val_g.num_nodes(),
+        batch_size=val_g.num_nodes(),
+        shuffle=False,
+        drop_last=False,
+    )
+    for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
+        blocks = [b.to(device) for b in blocks]
+        input_features = blocks[0].srcdata["f_input"]
+        output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+        embeddings = model(blocks, input_features)
 
-            pos_embeddings = embeddings[pos_mask]
-            # print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
-            # for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
-            #     print(ni,embed[:7])
+        pos_embeddings = embeddings[pos_mask]
+        # print(sorted(pos_embeddings.cpu().detach().numpy().tolist()))
+        # for ni,embed in enumerate(sorted(pos_embeddings.cpu().detach().numpy().tolist())):
+        #     print(ni,embed[:7])
 
-            # print(len(pos_embeddings))
-            # exit()
-            neg_embeddings = embeddings[neg_mask]
-            # print(embeddings)
-            # print('-----------------------------------------------------------------------------------------\n\n')
-            pos_sim,cross_sim,neg_sim = check_sim(pos_embeddings, neg_embeddings,boom_embeddings)
-            res_sim.append((pos_sim,cross_sim,neg_sim))
-            # print('-----------------------------------------------------------------------------------------\n\n')
-    return res_sim
+        # print(len(pos_embeddings))
+        # exit()
+        neg_embeddings = embeddings[neg_mask]
+        # print(embeddings)
+        # print('-----------------------------------------------------------------------------------------\n\n')
+        pos_sim, cross_sim, neg_sim = check_sim(pos_embeddings, neg_embeddings, boom_embeddings)
+        res_sim.append((pos_sim, cross_sim, neg_sim))
+        # print('-----------------------------------------------------------------------------------------\n\n')
+
+    #return res_sim
 
 def NCEloss(pos1, pos2, neg, tao):
     pos_similarity = th.cosine_similarity(pos1, pos2, dim=-1)
@@ -438,20 +438,22 @@ def train(options):
 
             Train_loss = total_loss / total_num
             boom_embeddings = None
-            # for _,_, blocks in val_dataloader1:
-            #     blocks = [b.to(device) for b in blocks]
-            #     boom_embeddings = model(blocks,blocks[0].srcdata['f_input'])
+            for _,_, blocks in val_dataloader1:
+                blocks = [b.to(device) for b in blocks]
+                boom_embeddings = model(blocks,blocks[0].srcdata['f_input'])
             print("epoch[{:d}]".format(epoch))
             print("training runtime: ", runtime)
             print("  train:")
             print("loss:{:.8f}".format(Train_loss.item()))
-            #res_sims = validate_sim(val_graphs,boom_embeddings, val_sampler, device, model)
+            res_sims = []
+            for val_g in val_graphs:
+                validate_sim(val_graphs,boom_embeddings, val_sampler, device, model,res_sims)
 
 
             with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
                 f.write(str(round(Train_loss.item(), 3)))
-                # for pos_sim,cross_sim,neg_sim in res_sims:
-                #     f.write('\n'+str(round(cross_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
+                for pos_sim,cross_sim,neg_sim in res_sims:
+                    f.write('\n'+str(round(cross_sim.item(),4))+'\t'+str(round(neg_sim.item(),4)))
                 f.write('\n')
 
             # judgement = val_F1_score > max_F1_score
