@@ -241,8 +241,8 @@ def get_reverse_graph(g):
         # print(key,value)
         rg.edata[key] = value
     return rg
-def validate(valid_dataloader,valid_dataloader2,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embeddings):
-    loaders = [valid_dataloader,valid_dataloader2]
+def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embeddings):
+
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
     error_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
@@ -537,8 +537,8 @@ def train(options):
     # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # predict muldiv
-
-    val_nodes = split_val(train_g)
+    if options.add == 1:
+        boom_val_nodes = split_val(train_g)
     train_graphs = dgl.unbatch(train_g)
     temp = train_graphs[1]
     train_graphs[1] = train_graphs[2]
@@ -605,6 +605,7 @@ def train(options):
         shuffle=True,
         drop_last=False,
     )
+
     valdataloader = MyNodeDataLoader(
         True,
         val_g,
@@ -614,15 +615,18 @@ def train(options):
         shuffle=True,
         drop_last=False,
     )
-    valdataloader2 = MyNodeDataLoader(
-        True,
-        train_g,
-        val_nodes,
-        in_sampler,
-        batch_size=len(val_nodes),
-        shuffle=True,
-        drop_last=False,
-    )
+    loaders = [valdataloader]
+    if options.add==1:
+        valdataloader2 = MyNodeDataLoader(
+            True,
+            train_g,
+            boom_val_nodes,
+            in_sampler,
+            batch_size=len(boom_val_nodes),
+            shuffle=True,
+            drop_last=False,
+        )
+        loaders.append(valdataloader2)
     #print("Data successfully loaded")
     k = options.k
     beta = options.beta
@@ -789,7 +793,7 @@ def train(options):
             #print('alpha = ',model.alpha)
         #validate_sim([val_g], pos_embeddings,sampler, device, model)
 
-        val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, valdataloader2,label_name, device, model,
+        val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(loaders,label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta,pos_embeddings)
         #max_F1_score = max(max_F1_score,val_F1_score)
         validate_sim(val_graphs, pos_embeddings, sampler, device, model)
