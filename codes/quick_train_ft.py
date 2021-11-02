@@ -177,7 +177,7 @@ def preprocess(data_path,device,options,in_dim):
             _, model,_ = pickle.load(f)
         else:
             _,model = pickle.load(f)
-        
+
     mlp = MLP(
         in_dim = model.out_dim,
         out_dim = options.nlabels,

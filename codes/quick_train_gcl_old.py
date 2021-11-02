@@ -447,7 +447,7 @@ def train(options):
             print("loss:{:.8f}".format(Train_loss.item()))
             res_sims = []
             for val_g in val_graphs:
-                validate_sim(val_graphs,boom_embeddings, val_sampler, device, model,res_sims)
+                validate_sim(val_g,boom_embeddings, val_sampler, device, model,res_sims)
 
 
             with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
