@@ -313,7 +313,7 @@ def get_reverse_graph(g):
         # print(key,value)
         rg.edata[key] = value
     return rg
-def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta,is_FuncGCN1,is_FuncGCN2):
+def validate(loaders,label_name,device,model,Loss,alpha,beta,is_FuncGCN1,is_FuncGCN2):
     print('beta:',beta)
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
@@ -324,73 +324,74 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta,is_FuncGCN
     runtime = 0
     num_batch = 0
     with th.no_grad():
-        for vni, (in_blocks,out_blocks) in enumerate(
-                valid_dataloader
-        ):
-            num_batch += 1
-            start = time()
-            in_blocks = [b.to(device) for b in in_blocks]
+        for loader in loaders:
+            for vni, (in_blocks,out_blocks) in enumerate(
+                    loader
+            ):
+                num_batch += 1
+                start = time()
+                in_blocks = [b.to(device) for b in in_blocks]
 
-            out_blocks = [b.to(device) for b in out_blocks]
-            if is_FuncGCN1:
-                in_input_features = in_blocks[0].srcdata["f_input"]
-            else:
-                in_input_features = in_blocks[0].srcdata["ntype"]
-            if is_FuncGCN2:
-                out_input_features = out_blocks[0].srcdata["f_input"]
-            else:
-                out_input_features = out_blocks[0].srcdata["ntype"]
-            #print(out_blocks[0],len(out_input_features))
-            # print(blocks[-1].dstdata["label")
-            output_labels = in_blocks[-1].dstdata[label_name].squeeze(1)
-            total_num += len(output_labels)
-            label_hat = model(in_blocks, in_input_features, out_blocks, out_input_features)
-            if get_options().nlabels != 1:
-                pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
-            else:
-                pos_prob = th.sigmoid(label_hat)
-            #print(pos_prob)
-            pos_prob[pos_prob >= beta] = 1
-            pos_prob[pos_prob < beta] = 0
-            # pos_prob = label_hat
-            predict_labels = pos_prob
-            end = time()
-            runtime += end - start
-            if alpha != 1 :
-                pos_index = (output_labels != 0)
-                neg_index = (output_labels == 0)
-                pos_loss = Loss(label_hat[pos_index],output_labels[pos_index])*pos_index.sum().item()
-                neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
-                val_loss = (alpha*pos_loss+neg_loss) / len(output_labels)
-            else: val_loss = Loss(label_hat, output_labels)
+                out_blocks = [b.to(device) for b in out_blocks]
+                if is_FuncGCN1:
+                    in_input_features = in_blocks[0].srcdata["f_input"]
+                else:
+                    in_input_features = in_blocks[0].srcdata["ntype"]
+                if is_FuncGCN2:
+                    out_input_features = out_blocks[0].srcdata["f_input"]
+                else:
+                    out_input_features = out_blocks[0].srcdata["ntype"]
+                #print(out_blocks[0],len(out_input_features))
+                # print(blocks[-1].dstdata["label")
+                output_labels = in_blocks[-1].dstdata[label_name].squeeze(1)
+                total_num += len(output_labels)
+                label_hat = model(in_blocks, in_input_features, out_blocks, out_input_features)
+                if get_options().nlabels != 1:
+                    pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
+                else:
+                    pos_prob = th.sigmoid(label_hat)
+                #print(pos_prob)
+                pos_prob[pos_prob >= beta] = 1
+                pos_prob[pos_prob < beta] = 0
+                # pos_prob = label_hat
+                predict_labels = pos_prob
+                end = time()
+                runtime += end - start
+                if alpha != 1 :
+                    pos_index = (output_labels != 0)
+                    neg_index = (output_labels == 0)
+                    pos_loss = Loss(label_hat[pos_index],output_labels[pos_index])*pos_index.sum().item()
+                    neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
+                    val_loss = (alpha*pos_loss+neg_loss) / len(output_labels)
+                else: val_loss = Loss(label_hat, output_labels)
 
-            total_loss += val_loss.item() * len(output_labels)
+                total_loss += val_loss.item() * len(output_labels)
 
-            error_mask = predict_labels !=output_labels
-            errors = out_blocks[-1].dstdata['ntype'][error_mask]
-            if len(errors) != 0 :
-                errors = th.argmax(errors,dim=1)
-                num_errors += len(errors)
-                type_count(errors, error_count)
-            fp_mask = (predict_labels != 0 ) & (output_labels == 0)
-            fn_mask = (predict_labels == 0) & (output_labels != 0)
-            fps = out_blocks[-1].dstdata['ntype'][fp_mask]
-            if len(fps) != 0: fps = th.argmax(fps,dim=1)
-            fns = out_blocks[-1].dstdata['ntype'][fn_mask]
-            if len(fns) != 0: fns = th.argmax(fns, dim=1)
-            type_count(fps,fp_count)
-            type_count(fns,fn_count)
+                error_mask = predict_labels !=output_labels
+                errors = out_blocks[-1].dstdata['ntype'][error_mask]
+                if len(errors) != 0 :
+                    errors = th.argmax(errors,dim=1)
+                    num_errors += len(errors)
+                    type_count(errors, error_count)
+                fp_mask = (predict_labels != 0 ) & (output_labels == 0)
+                fn_mask = (predict_labels == 0) & (output_labels != 0)
+                fps = out_blocks[-1].dstdata['ntype'][fp_mask]
+                if len(fps) != 0: fps = th.argmax(fps,dim=1)
+                fns = out_blocks[-1].dstdata['ntype'][fn_mask]
+                if len(fns) != 0: fns = th.argmax(fns, dim=1)
+                type_count(fps,fp_count)
+                type_count(fns,fn_count)
 
-            #print('predict:',predict_labels)
-            #print("label:",output_labels)
-            correct += (
-                    predict_labels == output_labels
-            ).sum().item()
+                #print('predict:',predict_labels)
+                #print("label:",output_labels)
+                correct += (
+                        predict_labels == output_labels
+                ).sum().item()
 
-            fn += ((predict_labels == 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 0 的总数
-            tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
-            tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
-            fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
+                fn += ((predict_labels == 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 0 的总数
+                tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
+                tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
+                fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
     print("num batch:",num_batch)
     print("validate time:",runtime)
     loss = total_loss / total_num
@@ -475,9 +476,9 @@ def train(options):
     print("Loading data...")
     with open(train_data_file,'rb') as f:
         train_g = pickle.load(f)
-        train_graphs = dgl.unbatch(train_g)
-        train_graphs = train_graphs[:options.train_percent]
-        train_g = dgl.batch(train_graphs)
+        # train_graphs = dgl.unbatch(train_g)
+        # train_graphs = train_graphs[:options.train_percent]
+        # train_g = dgl.batch(train_graphs)
     with open(val_data_file,'rb') as f:
         val_g = pickle.load(f)
     train_nids = th.tensor(range(train_g.number_of_nodes()))
@@ -549,11 +550,10 @@ def train(options):
     #
     # print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
 
-    train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
+    #train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
 
-    rates = cal_ratios(neg_count,pos_count)
-    print("neg/pos rates",rates)
-    train_g.edata['a'] = th.ones(size=(len(train_g.edata['r']),1))
+
+    #train_g.edata['a'] = th.ones(size=(len(train_g.edata['r']),1))
 
     is_FuncGCN1, is_FuncGCN2 = False,False
     if options.function or options.bag:
@@ -565,6 +565,39 @@ def train(options):
         val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim),dtype=th.float)
         val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
     #print(val_g.ndata['ntype2'])
+    if options.add == 1:
+        with open(os.path.join(data_path, 'boom_vals.pkl'), 'rb') as f:
+            boom_val_nodes = pickle.load(f)
+        #print(boom_val_nodes)
+        #print(len(train_g.ndata['label_o']==0))
+        valdataloader2 = MyNodeDataLoader(
+            True,
+            train_g,
+            boom_val_nodes,
+            Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
+            batch_size=len(boom_val_nodes),
+            shuffle=True,
+            drop_last=False
+        )
+
+        train_graphs = dgl.unbatch(train_g)
+        train_g = dgl.batch(train_graphs)
+        train_g.ndata['label_o'][boom_val_nodes] = -1
+    train_graphs = dgl.unbatch(train_g)
+    temp = train_graphs[1]
+    train_graphs[1] = train_graphs[2]
+    train_graphs[2] = temp
+
+    if options.train_percent == 1:
+        train_graphs = [train_graphs[3]]
+    else:
+        train_graphs = train_graphs[:options.train_percent]
+    train_g = dgl.batch(train_graphs)
+    train_nodes, pos_count, neg_count = oversample(train_g, options, options.in_dim)
+    rates = cal_ratios(neg_count, pos_count)
+    print("neg/pos rates", rates)
+
+
     if model.GCN1 is not None and type(model.GCN1) == FuncGCN:
         is_FuncGCN1 = True
     if model.GCN2 is not None and type(model.GCN2) == FuncGCN:
@@ -609,7 +642,9 @@ def train(options):
         shuffle=True,
         drop_last=False,
     )
-
+    loaders = [valdataloader]
+    if options.add == 1:
+        loaders.append(valdataloader2)
     #print("Data successfully loaded")
     k = options.k
     beta = options.beta
@@ -754,7 +789,7 @@ def train(options):
         #if options.weighted:
             #print('alpha = ',model.alpha)
         print("num of pos: ",pos_count," num of neg: ",neg_count)
-        val_loss, val_acc, val_recall,val_precision, val_F1_score = validate(valdataloader, label_name,device, model, Loss,options.alpha,beta,is_FuncGCN1,is_FuncGCN2)
+        val_loss, val_acc, val_recall,val_precision, val_F1_score = validate(loaders, label_name,device, model, Loss,options.alpha,beta,is_FuncGCN1,is_FuncGCN2)
         if epoch % 1 == 0 and get_options().rel:
             if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
             #print(model.GCN1.layers[0].attn_e.grad)
