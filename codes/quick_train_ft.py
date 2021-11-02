@@ -584,6 +584,12 @@ def train(options):
             shuffle=True,
             drop_last=False
         )
+
+        for ni, (central_nodes, input_nodes, blocks) in enumerate(valdataloader2):
+            blocks = [b.to(device) for b in blocks]
+            input_features = blocks[0].srcdata["f_input"]
+            output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+            embeddings = model(blocks, input_features)
     train_graphs = dgl.unbatch(train_g)
     temp = train_graphs[1]
     train_graphs[1] = train_graphs[2]
@@ -704,8 +710,8 @@ def train(options):
             # print('freeze gate:',model.conv.gate_functions[11].weight)
             # print('not freeze gate:', model.conv.gate_functions[2].weight)
             #print(mlp.layers[2].weight)
-            # if ni == len(traindataloader)-1:
-            #     continue
+            if ni == len(traindataloader)-1:
+                continue
             start_time = time()
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
