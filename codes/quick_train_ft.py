@@ -252,7 +252,7 @@ def validate(valid_dataloader,valid_dataloader2,label_name,device,model,mlp,Loss
     runtime = 0
     num_batch = 0
     with th.no_grad():
-        for loader in loaders:
+        for i,loader in enumerate(loaders):
             for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
                 # continue
                 # print(in_blocks)
@@ -267,7 +267,8 @@ def validate(valid_dataloader,valid_dataloader2,label_name,device,model,mlp,Loss
                 neg_mask = output_labels == 0
                 pos_embeddings = embedding[pos_mask]
                 neg_embeddings = embedding[neg_mask]
-                pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
+                if i==0:
+                    pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
 
                 label_hat = mlp(embedding)
                 if get_options().nlabels != 1:
@@ -550,7 +551,7 @@ def train(options):
     # temp = []
     # train_graphs.pop(1)
     train_g = dgl.batch(train_graphs)
-    
+
     if options.add!=-1:
     #print('muldiv:', len(is_output[is_output == -1]))
         print('muldiv_outputs:', len(train_g.ndata['mul_o'][train_g.ndata['mul_o'] ==1]))
