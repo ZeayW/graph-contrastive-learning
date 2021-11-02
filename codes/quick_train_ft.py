@@ -474,19 +474,7 @@ def train(options):
     print("Loading data...")
     with open(train_data_file,'rb') as f:
         train_g = pickle.load(f)
-        val_nodes = split_val(train_g)
-        train_graphs = dgl.unbatch(train_g)
-        temp = train_graphs[1]
-        train_graphs[1] = train_graphs[2]
-        train_graphs[2] = temp
 
-        if options.train_percent == 1:
-            train_graphs = [train_graphs[3]]
-        else:
-            train_graphs = train_graphs[:options.train_percent]
-        # temp = []
-        # train_graphs.pop(1)
-        train_g = dgl.batch(train_graphs)
     with open(val_data_file,'rb') as f:
         val_g = pickle.load(f)
         # val_graphs =dgl.unbatch(val_g)
@@ -548,6 +536,21 @@ def train(options):
     # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # predict muldiv
+
+    val_nodes = split_val(train_g)
+    train_graphs = dgl.unbatch(train_g)
+    temp = train_graphs[1]
+    train_graphs[1] = train_graphs[2]
+    train_graphs[2] = temp
+
+    if options.train_percent == 1:
+        train_graphs = [train_graphs[3]]
+    else:
+        train_graphs = train_graphs[:options.train_percent]
+    # temp = []
+    # train_graphs.pop(1)
+    train_g = dgl.batch(train_graphs)
+    
     if options.add!=-1:
     #print('muldiv:', len(is_output[is_output == -1]))
         print('muldiv_outputs:', len(train_g.ndata['mul_o'][train_g.ndata['mul_o'] ==1]))
