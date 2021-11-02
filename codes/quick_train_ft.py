@@ -173,7 +173,11 @@ def preprocess(data_path,device,options,in_dim):
             pickle.dump(label2id,f)
 
     with open(os.path.join(options.pre_model_dir,'model.pkl'),'rb') as f:
-        _,model = pickle.load(f)
+        if 'proj' in options.pre_model_dir:
+            _, model,_ = pickle.load(f)
+        else:
+            _,model = pickle.load(f)
+        
     mlp = MLP(
         in_dim = model.out_dim,
         out_dim = options.nlabels,
