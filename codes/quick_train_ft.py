@@ -610,7 +610,6 @@ def train(options):
     in_sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
     out_sampler = Sampler([None] * (out_nlayers + 1), include_dst_in_src=options.include)
 
-    print(len(train_nodes))
     val_nids = th.tensor(range(val_g.number_of_nodes()))
     print(len(val_nids))
     val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1)!=-1]
@@ -705,8 +704,8 @@ def train(options):
             # print('freeze gate:',model.conv.gate_functions[11].weight)
             # print('not freeze gate:', model.conv.gate_functions[2].weight)
             #print(mlp.layers[2].weight)
-            if ni == len(traindataloader)-1:
-                continue
+            # if ni == len(traindataloader)-1:
+            #     continue
             start_time = time()
             blocks = [b.to(device) for b in blocks]
             input_features = blocks[0].srcdata["f_input"]
