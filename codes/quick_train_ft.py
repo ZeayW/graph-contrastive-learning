@@ -31,6 +31,7 @@ def DAG2UDG(g):
         #udg.edata[key] = th.cat((value,value))
 
     return udg
+
 # apply oversampling on the dataset
 def oversample(g,options,in_dim):
     print("oversampling dataset......")
@@ -240,7 +241,8 @@ def get_reverse_graph(g):
         # print(key,value)
         rg.edata[key] = value
     return rg
-def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embeddings):
+def validate(valid_dataloader,valid_dataloader2,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embeddings):
+    loaders = [valid_dataloader,valid_dataloader2]
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
     error_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
@@ -250,69 +252,70 @@ def validate(valid_dataloader,label_name,device,model,mlp,Loss,alpha,beta,train_
     runtime = 0
     num_batch = 0
     with th.no_grad():
-        for ni, (central_nodes, input_nodes, blocks) in enumerate(valid_dataloader):
-            # continue
-            # print(in_blocks)
-            start = time()
-            blocks = [b.to(device) for b in blocks]
-            input_features = blocks[0].srcdata["f_input"]
-            output_labels = blocks[-1].dstdata[label_name].squeeze(1)
-            total_num += len(output_labels)
-            embedding = model(blocks, input_features)
+        for loader in loaders:
+            for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
+                # continue
+                # print(in_blocks)
+                start = time()
+                blocks = [b.to(device) for b in blocks]
+                input_features = blocks[0].srcdata["f_input"]
+                output_labels = blocks[-1].dstdata[label_name].squeeze(1)
+                total_num += len(output_labels)
+                embedding = model(blocks, input_features)
 
-            pos_mask = output_labels == 1
-            neg_mask = output_labels == 0
-            pos_embeddings = embedding[pos_mask]
-            neg_embeddings = embedding[neg_mask]
-            pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
+                pos_mask = output_labels == 1
+                neg_mask = output_labels == 0
+                pos_embeddings = embedding[pos_mask]
+                neg_embeddings = embedding[neg_mask]
+                pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
 
-            label_hat = mlp(embedding)
-            if get_options().nlabels != 1:
-                pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
-            else:
-                pos_prob = th.sigmoid(label_hat)
-            #print(pos_prob)
-            pos_prob[pos_prob >= beta] = 1
-            pos_prob[pos_prob < beta] = 0
-            # pos_prob = label_hat
-            predict_labels = pos_prob
-            end = time()
-            runtime += end - start
-            if alpha != 1 :
-                pos_index = (output_labels != 0)
-                neg_index = (output_labels == 0)
-                pos_loss = Loss(label_hat[pos_index],output_labels[pos_index])*pos_index.sum().item()
-                neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
-                val_loss = (alpha*pos_loss+neg_loss) / len(output_labels)
-            else: val_loss = Loss(label_hat, output_labels)
+                label_hat = mlp(embedding)
+                if get_options().nlabels != 1:
+                    pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
+                else:
+                    pos_prob = th.sigmoid(label_hat)
+                #print(pos_prob)
+                pos_prob[pos_prob >= beta] = 1
+                pos_prob[pos_prob < beta] = 0
+                # pos_prob = label_hat
+                predict_labels = pos_prob
+                end = time()
+                runtime += end - start
+                if alpha != 1 :
+                    pos_index = (output_labels != 0)
+                    neg_index = (output_labels == 0)
+                    pos_loss = Loss(label_hat[pos_index],output_labels[pos_index])*pos_index.sum().item()
+                    neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
+                    val_loss = (alpha*pos_loss+neg_loss) / len(output_labels)
+                else: val_loss = Loss(label_hat, output_labels)
 
-            total_loss += val_loss.item() * len(output_labels)
+                total_loss += val_loss.item() * len(output_labels)
 
-            error_mask = predict_labels !=output_labels
-            errors = blocks[-1].dstdata['ntype'][error_mask]
-            if len(errors) != 0 :
-                errors = th.argmax(errors,dim=1)
-                num_errors += len(errors)
-                type_count(errors, error_count)
-            fp_mask = (predict_labels != 0 ) & (output_labels == 0)
-            fn_mask = (predict_labels == 0) & (output_labels != 0)
-            fps = blocks[-1].dstdata['ntype'][fp_mask]
-            if len(fps) != 0: fps = th.argmax(fps,dim=1)
-            fns = blocks[-1].dstdata['ntype'][fn_mask]
-            if len(fns) != 0: fns = th.argmax(fns, dim=1)
-            type_count(fps,fp_count)
-            type_count(fns,fn_count)
+                error_mask = predict_labels !=output_labels
+                errors = blocks[-1].dstdata['ntype'][error_mask]
+                if len(errors) != 0 :
+                    errors = th.argmax(errors,dim=1)
+                    num_errors += len(errors)
+                    type_count(errors, error_count)
+                fp_mask = (predict_labels != 0 ) & (output_labels == 0)
+                fn_mask = (predict_labels == 0) & (output_labels != 0)
+                fps = blocks[-1].dstdata['ntype'][fp_mask]
+                if len(fps) != 0: fps = th.argmax(fps,dim=1)
+                fns = blocks[-1].dstdata['ntype'][fn_mask]
+                if len(fns) != 0: fns = th.argmax(fns, dim=1)
+                # type_count(fps,fp_count)
+                # type_count(fns,fn_count)
 
-            #print('predict:',predict_labels)
-            #print("label:",output_labels)
-            correct += (
-                    predict_labels == output_labels
-            ).sum().item()
+                #print('predict:',predict_labels)
+                #print("label:",output_labels)
+                correct += (
+                        predict_labels == output_labels
+                ).sum().item()
 
-            fn += ((predict_labels == 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 0 的总数
-            tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
-            tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
-            fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
+                fn += ((predict_labels == 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 0 的总数
+                tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
+                tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
+                fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
     #print("validate time:",runtime)
     loss = total_loss / total_num
     acc = correct / total_num
@@ -417,6 +420,16 @@ def replaceDFF(g):
     type_tensor[2] = 1
     g.ndata['ntype'][dff_mask1] = type_tensor
     g.ndata['ntype'][dff_mask2] = type_tensor
+
+def split_val(g):
+    nodes = th.tensor(range(g.num_nodes()))
+    pos_mask = (g.ndata['label_o'] ==1).squeeze(1)
+    pos_nodes = nodes[pos_mask]
+    num_pos = len(pos_nodes)
+    val_nodes = pos_nodes[:int(num_pos/10)]
+    g.ndata['label_o'][val_nodes] = -1
+    return val_nodes
+
 def train(options):
 
     th.multiprocessing.set_sharing_strategy('file_system')
@@ -461,11 +474,12 @@ def train(options):
     print("Loading data...")
     with open(train_data_file,'rb') as f:
         train_g = pickle.load(f)
+        val_nodes = split_val(train_g)
         train_graphs = dgl.unbatch(train_g)
         temp = train_graphs[1]
         train_graphs[1] = train_graphs[2]
         train_graphs[2] = temp
-        #train_graphs.reverse()
+
         if options.train_percent == 1:
             train_graphs = [train_graphs[3]]
         else:
@@ -596,7 +610,15 @@ def train(options):
         shuffle=True,
         drop_last=False,
     )
-
+    valdataloader2 = MyNodeDataLoader(
+        True,
+        train_g,
+        val_nodes,
+        in_sampler,
+        batch_size=len(val_nodes),
+        shuffle=True,
+        drop_last=False,
+    )
     #print("Data successfully loaded")
     k = options.k
     beta = options.beta
@@ -763,7 +785,7 @@ def train(options):
             #print('alpha = ',model.alpha)
         #validate_sim([val_g], pos_embeddings,sampler, device, model)
 
-        val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, label_name, device, model,
+        val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(valdataloader, valdataloader2,label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta,pos_embeddings)
         #max_F1_score = max(max_F1_score,val_F1_score)
         validate_sim(val_graphs, pos_embeddings, sampler, device, model)
