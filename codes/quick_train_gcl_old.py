@@ -358,14 +358,14 @@ def train(options):
         for epoch in range(num_epoch):
             POs = data_loader.nids
             g = data_loader.g
-            #POs = shuffle_nids(POs)
+            POs = shuffle_nids(POs)
             # print(POs[:100])
             # data_loader.collator.nids = POs
             # data_loader.dataloader = DataLoader(data_loader.collator.dataset,
             #                         collate_fn=data_loader.collator.collate,
             #                         **dataloader_kwargs)
-            sampler = dataloader.block_sampler
-            dataloader = MyNodeDataLoader(
+            sampler = data_loader.block_sampler
+            datal_oader = MyNodeDataLoader(
                 False,
                 g,
                 POs,
@@ -378,7 +378,7 @@ def train(options):
             runtime = 0
             total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
             pos_count, neg_count = 0, 0
-            for ni, (central_nodes, input_nodes, blocks) in enumerate(dataloader):
+            for ni, (central_nodes, input_nodes, blocks) in enumerate(data_loader):
                 #print(central_nodes)
                 if ni==len(dataloader)-1:
                     continue
