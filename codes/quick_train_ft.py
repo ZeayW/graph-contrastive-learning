@@ -253,7 +253,9 @@ def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embed
     num_batch = 0
     with th.no_grad():
         for i,loader in enumerate(loaders):
+            print('validate',i)
             for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
+
                 # continue
                 # print(in_blocks)
                 start = time()
