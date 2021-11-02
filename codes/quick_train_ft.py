@@ -553,7 +553,7 @@ def train(options):
     # print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
 
 
-    # 
+    #
     # rates = cal_ratios(neg_count,pos_count)
     # print("neg/pos rates",rates)
     train_g.edata['a'] = th.ones(size=(len(train_g.edata['r']),1))
@@ -568,7 +568,7 @@ def train(options):
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
     val_graphs = dgl.unbatch(val_g)
 
-    train_nodes, pos_count, neg_count = oversample(train_g, options, options.in_dim)
+
     if options.add == 1:
         boom_val_nodes = split_val(train_g)
         valdataloader2 = MyNodeDataLoader(
@@ -593,6 +593,8 @@ def train(options):
     # train_graphs.pop(1)
     train_g = dgl.batch(train_graphs)
 
+    train_nodes, pos_count, neg_count = oversample(train_g, options, options.in_dim)
+    
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
 
 
