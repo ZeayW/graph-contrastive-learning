@@ -807,12 +807,7 @@ def train(options):
         #if options.weighted:
             #print('alpha = ',model.alpha)
         #validate_sim([val_g], pos_embeddings,sampler, device, model)
-        for ni, (central_nodes, input_nodes, blocks) in enumerate(valdataloader2):
-            blocks = [b.to(device) for b in blocks]
-            input_features = blocks[0].srcdata["f_input"]
-            output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
-            embeddings = model(blocks, input_features)
-            print(embeddings)
+
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(loaders,label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta,pos_embeddings)
         #max_F1_score = max(max_F1_score,val_F1_score)
