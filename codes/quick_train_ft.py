@@ -585,12 +585,7 @@ def train(options):
             drop_last=False
         )
 
-        for ni, (central_nodes, input_nodes, blocks) in enumerate(valdataloader2):
-            blocks = [b.to(device) for b in blocks]
-            input_features = blocks[0].srcdata["f_input"]
-            output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
-            embeddings = model(blocks, input_features)
-            print(embeddings)
+
     train_graphs = dgl.unbatch(train_g)
     temp = train_graphs[1]
     train_graphs[1] = train_graphs[2]
@@ -644,6 +639,12 @@ def train(options):
     # if options.add==1:
     #     loaders.append(valdataloader2)
     #print("Data successfully loaded")
+    for ni, (central_nodes, input_nodes, blocks) in enumerate(valdataloader2):
+        blocks = [b.to(device) for b in blocks]
+        input_features = blocks[0].srcdata["f_input"]
+        output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+        embeddings = model(blocks, input_features)
+        print(embeddings)
     k = options.k
     beta = options.beta
     if options.nlabels!=1 : Loss = nn.CrossEntropyLoss()
