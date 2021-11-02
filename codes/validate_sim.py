@@ -19,7 +19,7 @@ def load_model(device,options):
 
     with open(os.path.join(model_dir,'model.pkl'), 'rb') as f:
         #print(f)
-        if 'proj' in model_dir:
+        if 'proj' in model_dir or 'shuffle' in model_dir:
             param,model1,proj_head = pickle.load(f)
         else:
             param, model1 = pickle.load(f)
