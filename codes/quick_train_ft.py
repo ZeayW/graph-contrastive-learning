@@ -47,7 +47,6 @@ def oversample(g,options,in_dim):
     elif options.label == 'out':
         labels = g.ndata['label_o']
 
-
     else:
         print("wrong label type")
         return
@@ -574,7 +573,7 @@ def train(options):
         boom_val_nodes = split_val(train_g)
         #print(len(train_g.ndata['label_o']==0))
         train_g.ndata['label_o'][boom_val_nodes] = -1
-        #print(len(train_g.ndata['label_o'] == 0))
+        print(len(train_g.ndata['label_o'] == -1))
         print('boom val',len(boom_val_nodes))
         valdataloader2 = MyNodeDataLoader(
             True,
