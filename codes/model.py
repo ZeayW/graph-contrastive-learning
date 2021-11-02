@@ -44,8 +44,8 @@ class Projection_Head(nn.Module):
         h = features
         h = self.activation(self.layers[0](h))
         h = self.layers[1](h).squeeze(-1)
-        return h
 
+        return h
 
 class MLP(nn.Module):
     def __init__(self,
@@ -58,12 +58,10 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
         self.layers = nn.ModuleList()
         self.activation = activation
+
         for i in range(n_layers-1):
             hidden_feats = int(in_feats / 2)
-            # if i==0:
-            #     hidden_feats = 2*in_feats
-            # else:
-            #     hidden_feats = int(in_feats / 2)
+            #hidden_feats = in_feats
             self.layers.append(nn.Linear(in_feats,hidden_feats,bias=bias))
             in_feats = hidden_feats
         self.layers.append(nn.Linear(hidden_feats,out_feats,bias=bias))
@@ -83,11 +81,11 @@ class MLP(nn.Module):
     #     for i,layer in enumerate(self.layers):
     #         h= layer(self.activation(h))
     #     return h
-    def forward(self,features):
+    def foward(self,features):
         h = features
         for i in range(len(self.layers)-1):
             #h = self.dropout(self.activation(self.layers3[i](h)))
-            #h = self.dropout(h)
+            h = self.dropout(h)
             h = self.layers[i](self.activation(h))
         if len(self.layers)>= 1:
             h = self.layers[-1](h).squeeze(-1)
@@ -848,24 +846,24 @@ class BiClassifier(nn.Module):
         #print("aa")
         return h
 
-# class MLP(nn.Module):
-#     def __init__(self,in_dim,out_dim,nlayers,activation =nn.ReLU() ,dropout=0.5):
-#         super(MLP, self).__init__()
-#         self.in_dim = in_dim
-#         self.out_dim = out_dim
-#         self.nlayers = nlayers
-#         self.activation = activation
-#         self.dropout = nn.Dropout(p=dropout)
-#         self.layers= nn.Sequential()
-#         dim1 = in_dim
-#         for i in range(nlayers-1):
-#             self.layers.add_module('dropout_{}'.format(i+1),self.dropout)
-#             self.layers.add_module('activation_{}'.format(i+1), self.activation)
-#             self.layers.add_module('linear_{}'.format(i+1),nn.Linear(dim1, int(dim1/2)))
-#             dim1 = int(dim1 / 2)
-#         self.layers.add_module('linear_{}'.format(nlayers),nn.Linear(dim1, out_dim))
-#     def forward(self,embedding):
-#         return self.layers(embedding).squeeze(-1)
+class MLP(nn.Module):
+    def __init__(self,in_dim,out_dim,nlayers,activation =nn.ReLU() ,dropout=0.5):
+        super(MLP, self).__init__()
+        self.in_dim = in_dim
+        self.out_dim = out_dim
+        self.nlayers = nlayers
+        self.activation = activation
+        self.dropout = nn.Dropout(p=dropout)
+        self.layers= nn.Sequential()
+        dim1 = in_dim
+        for i in range(nlayers-1):
+            self.layers.add_module('dropout_{}'.format(i+1),self.dropout)
+            self.layers.add_module('activation_{}'.format(i+1), self.activation)
+            self.layers.add_module('linear_{}'.format(i+1),nn.Linear(dim1, int(dim1/2)))
+            dim1 = int(dim1 / 2)
+        self.layers.add_module('linear_{}'.format(nlayers),nn.Linear(dim1, out_dim))
+    def forward(self,embedding):
+        return self.layers(embedding).squeeze(-1)
 class BiClassifier_pos(nn.Module):
     def __init__(
         self, GCN1,GCN2, out_dim,n_fcn,combine_type='concat',activation=nn.ReLU(),dropout=0.5,

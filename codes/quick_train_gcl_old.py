@@ -356,25 +356,25 @@ def train(options):
     for num_input, aug_indx, dataloader in data_loaders:
         print('dataset:',num_input,aug_indx)
         for epoch in range(num_epoch):
-            # POs = dataloader.nids
-            #
-            # # print(POs[:100])
-            # sampler = dataloader.block_sampler
-            # dataloader = MyNodeDataLoader(
-            #     False,
-            #     train_g,
-            #     POs,
-            #     sampler,
-            #     bs=batch_sizes[(num_input, aug_indx)],
-            #     batch_size=batch_sizes[(num_input, aug_indx)],
-            #     shuffle=False,
-            #     drop_last=False,
-            # )
+            POs = dataloader.nids
+
+            # print(POs[:100])
+            sampler = dataloader.block_sampler
+            dataloader = MyNodeDataLoader(
+                False,
+                train_g,
+                POs,
+                sampler,
+                bs=batch_sizes[(num_input, aug_indx)],
+                batch_size=batch_sizes[(num_input, aug_indx)],
+                shuffle=False,
+                drop_last=False,
+            )
             runtime = 0
             total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
             pos_count, neg_count = 0, 0
             for ni, (central_nodes, input_nodes, blocks) in enumerate(dataloader):
-                print(central_nodes)
+                #print(central_nodes)
                 if ni==len(dataloader)-1:
                     continue
                 # continue
@@ -389,7 +389,7 @@ def train(options):
                     loss += NCEloss(embeddings[i], embeddings[i + 1], embeddings, options.tao)
                     loss += NCEloss(embeddings[i + 1], embeddings[i], embeddings, options.tao)
                 loss = loss / len(embeddings)
-                #print(ni, loss.item())
+                print(ni, loss.item())
                 #if num_input >= 7: print(ni, loss.item())
                 total_num += 1
                 total_loss += loss
