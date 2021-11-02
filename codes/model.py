@@ -87,7 +87,7 @@ class MLP(nn.Module):
         h = features
         for i in range(len(self.layers)-1):
             #h = self.dropout(self.activation(self.layers3[i](h)))
-            h = self.dropout(h)
+            #h = self.dropout(h)
             h = self.layers[i](self.activation(h))
         if len(self.layers)>= 1:
             h = self.layers[-1](h).squeeze(-1)
