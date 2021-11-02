@@ -569,21 +569,21 @@ def train(options):
     val_graphs = dgl.unbatch(val_g)
 
 
-    # if options.add == 1:
-    #     boom_val_nodes = split_val(train_g)
-    #     #print(len(train_g.ndata['label_o']==0))
-    #     train_g.ndata['label_o'][boom_val_nodes] = -1
-    #     print('ignore',len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == -1]))
-    #     print('boom val',len(boom_val_nodes))
-    #     valdataloader2 = MyNodeDataLoader(
-    #         True,
-    #         train_g,
-    #         boom_val_nodes,
-    #         Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
-    #         batch_size=len(boom_val_nodes),
-    #         shuffle=True,
-    #         drop_last=False
-    #     )
+    if options.add == 1:
+        boom_val_nodes = split_val(train_g)
+        #print(len(train_g.ndata['label_o']==0))
+        train_g.ndata['label_o'][boom_val_nodes] = -1
+        print('ignore',len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == -1]))
+        print('boom val',len(boom_val_nodes))
+        valdataloader2 = MyNodeDataLoader(
+            True,
+            train_g,
+            boom_val_nodes,
+            Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
+            batch_size=len(boom_val_nodes),
+            shuffle=True,
+            drop_last=False
+        )
     train_graphs = dgl.unbatch(train_g)
     temp = train_graphs[1]
     train_graphs[1] = train_graphs[2]
