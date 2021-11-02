@@ -647,6 +647,25 @@ def train(options):
     loaders = [valdataloader]
     if options.add == 1:
         loaders.append(valdataloader2)
+    for vni, (in_blocks, out_blocks) in enumerate(
+            valdataloader2
+    ):
+        start = time()
+        in_blocks = [b.to(device) for b in in_blocks]
+
+        out_blocks = [b.to(device) for b in out_blocks]
+        if is_FuncGCN1:
+            in_input_features = in_blocks[0].srcdata["f_input"]
+        else:
+            in_input_features = in_blocks[0].srcdata["ntype"]
+        if is_FuncGCN2:
+            out_input_features = out_blocks[0].srcdata["f_input"]
+        else:
+            out_input_features = out_blocks[0].srcdata["ntype"]
+        # print(out_blocks[0],len(out_input_features))
+        # print(blocks[-1].dstdata["label")
+        output_labels = in_blocks[-1].dstdata[label_name].squeeze(1)
+        label_hat = model(in_blocks, in_input_features, out_blocks, out_input_features)
     #print("Data successfully loaded")
     k = options.k
     beta = options.beta
