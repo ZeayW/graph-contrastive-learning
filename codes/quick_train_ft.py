@@ -241,7 +241,7 @@ def get_reverse_graph(g):
         # print(key,value)
         rg.edata[key] = value
     return rg
-def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embeddings):
+def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embeddings,options):
 
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
@@ -259,7 +259,10 @@ def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embed
                 # print(in_blocks)
                 start = time()
                 blocks = [b.to(device) for b in blocks]
-                input_features = blocks[0].srcdata["f_input"]
+                if options.gnn:
+                    input_features = blocks[0].srcdata["ntype"]
+                else:
+                    input_features = blocks[0].srcdata["f_input"]
                 output_labels = blocks[-1].dstdata[label_name].squeeze(1)
                 total_num += len(output_labels)
                 embedding = model(blocks, input_features)
@@ -725,7 +728,10 @@ def train(options):
                 continue
             start_time = time()
             blocks = [b.to(device) for b in blocks]
-            input_features = blocks[0].srcdata["f_input"]
+            if options.gnn:
+                input_features = blocks[0].srcdata["ntype"]
+            else:
+                input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             total_num += len(output_labels)
             embedding = model(blocks,input_features)
@@ -820,7 +826,7 @@ def train(options):
         #validate_sim([val_g], pos_embeddings,sampler, device, model)
 
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(loaders,label_name, device, model,
-                                                                              mlp, Loss, options.alpha, beta,pos_embeddings)
+                                                                              mlp, Loss, options.alpha, beta,pos_embeddings,options)
         #max_F1_score = max(max_F1_score,val_F1_score)
         validate_sim(val_graphs, pos_embeddings, sampler, device, model)
         #validate_sim([dgl.batch(val_graphs)],sampler,device,model)
