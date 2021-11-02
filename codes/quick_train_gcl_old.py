@@ -353,16 +353,21 @@ def train(options):
     pre_loss = 100
     stop_score = 0
     dic = {}
-    for num_input, aug_indx, dataloader in data_loaders:
+    for num_input, aug_indx, data_loader in data_loaders:
         print('dataset:',num_input,aug_indx)
         for epoch in range(num_epoch):
-            POs = dataloader.nids
+            POs = data_loader.nids
+            g = data_loader.g
             #POs = shuffle_nids(POs)
             # print(POs[:100])
+            # data_loader.collator.nids = POs
+            # data_loader.dataloader = DataLoader(data_loader.collator.dataset,
+            #                         collate_fn=data_loader.collator.collate,
+            #                         **dataloader_kwargs)
             sampler = dataloader.block_sampler
             dataloader = MyNodeDataLoader(
                 False,
-                train_g,
+                g,
                 POs,
                 sampler,
                 bs=batch_sizes[(num_input, aug_indx)],

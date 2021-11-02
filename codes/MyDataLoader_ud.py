@@ -192,6 +192,7 @@ class MyNodeDataLoader:
         self.nids = nids
         self.block_sampler = block_sampler
         self.bs = bs
+        self.g = g
         self.collator = MyNodeCollator(predict,g, nids, block_sampler, self.bs,**collator_kwargs)
 
         self.dataloader = DataLoader(self.collator.dataset,
