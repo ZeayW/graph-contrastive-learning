@@ -272,8 +272,8 @@ def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embed
                     pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
 
                 label_hat = mlp(embedding)
-                if i==1:
-                    print(label_hat,output_labels)
+                # if i==1:
+                #     print(label_hat,output_labels)
                 if get_options().nlabels != 1:
                     pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
                 else:
@@ -585,21 +585,11 @@ def train(options):
             shuffle=True,
             drop_last=False
         )
-        for ni, (central_nodes, input_nodes, blocks) in enumerate(valdataloader2):
-            blocks = [b.to(device) for b in blocks]
-            input_features = blocks[0].srcdata["f_input"]
-            output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
-            embeddings = model(blocks, input_features)
-            print(output_labels)
+
         train_graphs = dgl.unbatch(train_g)
         train_g = dgl.batch(train_graphs)
         train_g.ndata['label_o'][boom_val_nodes] = -1
-        for ni, (central_nodes, input_nodes, blocks) in enumerate(valdataloader2):
-            blocks = [b.to(device) for b in blocks]
-            input_features = blocks[0].srcdata["f_input"]
-            output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
-            embeddings = model(blocks, input_features)
-            print(output_labels)
+
 
     train_graphs = dgl.unbatch(train_g)
     temp = train_graphs[1]
