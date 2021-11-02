@@ -585,6 +585,12 @@ def train(options):
             shuffle=True,
             drop_last=False
         )
+        for ni, (central_nodes, input_nodes, blocks) in enumerate(valdataloader2):
+            blocks = [b.to(device) for b in blocks]
+            input_features = blocks[0].srcdata["f_input"]
+            output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+            embeddings = model(blocks, input_features)
+            print(output_labels)
         train_g.ndata['label_o'][boom_val_nodes] = -1
         for ni, (central_nodes, input_nodes, blocks) in enumerate(valdataloader2):
             blocks = [b.to(device) for b in blocks]
