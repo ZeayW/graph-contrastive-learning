@@ -253,7 +253,6 @@ def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embed
     num_batch = 0
     with th.no_grad():
         for i,loader in enumerate(loaders):
-            print('validate',i)
             for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
 
                 # continue
@@ -273,6 +272,8 @@ def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embed
                     pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
 
                 label_hat = mlp(embedding)
+                if i==1:
+                    print(label_hat,output_labels)
                 if get_options().nlabels != 1:
                     pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
                 else:
@@ -291,7 +292,7 @@ def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embed
                     neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
                     val_loss = (alpha*pos_loss+neg_loss) / len(output_labels)
                 else: val_loss = Loss(label_hat, output_labels)
-                print(val_loss)
+                #print(val_loss)
                 total_loss += val_loss.item() * len(output_labels)
 
                 error_mask = predict_labels !=output_labels
