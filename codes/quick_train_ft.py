@@ -54,6 +54,7 @@ def oversample(g,options,in_dim):
     lowbit_mask = g.ndata['position']<=3
     # unlabel the nodes in muldiv
     no_muldiv_mask = labels.squeeze(-1)!=-1
+    print('no_mul_mask',len(no_muldiv_mask))
     nodes = th.tensor(range(g.num_nodes()))
     nodes = nodes[no_muldiv_mask]
     labels = labels[no_muldiv_mask]
@@ -571,9 +572,9 @@ def train(options):
 
     if options.add == 1:
         boom_val_nodes = split_val(train_g)
-        print(len(train_g.ndata['label_o']==0))
+        #print(len(train_g.ndata['label_o']==0))
         train_g.ndata['label_o'][boom_val_nodes] = -1
-        print(len(train_g.ndata['label_o'] == 0))
+        #print(len(train_g.ndata['label_o'] == 0))
         print('boom val',len(boom_val_nodes))
         valdataloader2 = MyNodeDataLoader(
             True,
