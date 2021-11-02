@@ -431,7 +431,7 @@ def split_val(g):
     pos_nodes = nodes[pos_mask].numpy().tolist()
     shuffle(pos_nodes)
     num_pos = len(pos_nodes)
-    val_nodes = pos_nodes[:int(num_pos/10)]
+    val_nodes = pos_nodes[:int(num_pos/5)]
     val_nodes = th.tensor(val_nodes)
     return val_nodes
 
