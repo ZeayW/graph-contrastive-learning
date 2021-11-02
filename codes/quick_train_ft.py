@@ -573,7 +573,7 @@ def train(options):
         boom_val_nodes = split_val(train_g)
         #print(len(train_g.ndata['label_o']==0))
         train_g.ndata['label_o'][boom_val_nodes] = -1
-        print('ignore',len(train_g.ndata['label_o'].squeeze(-1) == 0))
+        print('ignore',len(train_g.ndata[train_g.ndata['label_o'].squeeze(-1) == -1]))
         print('boom val',len(boom_val_nodes))
         valdataloader2 = MyNodeDataLoader(
             True,
