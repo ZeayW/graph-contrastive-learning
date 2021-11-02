@@ -272,8 +272,8 @@ def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embed
                     pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
 
                 label_hat = mlp(embedding)
-                if i==1:
-                    print(label_hat,output_labels)
+                # if i==1:
+                #     print(label_hat,output_labels)
                 if get_options().nlabels != 1:
                     pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
                 else:
@@ -428,10 +428,11 @@ def replaceDFF(g):
 def split_val(g):
     nodes = th.tensor(range(g.num_nodes()))
     pos_mask = (g.ndata['label_o'] ==1).squeeze(1)
-    pos_nodes = nodes[pos_mask]
+    pos_nodes = nodes[pos_mask].numpy().tolist()
+    shuffle(pos_nodes)
     num_pos = len(pos_nodes)
     val_nodes = pos_nodes[:int(num_pos/10)]
-
+    val_nodes = th.tensor(val_nodes)
     return val_nodes
 
 def train(options):
