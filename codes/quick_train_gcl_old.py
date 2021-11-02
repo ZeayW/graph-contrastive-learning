@@ -356,7 +356,9 @@ def train(options):
         print('dataset:',num_input,aug_indx)
         for epoch in range(num_epoch):
             POs = dataloader.nids
+            print(POs)
             POs = shuffle_nids(POs)
+            print(POs)
             sampler = dataloader.block_sampler
             dataloader = MyNodeDataLoader(
                 False,
