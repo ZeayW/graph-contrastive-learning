@@ -380,7 +380,7 @@ def train(options):
             pos_count, neg_count = 0, 0
             for ni, (central_nodes, input_nodes, blocks) in enumerate(data_loader):
                 #print(central_nodes)
-                if ni==len(dataloader)-1:
+                if ni==len(data_loader)-1:
                     continue
                 # continue
                 start_time = time()
