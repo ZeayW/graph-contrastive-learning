@@ -590,6 +590,7 @@ def train(options):
             input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
             embeddings = model(blocks, input_features)
+            print(embeddings)
     train_graphs = dgl.unbatch(train_g)
     temp = train_graphs[1]
     train_graphs[1] = train_graphs[2]
