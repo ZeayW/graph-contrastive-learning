@@ -578,7 +578,7 @@ def train(options):
             Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
             batch_size=len(boom_val_nodes),
             shuffle=True,
-            drop_last=False,
+            drop_last=False
         )
     train_graphs = dgl.unbatch(train_g)
     temp = train_graphs[1]
@@ -594,7 +594,7 @@ def train(options):
     train_g = dgl.batch(train_graphs)
 
     train_nodes, pos_count, neg_count = oversample(train_g, options, options.in_dim)
-    
+
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
 
 
@@ -631,8 +631,8 @@ def train(options):
         drop_last=False,
     )
     loaders = [valdataloader]
-    if options.add==1:
-        loaders.append(valdataloader2)
+    # if options.add==1:
+    #     loaders.append(valdataloader2)
     #print("Data successfully loaded")
     k = options.k
     beta = options.beta
