@@ -58,10 +58,11 @@ class MLP(nn.Module):
         super(MLP, self).__init__()
         self.layers = nn.ModuleList()
         self.activation = activation
-
+        print('aaa')
         for i in range(n_layers-1):
             #hidden_feats = int(in_feats / 2)
             if i==0:
+                print('hh',hidden_feats)
                 hidden_feats = 2*in_feats
             else:
                 hidden_feats = int(in_feats / 2)
