@@ -539,6 +539,15 @@ def train(options):
     # predict muldiv
     if options.add == 1:
         boom_val_nodes = split_val(train_g)
+        valdataloader2 = MyNodeDataLoader(
+            True,
+            train_g,
+            boom_val_nodes,
+            Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
+            batch_size=len(boom_val_nodes),
+            shuffle=True,
+            drop_last=False,
+        )
     train_graphs = dgl.unbatch(train_g)
     temp = train_graphs[1]
     train_graphs[1] = train_graphs[2]
@@ -617,15 +626,6 @@ def train(options):
     )
     loaders = [valdataloader]
     if options.add==1:
-        valdataloader2 = MyNodeDataLoader(
-            True,
-            train_g,
-            boom_val_nodes,
-            in_sampler,
-            batch_size=len(boom_val_nodes),
-            shuffle=True,
-            drop_last=False,
-        )
         loaders.append(valdataloader2)
     #print("Data successfully loaded")
     k = options.k
