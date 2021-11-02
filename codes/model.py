@@ -60,8 +60,11 @@ class MLP(nn.Module):
         self.activation = activation
 
         for i in range(n_layers-1):
-            hidden_feats = int(in_feats / 2)
-            #hidden_feats = in_feats
+            #hidden_feats = int(in_feats / 2)
+            if i==0:
+                hidden_feats = 2*in_feats
+            else:
+                hidden_feats = int(in_feats / 2)
             self.layers.append(nn.Linear(in_feats,hidden_feats,bias=bias))
             in_feats = hidden_feats
         self.layers.append(nn.Linear(hidden_feats,out_feats,bias=bias))
