@@ -11,7 +11,7 @@ from time import time
 import math
 import networkx as nx
 from random import shuffle
-
+import random
 
 def preprocess(data_path, device, options):
     # datapaths = ['../dataset/test/ICCAD2014/v/']
@@ -200,9 +200,25 @@ def NCEloss(pos1, pos2, neg, tao):
     )
     return loss
 
-
+def shuffle_nids(nids):
+    res_nids = []
+    nids1 ,nids2 = [],[]
+    for i,nid in enumerate(nids):
+        if i%2==0:
+            nids1.append(nid)
+        else:
+            nids2.append(nid)
+    randnum= random.randint(1,100)
+    random.seed(randnum)
+    random.shuffle(nids1)
+    random.seed(randnum)
+    random.shuffle(nids2)
+    for i in range(len(nids1)):
+        res_nids.append(nids1[i])
+        res_nids.append(nids2[i])
+    return res_nids
 def train(options):
-    batch_sizes = []
+    batch_sizes = {}
     start_input, start_aug = options.start[0], options.start[1]
     end_input, end_aug = options.end[0], options.end[1]
     print(start_input,start_aug)
@@ -236,9 +252,9 @@ def train(options):
     #         batch_sizes.append(512)
     for num_input,num_aug in train_data_files:
         if num_input == 5:
-            batch_sizes.append(350)
+            batch_sizes[(num_input,num_aug)] = 350
         else:
-            batch_sizes.append(512)
+            batch_sizes[(num_input,num_aug)] = 512
 
     print(train_data_files)
     #exit()
@@ -309,71 +325,13 @@ def train(options):
                 train_g,
                 POs,
                 sampler,
-                bs = batch_sizes[i],
-                batch_size=batch_sizes[i],
+                bs = batch_sizes[(num_input, num_aug)],
+                batch_size=batch_sizes[(num_input, num_aug)],
                 shuffle=False,
                 drop_last=False,
             ))
         )
-    # for num_input in range(start_input, options.num_input + 1):
-    #     print('num_input{}'.format(num_input))
-    #     origin_file = os.path.join(data_path, 'i{}/origin.pkl'.format(num_input))
-    #     if num_input == start_input:
-    #         aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(start_aug, 4)]
-    #     elif num_input == end_input:
-    #         aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(1, end_aug + 1)]
-    #     else:
-    #         aug_files = [os.path.join(data_path, 'i{}/aug{}.pkl'.format(num_input, i)) for i in range(1, 4)]
-    #     for i, file in enumerate(aug_files):
-    #         num_aug = int(file.split('/')[-1].split('.')[-2][-1])
-    #         with open(file, 'rb') as f:
-    #             train_g, POs, depth = pickle.load(f)
-    #             train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-    #             train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-    #             train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
-    #
-    #         data_size = len(POs)
-    #         # for po in POs.keys():
-    #
-    #         for po in POs:
-    #             assert len(train_g.successors(po)) == 0
-    #         if data_size > options.batch_size:
-    #             data_size = int(len(POs) / options.batch_size) * options.batch_size
-    #         POs = POs[:data_size]
-    #         if options.gat:
-    #             add_self_loop = True
-    #         else:
-    #             add_self_loop = False
-    #         sampler = Sampler(depth * [options.degree], include_dst_in_src=options.include, add_self_loop=add_self_loop)
-    #         print('aug{}, depth:{},num_nodes:{}, num_pos:{}'.format(i, depth, train_g.number_of_nodes(), len(POs)))
-    #         # train_blocks = sampler.sample_blocks(train_g,POs)
-    #         # train_blocks = [b.to(device) for b in train_blocks]
-    #         # pos_pairs = None
-    #         #
-    #         # print(train_blocks)
-    #         # print(pos_pairs)
-    #         # print(po_depths)
-    #         # check(train_g,POs,depth)
-    #         data_loaders.append(
-    #             (num_input, num_aug, MyNodeDataLoader(
-    #                 False,
-    #                 train_g,
-    #                 POs,
-    #                 sampler,
-    #                 batch_size=options.batch_size,
-    #                 shuffle=False,
-    #                 drop_last=False,
-    #             ))
-    #         )
-    #     # dataloader = MyNodeDataLoader(
-    #     #     False,
-    #     #     train_g,
-    #     #     aug_nids,
-    #     #     sampler,
-    #     #     batch_size=options.batch_size,
-    #     #     shuffle=False,
-    #     #     drop_last=False,
-    #     # )
+
 
     print("Data successfully loaded")
 
@@ -397,7 +355,19 @@ def train(options):
     for num_input, aug_indx, dataloader in data_loaders:
         print('dataset:',num_input,aug_indx)
         for epoch in range(num_epoch):
-
+            POs = dataloader.nids
+            POs = shuffle_nids(POs)
+            sampler = dataloader.block_sampler
+            dataloader = MyNodeDataLoader(
+                False,
+                train_g,
+                POs,
+                sampler,
+                bs=batch_sizes[(num_input, aug_indx)],
+                batch_size=batch_sizes[(num_input, aug_indx)],
+                shuffle=False,
+                drop_last=False,
+            )
             runtime = 0
             total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
             pos_count, neg_count = 0, 0

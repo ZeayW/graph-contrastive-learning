@@ -189,7 +189,8 @@ class MyNodeDataLoader:
                 collator_kwargs[k] = v
             else:
                 dataloader_kwargs[k] = v
-
+        self.nids = nids
+        self.block_sampler = block_sampler
         self.bs = bs
         self.collator = MyNodeCollator(predict,g, nids, block_sampler, self.bs,**collator_kwargs)
 
