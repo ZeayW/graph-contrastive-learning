@@ -58,7 +58,10 @@ def preprocess(data_path, device, options):
         with open(os.path.join(options.pre_model_dir, 'model.pkl'), 'rb') as f:
             _, model,proj_head = pickle.load(f)
     else:
-        network = FuncGCN
+        if options.gnn:
+            network = GNN_1l
+        else:
+            network = FuncGCN
         num_heads = options.num_heads
         in_nlayers = options.in_nlayers
         model = network(
