@@ -576,10 +576,9 @@ def train(options):
     if options.add == 1:
         boom_val_nodes = split_val(train_g)
         #print(len(train_g.ndata['label_o']==0))
-        train_g1=train_g.copy()
         valdataloader2 = MyNodeDataLoader(
             True,
-            train_g1,
+            train_g,
             boom_val_nodes,
             Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
             batch_size=len(boom_val_nodes),
@@ -592,6 +591,8 @@ def train(options):
             output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
             embeddings = model(blocks, input_features)
             print(output_labels)
+        train_graphs = dgl.unbatch(train_g)
+        train_g = dgl.batch(train_graphs)
         train_g.ndata['label_o'][boom_val_nodes] = -1
         for ni, (central_nodes, input_nodes, blocks) in enumerate(valdataloader2):
             blocks = [b.to(device) for b in blocks]
