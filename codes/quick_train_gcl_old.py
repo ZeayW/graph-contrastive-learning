@@ -356,28 +356,20 @@ def train(options):
     for num_input, aug_indx, dataloader in data_loaders:
         print('dataset:',num_input,aug_indx)
         for epoch in range(num_epoch):
-            POs = dataloader.nids
-            for i in range(0,len(POs),2):
-                dic[POs[i]] = POs[i+1]
-
-            #print(POs)
-            POs = shuffle_nids(POs)
-            for i in range(0, len(POs), 2):
-                if dic[POs[i]] != POs[i + 1]:
-                    print(POs[i],POs[i+1])
-                    exit()
-            print(POs[:100])
-            sampler = dataloader.block_sampler
-            dataloader = MyNodeDataLoader(
-                False,
-                train_g,
-                POs,
-                sampler,
-                bs=batch_sizes[(num_input, aug_indx)],
-                batch_size=batch_sizes[(num_input, aug_indx)],
-                shuffle=False,
-                drop_last=False,
-            )
+            # POs = dataloader.nids
+            #
+            # # print(POs[:100])
+            # sampler = dataloader.block_sampler
+            # dataloader = MyNodeDataLoader(
+            #     False,
+            #     train_g,
+            #     POs,
+            #     sampler,
+            #     bs=batch_sizes[(num_input, aug_indx)],
+            #     batch_size=batch_sizes[(num_input, aug_indx)],
+            #     shuffle=False,
+            #     drop_last=False,
+            # )
             runtime = 0
             total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
             pos_count, neg_count = 0, 0
