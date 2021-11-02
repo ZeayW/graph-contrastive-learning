@@ -537,6 +537,38 @@ def train(options):
     # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
     # predict muldiv
+
+
+    if options.add!=-1:
+    #print('muldiv:', len(is_output[is_output == -1]))
+        print('muldiv_outputs:', len(train_g.ndata['mul_o'][train_g.ndata['mul_o'] ==1]))
+        print('muldiv_inputs1:', len(train_g.ndata['mul_i'][train_g.ndata['mul_i'] == 1]))
+        print('muldiv_inputs2:', len(train_g.ndata['mul_i'][train_g.ndata['mul_i'] == 2]))
+        print('sub_outputs:', len(train_g.ndata['sub_o'][train_g.ndata['sub_o'] == 1]))
+        print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 1]))
+        print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 2]))
+        print('adder_outputs:', len(train_g.ndata['adder_o'][train_g.ndata['adder_o'] == 1]))
+        print('adder_inputs:', len(train_g.ndata['adder_i'][train_g.ndata['adder_i'] == 1]))
+    #
+    # print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
+
+
+    # 
+    # rates = cal_ratios(neg_count,pos_count)
+    # print("neg/pos rates",rates)
+    train_g.edata['a'] = th.ones(size=(len(train_g.edata['r']),1))
+
+    train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+    train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+    train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
+    # print(train_g.ndata['ntype2'].shape,train_g.ndata['ntype2'])
+    val_g.ndata['f_input'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+    val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+
+    val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
+    val_graphs = dgl.unbatch(val_g)
+
+    train_nodes, pos_count, neg_count = oversample(train_g, options, options.in_dim)
     if options.add == 1:
         boom_val_nodes = split_val(train_g)
         valdataloader2 = MyNodeDataLoader(
@@ -561,34 +593,6 @@ def train(options):
     # train_graphs.pop(1)
     train_g = dgl.batch(train_graphs)
 
-    if options.add!=-1:
-    #print('muldiv:', len(is_output[is_output == -1]))
-        print('muldiv_outputs:', len(train_g.ndata['mul_o'][train_g.ndata['mul_o'] ==1]))
-        print('muldiv_inputs1:', len(train_g.ndata['mul_i'][train_g.ndata['mul_i'] == 1]))
-        print('muldiv_inputs2:', len(train_g.ndata['mul_i'][train_g.ndata['mul_i'] == 2]))
-        print('sub_outputs:', len(train_g.ndata['sub_o'][train_g.ndata['sub_o'] == 1]))
-        print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 1]))
-        print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 2]))
-        print('adder_outputs:', len(train_g.ndata['adder_o'][train_g.ndata['adder_o'] == 1]))
-        print('adder_inputs:', len(train_g.ndata['adder_i'][train_g.ndata['adder_i'] == 1]))
-    #
-    # print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
-
-    train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
-
-    rates = cal_ratios(neg_count,pos_count)
-    print("neg/pos rates",rates)
-    train_g.edata['a'] = th.ones(size=(len(train_g.edata['r']),1))
-
-    train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-    train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-    train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
-    # print(train_g.ndata['ntype2'].shape,train_g.ndata['ntype2'])
-    val_g.ndata['f_input'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-    val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-
-    val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
-    val_graphs = dgl.unbatch(val_g)
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
 
 
