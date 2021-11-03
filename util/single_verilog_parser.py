@@ -213,10 +213,8 @@ class DcParser:
             #         break
             # for cases that instance_name is not unique, e.g, have several add_x_1，each is instance of different cell,
             # in theses cases, mcomp contains both cell information and instance information
-            #print(ios)
             for pname,(high_bit,low_bit) in ios.items():
                 if pname in argname:
-                    print(pname,argname)
                     bit_position = int(argname.split('_')[-1])
                     if bit_position>=low_bit and bit_position<=high_bit:
                         position = (pname,bit_position)
@@ -282,8 +280,6 @@ class DcParser:
         # print(dir(directives))
         # exit()
         for module in ast.description.definitions:
-            if module.name != self.top_module:
-                continue
             #module.show()
             ios = {}
             wires = {}
@@ -301,8 +297,7 @@ class DcParser:
                                 temp = high_bit
                                 high_bit = low_bit
                                 low_bit = temp
-                        #if type(decl) == pyverilog.vparser.ast.Input or type(decl) == pyverilog.vparser.ast.Output:
-                        if type(decl) == pyverilog.vparser.ast.Output:
+                        if type(decl) == pyverilog.vparser.ast.Input or type(decl) == pyverilog.vparser.ast.Output:
                             # if type(decl) == pyverilog.vparser.ast.Output and re.match('io_pmp_\d_addr',decl.name):
                             #     decl.show()
                             ios[name] = (high_bit, low_bit)
@@ -511,8 +506,9 @@ class DcParser:
                 n[1]["position"] = positions.get(n[0], None)
             print('11111111111111111111111')
             #print(adder_cells)
-        print('POs:',len(POs))
         return nodes, edges
+
+
 
 
 def main():
@@ -531,20 +527,6 @@ def main():
     total_nodes += len(nodes)
     total_edges += len(edges)
     print(ntype)
-
-    # for v in os.listdir(folder):
-    #     if v.endswith('.v') is False:
-    #         continue
-    #     nodes,edges = parser.parse(os.path.join(folder,v))
-    #     print("nodes {}, edges {}".format(len(nodes), len(edges)))
-    #     for n in nodes:
-    #         ntype.add(n[1]["type"])
-    #     total_nodes += len(nodes)
-    #     total_edges += len(edges)
-    #     # break
-    #     print(ntype)
-
-    print(total_nodes, total_edges)
 
 
 if __name__ == "__main__":
