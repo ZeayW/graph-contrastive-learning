@@ -214,8 +214,8 @@ def main(options):
         label_name = 'sub_o'
     else:
         label_name = 'adder_o'
-
-    val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    if not options.muldiv and not options.sub:
+        val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
     if in_nlayers == -1:
         in_nlayers = 0
     if out_nlayers == -1:
@@ -232,7 +232,6 @@ def main(options):
 
         mask_mul_val = val_g.ndata['mul_o'] > 0
         if options.add == 1:
-
             val_g.ndata['label_o'][mask_mul_val] = 1
         elif options.add == 2:
 
