@@ -586,12 +586,12 @@ def train(options):
 
     print('num 1b0', len(val_g.ndata['ntype2'][val_g.ndata['ntype2']==0]),'num 1b1', len(val_g.ndata['ntype2'][val_g.ndata['ntype2']==1]))
     print('PIs',len(val_g.ndata['ntype2'][val_g.ndata['ntype2']==15]))
-    # if options.add == 2:
-    #     #train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1) == 1] = -1
-    #     train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1)>=1] = -1
-    #     val_g.ndata['label_o'][val_g.ndata['adder_o'].squeeze(-1)>=1] = -1
-    #     train_g.ndata['label_o'][train_g.ndata['mul_o'].squeeze(-1) >= 1] = -1
-    #     val_g.ndata['label_o'][val_g.ndata['mul_o'].squeeze(-1) >= 1] = -1
+    if options.add == 2:
+        #train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1) == 1] = -1
+        train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1)>=1] = -1
+        val_g.ndata['label_o'][val_g.ndata['adder_o'].squeeze(-1)>=1] = -1
+        train_g.ndata['label_o'][train_g.ndata['mul_o'].squeeze(-1) >= 1] = -1
+        val_g.ndata['label_o'][val_g.ndata['mul_o'].squeeze(-1) >= 1] = -1
     if options.add == 1:
         if os.path.exists(os.path.join(data_path,'boom_vals.pkl')):
             with open(os.path.join(data_path,'boom_vals.pkl'),'rb') as f:
