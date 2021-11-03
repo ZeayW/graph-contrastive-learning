@@ -208,6 +208,13 @@ def main(options):
     # or_mask = th.argmax(g.ndata['ntype'],dim=1) == 5
     # num_or = len(g.ndata['ntype'][or_mask])
     # print("ratio of or gate: ",num_or/g.num_nodes())
+    if options.muldiv:
+        label_name = 'mul_o'
+    elif options.sub:
+        label_name = 'sub_o'
+    else:
+        label_name = 'adder_o'
+
     val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
     if in_nlayers == -1:
         in_nlayers = 0
@@ -217,6 +224,22 @@ def main(options):
     if options.add == -1:
         label_name = 'label_o'
         val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
+    else:
+
+        val_g.ndata['label_o'] = val_g.ndata[label_name]
+
+        mask_sub_val = val_g.ndata['sub_o'] > 0
+
+        mask_mul_val = val_g.ndata['mul_o'] > 0
+        if options.add == 1:
+
+            val_g.ndata['label_o'][mask_mul_val] = 1
+        elif options.add == 2:
+
+            val_g.ndata['label_o'][mask_sub_val] = 1
+        elif options.add == 3:
+            val_g.ndata['label_o'][mask_mul_val] = 1
+            val_g.ndata['label_o'][mask_sub_val] = 1
     val_g.ndata['f_input'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
     val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
 
