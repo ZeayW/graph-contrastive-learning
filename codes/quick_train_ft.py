@@ -529,8 +529,7 @@ def train(options):
     print(val_g.ndata['ntype'].shape)
     print("num pos1", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) >0]))
    # print(val_g.ndata['position'][val_g.ndata['label_o'].squeeze(1) >0])
-    positions = train_g.ndata['position'][train_g.ndata['label_o'].squeeze(1) > 0]
-    print(positions[:int(len(positions)/6)])
+
     # change_label(train_g,'label_o',options)
     # change_label(val_g,'label_o',options)
     # replaceDFF(train_g)
@@ -584,6 +583,9 @@ def train(options):
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
     val_graphs = dgl.unbatch(val_g)
 
+    positions = train_g.ndata['position'][train_g.ndata['label_o'].squeeze(1) > 0]
+    print(positions)
+    
     if options.add == 2:
         #train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1) == 1] = -1
         train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1)>=1] = -1
