@@ -585,7 +585,7 @@ def train(options):
     val_graphs = dgl.unbatch(val_g)
 
     print('num 1b0', len(val_g.ndata['ntype2'][val_g.ndata['ntype2']==0]),'num 1b1', len(val_g.ndata['ntype2'][val_g.ndata['ntype2']==1]))
-
+    print('PIs',len(val_g.ndata['ntype2'][val_g.ndata['ntype2']==15]))
     if options.add == 2:
         #train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1) == 1] = -1
         train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1)>=1] = -1
