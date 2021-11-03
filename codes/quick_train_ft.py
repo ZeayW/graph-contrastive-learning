@@ -566,9 +566,11 @@ def train(options):
     #
     # rates = cal_ratios(neg_count,pos_count)
     # print("neg/pos rates",rates)
+    print(train_g.ndata['ntype'].shape)
     train_g.edata['a'] = th.ones(size=(len(train_g.edata['r']),1))
 
     train_g.ndata['f_input'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+
     train_g.ndata['temp'] = th.ones(size=(train_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
     train_g.ndata['ntype2'] = th.argmax(train_g.ndata['ntype'], dim=1).squeeze(-1)
     # print(train_g.ndata['ntype2'].shape,train_g.ndata['ntype2'])
