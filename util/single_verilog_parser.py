@@ -280,6 +280,8 @@ class DcParser:
         # print(dir(directives))
         # exit()
         for module in ast.description.definitions:
+            if module.name != self.top_module:
+                continue
             #module.show()
             ios = {}
             wires = {}
@@ -506,284 +508,38 @@ class DcParser:
                 n[1]["position"] = positions.get(n[0], None)
             print('11111111111111111111111')
             #print(adder_cells)
-        return nodes, edges
-
-
-    def parse_nohier(self, fname, key_cells,target_cells,label_region=False):
-        """ parse dc generated verilog """
-        adder_cells = set()
-
-        PIs: List[str] = []  # a list of PI nodes
-        POs: List[str] = []  # a list of PO nodes
-        nodes: List[Tuple[str, Dict[str, str]]] = [
-            ("1'b0", {"type": "1'b0"}),
-            ("1'b1", {"type": "1'b1"}),
-        ]  # a list of (node, {"type": type})
-        edges: List[
-            Tuple[str, str, Dict[str, bool]]
-        ] = []  # a list of (src, dst, {"is_reverted": is_reverted})
-        num_wire = 0
-        ast, directives = parse([fname])
-        index01 = [0,0]
-        adder_inputs = set()
-        adder_outputs = set()
-        top_module = None
-        adder_in_dict = collections.defaultdict(set)
-        adder_out_dict = collections.defaultdict(set)
-        positions = {}
-        pi_positions = {}
-        for module in ast.description.definitions:
-
-            if module.name == self.top_module:
-                top_module = module
-                break
-        assert top_module is not None, "top module {} not found".format(self.top_module)
-        print(len(top_module.items))
-
-        for item in top_module.items:
-            if type(item) != pyverilog.vparser.ast.InstanceList:
-                continue
-            instance = item.instances[0]
-
-            # we extract the following parts:
-            # mcell: cell name in SAED, e.g. AND2X1
-            # mtype: cell type with input shape, e.g. AND2
-            # mfunc: cell function, e.g. AND
-            # mname: module name, e.g. ALU_DP_OP_J23_U233
-            # mcomp: module component, e.g. ALU_DP_OP_J23
-            mcell = instance.module  # e.g. AND2X1
-            mname = instance.name
-            ports = instance.portlist
-            mtype = mcell[0 : mcell.rfind("X")]  # e.g. AND2
-            mfunc = mtype  # e.g. AND
-            # pos = re.search("\d", mtype)
-            # if pos:
-            #     mfunc = mtype[: pos.start()]
-            mcomp = mname[: mname.rfind("_")]
-            if mcell.startswith("SNPS_CLOCK") or mcell.startswith("PlusArgTimeout"):
-                continue
-            fanins: List[PortInfo] = []
-            fanouts: List[PortInfo] = []
-            if 'add_x' in mcomp or 'alu_DP_OP' in mcomp:
-                #print("\n",mcell,mname)
-                adder_cells.add(mcell)
-           # exit()
-            key_inputs,key_outputs = [],[]
-            for key_cell in key_cells.keys():
-                if key_cell in mcomp:
-                    key_inputs = key_cells[key_cell][0]
-                    key_outputs = key_cells[key_cell][1]
-                    break
-
-            for p in ports:
-                port_info = self.parse_port(mcomp, target_cells,p,index01,key_inputs,key_outputs)
-                if port_info.ptype == "fanin":
-                    fanins.append(port_info)
-                elif port_info.ptype == "fanout":
-                    fanouts.append(port_info)
-                # else:
-                #     assert port_info.ptype == "CLK"
-                if port_info.is_input:
-                    #print(port_info.)
-                    adder_inputs.add(port_info.argname)
-                    adder_in_dict[port_info.input_comp].add(port_info.argname)
-                if port_info.is_output:
-                    adder_outputs.add(port_info.argname)
-                    adder_out_dict[port_info.output_comp].add(port_info.argname)
-                if positions.get(port_info.argname,None) is None:
-                    positions[port_info.argname] = port_info.position
-            if not fanouts:
-                item.show()
-                print("***** warning, the above gate has no fanout recognized! *****")
-                # do not assert, because some gates indeed have no fanout...
-                # assert False, "no fanout recognized"
-            inputs = {}
-            #print(mfunc,mname)
-            for fo in fanouts:
-                if mfunc == "HADD":
-                    if fo.portname == "SO":
-                        ntype = self.hadd_name_dict["hadd_s"]
-                    elif fo.portname == "C1":
-                        ntype = self.hadd_name_dict["hadd_c"]
-                    else:
-                        print(fo.portname)
-                        assert False
-                elif mfunc == "FADD":
-                    if fo.portname == "S":
-                        ntype = self.hadd_name_dict["fadd_s"]
-                    elif fo.portname == "CO":
-                        ntype = self.hadd_name_dict["fadd_c"]
-                    else:
-                        print(fo.portname)
-                        assert False
-                else:
-                    ntype = mfunc
-
-                if 'AO' in ntype or 'OA' in ntype:
-                    num_inputs = ntype[re.search('\d',ntype).start():]
-                    ntype1 = 'AND' if 'AO' in ntype else 'OR'
-                    ntype2 = 'OR' if 'AO' in ntype else 'AND'
-                    if 'I' in ntype:
-                        output_name = '{}_i'.format(fo.argname)
-                        nodes.append((output_name,{"type":ntype2}))
-                        nodes.append((fo.argname, {"type": 'INV'}))
-                        inputs[fo.argname] = [output_name]
-
-                        # edges.append((output_name,fo.argname,
-                        #               {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
-                    else:
-                        output_name = fo.argname
-                        nodes.append((output_name,{"type":ntype2}))
-                    inputs[output_name] = inputs.get(output_name,[])
-                    for i,num_input in enumerate(num_inputs):
-                        if num_input == '2':
-                            h_node_name = '{}_h{}'.format(fo.argname,i)
-                            nodes.append( (h_node_name,{"type":ntype1}) )
-                            inputs[h_node_name] = inputs.get(h_node_name,[])
-                            inputs[h_node_name].append(fanins[2*i].argname)
-                            inputs[h_node_name].append(fanins[2*i+1].argname)
-
-                            inputs[output_name].append(h_node_name)
-                            # edges.append((fanins[2*i].argname,h_node_name,
-                            #              {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
-                            # edges.append((fanins[2 * i+1].argname, h_node_name,
-                            #              {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
-                            # edges.append((h_node_name,output_name,
-                            #               {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
-                        elif num_input =='1':
-                            inputs[output_name].append(fanins[2*i].argname)
-                            # edges.append((fanins[2*i].argname,output_name,
-                            #              {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
-                        else:
-                            print(ntype,i,num_input)
-                            assert  False
-                elif 'NOR' in ntype or 'XNOR' in ntype or 'NAND' in ntype or 'IBUFF' in ntype:
-                    ntype1= None
-                    if 'NOR' in ntype:
-                        ntype1 = 'OR'
-                    elif 'XNOR' in ntype:
-                        ntype1 = 'XOR'
-                    elif 'NAND' in ntype:
-                        ntype1 = 'AND'
-                    elif 'IBUFF' in ntype:
-                        ntype1 = 'NBUFF'
-                    h_node_name ="{}_h".format(fo.argname)
-                    nodes.append((h_node_name,{"type":ntype1}))
-                    nodes.append((fo.argname,{"type":"INV"}))
-                    inputs[fo.argname] = [h_node_name]
-                    inputs[h_node_name] = inputs.get(h_node_name,[])
-                    for fi in fanins:
-                        inputs[h_node_name].append(fi.argname)
-                    # edges.append((h_node_name,fo.argname,
-                    #               {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
-                else:
-                    pos = re.search("\d", mtype)
-                    if pos:
-                        ntype = ntype[: pos.start()]
-                    nodes.append((fo.argname, {"type": ntype}))
-                    inputs[fo.argname] = inputs.get(fo.argname,[])
-                    for fi in fanins:
-                        inputs[fo.argname].append(fi.argname)
-            #print(len(inputs))
-            #print(inputs)
-            for output,input in inputs.items():
-                for fi in input:
-                    edges.append(
-                        (
-                            fi,
-                            output,
-                            {"is_reverted": False, "is_sequencial": "DFF" in mtype},
-                        )
-                    )
-
-            # for fi in inputs:
-            #     for fo in fanouts:
-            #         edges.append(
-            #             (
-            #                 fi.argname,
-            #                 fo.argname,
-            #                 {"is_reverted": False, "is_sequencial": "DFF" in mtype},
-            #             )
-            #         )
-        print(
-            "#inputs:{}, #outputs:{}".format(len(adder_inputs), len(adder_outputs)),
-            flush=True,
-        )
-        #print(adder_inputs)
-        gate_names = set([n[0] for n in nodes])
-        pis = []
-        for (src, _, _) in edges:
-            if src not in gate_names and src not in pis:
-                nodes.append((src, {"type": "PI"}))
-                pis.append(src)
-            # if "1'b0" in src :
-            #     nodes.append((src,{"type":"1'b0"}))
-            # if "1'b1" in src :
-            #     nodes.append((src,{"type":"1'b1"}))
-        if label_region:
-            g = nx.DiGraph()
-            g.add_nodes_from(nodes)
-            g.add_edges_from(edges)
-            rg = g.reverse()
-            internal = set()
-
-            for m in adder_in_dict:
-                in_nodes = list(adder_in_dict[m])
-                out_nodes = list(adder_out_dict[m])
-                forward_reachable = set()
-                backward_reachable = set()
-                for i in in_nodes:
-                    fw = dict(nx.bfs_successors(g, i, 6))
-                    for t in fw.values():
-                        forward_reachable.update(set(t))
-                for o in out_nodes:
-                    bw = dict(nx.bfs_successors(rg, o, 6))
-                    for t in bw.values():
-                        backward_reachable.update(set(t))
-                internal.update(forward_reachable.intersection(backward_reachable))
-                i_not_r = 0
-                o_not_r = 0
-                for i in in_nodes:
-                    if i not in backward_reachable:
-                        print(i)
-                        i_not_r += 1
-                for o in out_nodes:
-                    if o not in forward_reachable:
-                        print(o)
-                        o_not_r += 1
-                # print("{}: iNOT={}, oNOT={}".format(m, i_not_r, o_not_r))
-            for n in nodes:
-                n[1]["is_adder"] = n[0] in internal
-
-        else:
-            for n in nodes:
-                n[1]["is_input"] = n[0] in adder_inputs
-                n[1]["is_output"] = n[0] in adder_outputs
-                n[1]["position"] = positions.get(n[0],None)
-
-        print(adder_cells)
+        print('POs:',len(POs))
         return nodes, edges
 
 
 def main():
-    folder = "./implementation/test/"
+    #folder = "./implementation/test/"
     total_nodes = 0
     total_edges = 0
     ntype = set()
 
-    parser = DcParser("Rocket", hier_keywords=["add", "inc"], adder_keywords=['add_x', 'alu_DP_OP', 'div_DP_OP'],
+    parser = DcParser("multi_16bit_unsigned", hier_keywords=["add", "inc"], adder_keywords=['add_x', 'alu_DP_OP', 'div_DP_OP'],
                       hadd_type="xor")
-    for v in os.listdir(folder):
-        if v.endswith('.v') is False:
-            continue
-        nodes,edges = parser.parse(os.path.join(folder,v))
-        print("nodes {}, edges {}".format(len(nodes), len(edges)))
-        for n in nodes:
-            ntype.add(n[1]["type"])
-        total_nodes += len(nodes)
-        total_edges += len(edges)
-        # break
-        print(ntype)
+    vfile = '../arithmetic_netlists/muliplier/16bit_wallace/implementation/multi_16bit_unsigned.v'
+    nodes, edges = parser.parse(vfile)
+    print("nodes {}, edges {}".format(len(nodes), len(edges)))
+    for n in nodes:
+        ntype.add(n[1]["type"])
+    total_nodes += len(nodes)
+    total_edges += len(edges)
+    print(ntype)
+
+    # for v in os.listdir(folder):
+    #     if v.endswith('.v') is False:
+    #         continue
+    #     nodes,edges = parser.parse(os.path.join(folder,v))
+    #     print("nodes {}, edges {}".format(len(nodes), len(edges)))
+    #     for n in nodes:
+    #         ntype.add(n[1]["type"])
+    #     total_nodes += len(nodes)
+    #     total_edges += len(edges)
+    #     # break
+    #     print(ntype)
 
     print(total_nodes, total_edges)
 

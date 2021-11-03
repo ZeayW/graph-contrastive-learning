@@ -937,7 +937,7 @@ class DcParser:
             #     nodes.append((src,{"type":"1'b0"}))
             # if "1'b1" in src :
             #     nodes.append((src,{"type":"1'b1"}))
-        print(pis)
+        #print(pis)
         if label_region:
             g = nx.DiGraph()
             g.add_nodes_from(nodes)
