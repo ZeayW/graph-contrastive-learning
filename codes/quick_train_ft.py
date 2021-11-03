@@ -528,6 +528,7 @@ def train(options):
     #print(len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) <= 1]))
     print(val_g.ndata['ntype'].shape)
     print("num pos1", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) >0]))
+    print(val_g.ndata['position'][val_g.ndata['label_o'].squeeze(1) >0])
     # change_label(train_g,'label_o',options)
     # change_label(val_g,'label_o',options)
     # replaceDFF(train_g)
