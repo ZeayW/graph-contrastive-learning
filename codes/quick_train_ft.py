@@ -519,6 +519,7 @@ def train(options):
             val_g.ndata['label_o'][mask_mul_val] = 1
             train_g.ndata['label_o'][mask_sub_train] = 1
             val_g.ndata['label_o'][mask_sub_val] = 1
+    print('val sub output:',len(val_g.ndata['label_o'][val_g.ndata['label_o']==1]))
     #print(len(muldiv_nodes))
     #print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
     #train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
