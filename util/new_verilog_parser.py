@@ -929,10 +929,10 @@ class DcParser:
             if src not in gate_names and src not in pis:
                 nodes.append((src, {"type": "PI"}))
                 pis.append(src)
-            if "1'b0" in src:
-                print("1'b0")
-            if "1'b1" in src:
-                print("1'b1")
+                if "1'b0" in src:
+                    print("1'b0")
+                if "1'b1" in src:
+                    print("1'b1")
             # if "1'b0" in src :
             #     nodes.append((src,{"type":"1'b0"}))
             # if "1'b1" in src :
