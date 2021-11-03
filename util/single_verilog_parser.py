@@ -299,7 +299,8 @@ class DcParser:
                                 temp = high_bit
                                 high_bit = low_bit
                                 low_bit = temp
-                        if type(decl) == pyverilog.vparser.ast.Input or type(decl) == pyverilog.vparser.ast.Output:
+                        #if type(decl) == pyverilog.vparser.ast.Input or type(decl) == pyverilog.vparser.ast.Output:
+                        if type(decl) == pyverilog.vparser.ast.Output:
                             # if type(decl) == pyverilog.vparser.ast.Output and re.match('io_pmp_\d_addr',decl.name):
                             #     decl.show()
                             ios[name] = (high_bit, low_bit)
