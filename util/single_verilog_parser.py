@@ -216,7 +216,7 @@ class DcParser:
             #print(ios)
             for pname,(high_bit,low_bit) in ios.items():
                 if pname in argname:
-                    print(pname)
+                    print(pname,argname)
                     bit_position = int(argname.split('_')[-1])
                     if bit_position>=low_bit and bit_position<=high_bit:
                         position = (pname,bit_position)
