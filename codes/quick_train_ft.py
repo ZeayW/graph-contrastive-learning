@@ -583,9 +583,8 @@ def train(options):
     val_g.ndata['ntype2'] = th.argmax(val_g.ndata['ntype'], dim=1).squeeze(-1)
     val_graphs = dgl.unbatch(val_g)
 
-    positions = train_g.ndata['position'][train_g.ndata['label_o'].squeeze(1) > 0]
-    print(positions)
-    
+
+
     if options.add == 2:
         #train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1) == 1] = -1
         train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1)>=1] = -1
@@ -630,6 +629,9 @@ def train(options):
     # train_graphs.pop(1)
     train_g = dgl.batch(train_graphs)
 
+    positions = train_g.ndata['position'][train_g.ndata['label_o'].squeeze(1) > 0]
+    print(positions)
+    
     train_nodes, pos_count, neg_count = oversample(train_g, options, options.in_dim)
     print('train_nodes',len(train_nodes))
     sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
