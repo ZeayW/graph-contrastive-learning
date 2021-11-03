@@ -220,12 +220,7 @@ def main(options):
         in_nlayers = 0
     if out_nlayers == -1:
         out_nlayers = 0
-    unlabel_low(val_g, options.unlabel)
-    if options.add == -1:
-        label_name = 'label_o'
-        val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
-    else:
-
+    if options.add !=-1:
         val_g.ndata['label_o'] = val_g.ndata[label_name]
 
         mask_sub_val = val_g.ndata['sub_o'] > 0
@@ -239,6 +234,12 @@ def main(options):
         elif options.add == 3:
             val_g.ndata['label_o'][mask_mul_val] = 1
             val_g.ndata['label_o'][mask_sub_val] = 1
+    unlabel_low(val_g, options.unlabel)
+    if options.add == -1:
+        label_name = 'label_o'
+        val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
+
+
     val_g.ndata['f_input'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
     val_g.ndata['temp'] = th.ones(size=(val_g.number_of_nodes(), options.hidden_dim), dtype=th.float)
 
