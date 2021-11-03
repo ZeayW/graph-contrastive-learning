@@ -213,6 +213,7 @@ class DcParser:
             #         break
             # for cases that instance_name is not unique, e.g, have several add_x_1，each is instance of different cell,
             # in theses cases, mcomp contains both cell information and instance information
+            print(ios)
             for pname,(high_bit,low_bit) in ios.items():
                 if pname in argname:
                     bit_position = int(argname.split('_')[-1])
