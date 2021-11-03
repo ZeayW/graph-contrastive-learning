@@ -607,7 +607,8 @@ class DcParser:
         # print(args_to_update[self.top_module])
         target_cells = target_cells[self.top_module]
         for cell in target_cells:
-            print(cell.cell_type,cell.cell_name, cell.instance_name,cell.ports)
+            if cell.cell_type == 'sub':
+                print(cell.cell_type,cell.cell_name, cell.instance_name,cell.ports)
         # exit()
 
         return target_cells
@@ -884,6 +885,8 @@ class DcParser:
             #                 {"is_reverted": False, "is_sequencial": "DFF" in mtype},
             #             )
             #         )
+
+        print(index01)
         #print('mult info')
 
         # for mcell,info in mult_infos.items():
@@ -930,40 +933,40 @@ class DcParser:
             #     nodes.append((src,{"type":"1'b0"}))
             # if "1'b1" in src :
             #     nodes.append((src,{"type":"1'b1"}))
-        if label_region:
-            g = nx.DiGraph()
-            g.add_nodes_from(nodes)
-            g.add_edges_from(edges)
-            rg = g.reverse()
-            internal = set()
-
-            for m in adder_in_dict:
-                in_nodes = list(adder_in_dict[m])
-                out_nodes = list(adder_out_dict[m])
-                forward_reachable = set()
-                backward_reachable = set()
-                for i in in_nodes:
-                    fw = dict(nx.bfs_successors(g, i, 6))
-                    for t in fw.values():
-                        forward_reachable.update(set(t))
-                for o in out_nodes:
-                    bw = dict(nx.bfs_successors(rg, o, 6))
-                    for t in bw.values():
-                        backward_reachable.update(set(t))
-                internal.update(forward_reachable.intersection(backward_reachable))
-                i_not_r = 0
-                o_not_r = 0
-                for i in in_nodes:
-                    if i not in backward_reachable:
-                        print(i)
-                        i_not_r += 1
-                for o in out_nodes:
-                    if o not in forward_reachable:
-                        print(o)
-                        o_not_r += 1
-                # print("{}: iNOT={}, oNOT={}".format(m, i_not_r, o_not_r))
-            for n in nodes:
-                n[1]["is_adder"] = n[0] in internal
+        # if label_region:
+        #     g = nx.DiGraph()
+        #     g.add_nodes_from(nodes)
+        #     g.add_edges_from(edges)
+        #     rg = g.reverse()
+        #     internal = set()
+        #
+        #     for m in adder_in_dict:
+        #         in_nodes = list(adder_in_dict[m])
+        #         out_nodes = list(adder_out_dict[m])
+        #         forward_reachable = set()
+        #         backward_reachable = set()
+        #         for i in in_nodes:
+        #             fw = dict(nx.bfs_successors(g, i, 6))
+        #             for t in fw.values():
+        #                 forward_reachable.update(set(t))
+        #         for o in out_nodes:
+        #             bw = dict(nx.bfs_successors(rg, o, 6))
+        #             for t in bw.values():
+        #                 backward_reachable.update(set(t))
+        #         internal.update(forward_reachable.intersection(backward_reachable))
+        #         i_not_r = 0
+        #         o_not_r = 0
+        #         for i in in_nodes:
+        #             if i not in backward_reachable:
+        #                 print(i)
+        #                 i_not_r += 1
+        #         for o in out_nodes:
+        #             if o not in forward_reachable:
+        #                 print(o)
+        #                 o_not_r += 1
+        #         # print("{}: iNOT={}, oNOT={}".format(m, i_not_r, o_not_r))
+        #     for n in nodes:
+        #         n[1]["is_adder"] = n[0] in internal
 
         else:
             count = 0
