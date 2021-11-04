@@ -750,6 +750,7 @@ def train(options):
             blocks = [b.to(device) for b in blocks]
             if options.gnn:
                 input_features = blocks[0].srcdata["ntype"]
+                print(input_features.shape)
             else:
                 input_features = blocks[0].srcdata["f_input"]
             output_labels = blocks[-1].dstdata[label_name].squeeze(1)
