@@ -439,7 +439,7 @@ def split_val(g):
     shuffle(pos_nodes)
     #print(pos_nodes)
     #exit()
-    #num_pos = len(pos_nodes)
+    num_pos = len(pos_nodes)
     val_nodes = pos_nodes[:int(num_pos/5)]
     val_nodes = th.tensor(val_nodes)
     return val_nodes
