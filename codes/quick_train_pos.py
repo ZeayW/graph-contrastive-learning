@@ -106,7 +106,7 @@ def preprocess(data_path,device,options):
 
     if os.path.exists(val_data_file) is False:
         datapaths = ["../dc/mul_rocket/implementation/"]
-        report_folders = ["../mul_dc/rocket/report/"]
+        report_folders = ["../dc/mul_rocket/report/"]
         th.multiprocessing.set_sharing_strategy('file_system')
         #print(dataset_not_edge.Dataset_n)
         dataset = Dataset("Rocket",datapaths,report_folders,label2id)
