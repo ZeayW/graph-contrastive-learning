@@ -184,12 +184,12 @@ class DcParser:
                     inputs = expression.split('+')
                     for input in inputs:
                         dp_target_cells[cell_name][1][input] = 1
-                # if '-' in expression and '+' not in expression:
-                #     dp_target_cells[cell_name] = dp_target_cells.get(cell_name, ('sub', {}, {}))
-                #     dp_target_cells[cell_name][2][var_name] = 1
-                #     inputs = expression.split('-')
-                #     for i,input in enumerate(inputs):
-                #         dp_target_cells[cell_name][1][input] = 1 if i==0 else 2
+                if '-' in expression and '+' not in expression:
+                    dp_target_cells[cell_name] = dp_target_cells.get(cell_name, ('sub', {}, {}))
+                    dp_target_cells[cell_name][2][var_name] = 1
+                    inputs = expression.split('-')
+                    for i,input in enumerate(inputs):
+                        dp_target_cells[cell_name][1][input] = 1 if i==0 else 2
                     #print(adder_cells)
         print('dp_target_cells',dp_target_cells)
                     #adder_cells[cell_name][0]
