@@ -673,8 +673,8 @@ def train(options):
         drop_last=False,
     )
     loaders = [valdataloader]
-    if options.add==1:
-        loaders.append(valdataloader2)
+    # if options.add==1:
+    #     loaders.append(valdataloader2)
     #print("Data successfully loaded")
 
     k = options.k
