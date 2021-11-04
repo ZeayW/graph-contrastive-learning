@@ -435,11 +435,11 @@ def split_val(g):
     nodes = th.tensor(range(g.num_nodes()))
     pos_mask = (g.ndata['label_o'] ==1).squeeze(1)
     pos_nodes = nodes[pos_mask].numpy().tolist()
-    print(pos_nodes)
+    #print(pos_nodes)
     shuffle(pos_nodes)
     #print(pos_nodes)
     #exit()
-    num_pos = len(pos_nodes)
+    #num_pos = len(pos_nodes)
     val_nodes = pos_nodes[:int(num_pos/5)]
     val_nodes = th.tensor(val_nodes)
     return val_nodes
