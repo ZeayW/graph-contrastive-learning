@@ -157,7 +157,8 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
             print('new type', n[1]['type'])
             if  'DFF' in n[1]['type']:
                 ntype[nid][2] = 1
-        ntype[nid][label2id[n[1]["type"]]] = 1
+        else:
+            ntype[nid][label2id[n[1]["type"]]] = 1
 
     print('muldiv_outputs:',len(is_mul_output[is_mul_output==1]))
     print('muldiv_inputs1:', len(is_mul_input[is_mul_input == 1]))
