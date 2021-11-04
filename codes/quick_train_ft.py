@@ -595,29 +595,29 @@ def train(options):
         #val_g.ndata['label_o'][val_g.ndata['adder_o'].squeeze(-1)>=1] = -1
         train_g.ndata['label_o'][train_g.ndata['mul_o'].squeeze(-1) >= 1] = -1
         #val_g.ndata['label_o'][val_g.ndata['mul_o'].squeeze(-1) >= 1] = -1
-    if options.add == 1:
-        # if os.path.exists(os.path.join(data_path,'boom_vals.pkl')):
-        #     with open(os.path.join(data_path,'boom_vals.pkl'),'rb') as f:
-        #         boom_val_nodes = pickle.load(f)
-        # else:
-        #     boom_val_nodes = split_val(train_g)
-        #     with open(os.path.join(data_path,'boom_vals.pkl'),'wb') as f:
-        #         pickle.dump(boom_val_nodes,f)
-        #print(boom_val_nodes)
-        #print(len(train_g.ndata['label_o']==0))
-        valdataloader2 = MyNodeDataLoader(
-            True,
-            train_g,
-            boom_val_nodes,
-            Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
-            batch_size=len(boom_val_nodes),
-            shuffle=True,
-            drop_last=False
-        )
-
-        train_graphs = dgl.unbatch(train_g)
-        train_g = dgl.batch(train_graphs)
-        train_g.ndata['label_o'][boom_val_nodes] = -1
+    # if options.add == 1:
+    #     if os.path.exists(os.path.join(data_path,'boom_vals.pkl')):
+    #         with open(os.path.join(data_path,'boom_vals.pkl'),'rb') as f:
+    #             boom_val_nodes = pickle.load(f)
+    #     else:
+    #         boom_val_nodes = split_val(train_g)
+    #         with open(os.path.join(data_path,'boom_vals.pkl'),'wb') as f:
+    #             pickle.dump(boom_val_nodes,f)
+    #     #print(boom_val_nodes)
+    #     #print(len(train_g.ndata['label_o']==0))
+    #     valdataloader2 = MyNodeDataLoader(
+    #         True,
+    #         train_g,
+    #         boom_val_nodes,
+    #         Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
+    #         batch_size=len(boom_val_nodes),
+    #         shuffle=True,
+    #         drop_last=False
+    #     )
+    #
+    #     train_graphs = dgl.unbatch(train_g)
+    #     train_g = dgl.batch(train_graphs)
+    #     train_g.ndata['label_o'][boom_val_nodes] = -1
 
 
     train_graphs = dgl.unbatch(train_g)
