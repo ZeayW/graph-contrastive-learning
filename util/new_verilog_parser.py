@@ -722,7 +722,7 @@ class DcParser:
                     sub_inputs2.add(port_info.argname)
                     #sub_in_dict[port_info.input_comp].add(port_info.argname)
                 if port_info.is_sub_output:
-                    print(port_info.argname,port_info.argcomp,port_info.portname,port_info.position)
+                    #print(port_info.argname,port_info.argcomp,port_info.portname,port_info.position)
                     sub_outputs.add(port_info.argname)
                     #sub_out_dict[port_info.output_comp].add(port_info.argname)
 

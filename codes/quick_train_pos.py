@@ -105,8 +105,8 @@ def preprocess(data_path,device,options):
     val_data_file = os.path.join(data_path, 'rocket2.pkl')
 
     if os.path.exists(val_data_file) is False:
-        datapaths = ["../dc/rocket/implementation/"]
-        report_folders = ["../dc/rocket/report/"]
+        datapaths = ["../dc/mul_rocket/implementation/"]
+        report_folders = ["../mul_dc/rocket/report/"]
         th.multiprocessing.set_sharing_strategy('file_system')
         #print(dataset_not_edge.Dataset_n)
         dataset = Dataset("Rocket",datapaths,report_folders,label2id)
@@ -117,8 +117,8 @@ def preprocess(data_path,device,options):
         with open(val_data_file,'wb') as f:
             pickle.dump(g,f)
     if os.path.exists(train_data_file) is False:
-        datapaths = ["../dc/boom/implementation/"]
-        report_folders = ["../dc/boom/report/"]
+        datapaths = ["../dc/mul_boom/implementation/"]
+        report_folders = ["../dc/mul_boom/report/"]
         th.multiprocessing.set_sharing_strategy('file_system')
         #print(dataset_not_edge.Dataset_n)
         dataset = Dataset("BoomCore",datapaths,report_folders,label2id)
@@ -360,7 +360,7 @@ def train(options):
     device = th.device("cuda:"+str(options.gpu) if th.cuda.is_available() else "cpu")
     # Dump the preprocessing result to save time!
     #data_path = 'data/region/'
-    data_path = '../data/simplify18/'
+    data_path = '../data/muldiv/'
     train_data_file = os.path.join(data_path,'boom2.pkl')
     val_data_file = os.path.join(data_path,'rocket2.pkl')
     #split_dir = 'splits/rokcet'
