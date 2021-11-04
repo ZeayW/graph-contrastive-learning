@@ -123,13 +123,16 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
     is_sub_input = th.zeros((len(node2id), 1), dtype=th.long)
     is_sub_output = th.zeros((len(node2id), 1), dtype=th.long)
     position = th.zeros((len(node2id), 1), dtype=th.long)
+    print(label2id)
     for n in nodes:
         nid = node2id[n[0]]
         # print(nid)
-        if label2id.get(n[1]['type']) is None:
-            print('new type',n[1]['type'])
-            type_id = len(label2id)
-            label2id[n[1]['type']] = type_id
+        # if label2id.get(n[1]['type']) is None:
+        #     print('new type',n[1]['type'])
+        #     # if 'DFF' in n[1]['type']:
+            #
+            # type_id = len(label2id)
+            # label2id[n[1]['type']] = type_id
         if get_options().region:
             is_adder[nid][0] = n[1]['is_adder']
         else:
@@ -150,6 +153,10 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
     ntype = th.zeros((len(node2id), get_options().in_dim), dtype=th.float)
     for n in nodes:
         nid = node2id[n[0]]
+        if label2id.get(n[1]['type']) is None:
+            print('new type', n[1]['type'])
+            if  'DFF' in n[1]['type']:
+                ntype[nid][2] = 1
         ntype[nid][label2id[n[1]["type"]]] = 1
 
     print('muldiv_outputs:',len(is_mul_output[is_mul_output==1]))
