@@ -127,6 +127,7 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
         nid = node2id[n[0]]
         # print(nid)
         if label2id.get(n[1]['type']) is None:
+            print(n[1]['type'])
             type_id = len(label2id)
             label2id[n[1]['type']] = type_id
         if get_options().region:
