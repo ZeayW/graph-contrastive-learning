@@ -184,7 +184,7 @@ def parse_single_file(parser,vfile_pair,hier_report,label2id):
     graph.ndata["ntype"] = ntype
 
     print('ntype:',ntype.shape)
-    exit()
+    #exit()
     if get_options().region:
         graph.ndata["label_ad"] = is_adder
     else:
