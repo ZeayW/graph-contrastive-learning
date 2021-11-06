@@ -102,7 +102,7 @@ class Dataset_global(DGLDataset):
                         if not vf.endswith('.v') or 'hier' in vf:
                             continue
                         #PO = []
-                        print('processing {}'.format(vf))
+                        print('processing {} {}'.format(folder_path,vf))
                        # print('\ngenerate positive samples for {}'.format(vf))
                         #value = vf.split('_')[2].split('.')[0][1:]
                         parser = DcParser('test')
@@ -141,6 +141,8 @@ def change_order(nids,width):
     return res
 def cal_depth(g,PIs,POs):
     g = g.to_networkx()
+
+    depths = []
     depth = 0
     dsts = POs
     for src in PIs:
@@ -154,9 +156,10 @@ def cal_depth(g,PIs,POs):
                     if len(p) > max_path_length:
                         max_path_length = len(p)
                         path = p
+        depths.append(max_path_length)
         #print('src:{},dst:{},path:{}'.format(src,dst,path))
         depth = max(depth,max_path_length-1)
-
+    print('\t',depths)
     return depth
 
 
