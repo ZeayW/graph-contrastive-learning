@@ -14,7 +14,7 @@ import random
 from util.single_verilog_parser import *
 from options import get_options
 from torch.nn.parameter import Parameter
-from codes.generate_data import *
+#from codes.generate_data import *
 import pickle
 
 def parse_single_file(nodes,edges):
