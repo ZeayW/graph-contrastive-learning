@@ -38,7 +38,7 @@ def parse_single_file(nodes,edges):
             type = n[1]["type"]
             if re.search("\d", type) and type not in ["1'b0","1'b1"]:
                 type = type[: re.search("\d", type).start()]
-            print(type)
+            #print(type)
             ntype[nid][label2id[type]] = 1
             if n[1]["is_output"]:
                 POs.append(nid)
