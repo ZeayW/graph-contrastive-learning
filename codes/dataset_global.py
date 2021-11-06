@@ -36,8 +36,6 @@ def parse_single_file(nodes,edges):
             node2id[n[0]] = nid
             id2node[nid] = n[0]
             type = n[1]["type"]
-            if re.search("\d", type):
-                type = type[: re.search("\d", type).start()]
             ntype[nid][label2id[type]] = 1
             if n[1]["is_output"]:
                 POs.append(nid)
