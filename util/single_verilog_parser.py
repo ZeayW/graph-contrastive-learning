@@ -252,10 +252,12 @@ class DcParser:
 
                     pos = re.search("\d", mtype)
                     if pos:
+                        print(ntype)
                         ntype = ntype[: pos.start()]
                     # if 'DFF' in ntype :
                     #     ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
-
+                        if ntype == '':
+                            exit()
                     inputs[fo.argname] = inputs.get(fo.argname, [])
                     for fi in fanins:
                         # dff ignore SET/RESET/CLOCK
