@@ -514,7 +514,7 @@ def train(options):
                 train_loss.backward()
                 # print(model.GCN1.layers[0].attn_n.grad)
                 optim.step()
-                labels = th.tensor([]).to(device)
+                labels = th.tensor([],dtype=th.long).to(device)
                 global_embeddings = None
             th.cuda.empty_cache()
         endtime = time()
