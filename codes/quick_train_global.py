@@ -145,7 +145,7 @@ def validate(val_graphs,sampler,device,model,mlp,combine,Loss,alpha,beta,options
         labels = th.tensor([],dtype=th.long).to(device)
         global_embeddings = None
         for idx, (label, graph, POs, depth) in enumerate(val_graphs):
-            th.cat((labels, th.tensor([label],dtype=th.long).to(device)))
+            labels = th.cat((labels, th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
             blocks = sampler.sample_blocks(graph,POs)
 
