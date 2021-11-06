@@ -165,8 +165,8 @@ def cal_depth(g,PIs,POs):
         #for dst in PIs[2*i:2*i+2]:
         path = None
         for dst in PIs:
-            if nx.has_path(g, src, dst):
-                path = nx.shortest_path(g,src,dst)
+            if nx.has_path(rg, src, dst):
+                path = nx.shortest_path(rg,src,dst)
                 path_length = len(path)
                 max_path_length = max(max_path_length,path_length)
                 # for p in nx.all_simple_paths(g, src, dst):
