@@ -357,7 +357,7 @@ def train(options):
         graphs = pickle.load(f)
 
     shuffle(graphs)
-    for g in graphs:
+    for _,g,_,_ in graphs:
         g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
 
         g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
