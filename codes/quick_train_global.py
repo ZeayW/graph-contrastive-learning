@@ -470,7 +470,7 @@ def train(options):
         labels = th.tensor([]).to(device)
         global_embeddings = th.tensor([]).to(device)
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
-            th.cat((labels,th.tensor([label].to(device))))
+            th.cat((labels,th.tensor([label]).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
             dataloader = MyNodeDataLoader(
                 True,
