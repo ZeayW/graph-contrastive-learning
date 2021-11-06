@@ -556,7 +556,7 @@ def train(options):
         # save the result of current epoch
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
             f.write(str(round(Train_loss, 8)) + " " + str(round(Train_acc, 3))  + "\n")
-            f.write(str(round(val_loss, 3)) + " " + str(round(val_acc, 3)) + "\n")
+            f.write(str(round(val_loss.item(), 3)) + " " + str(round(val_acc, 3)) + "\n")
             f.write('\n')
 
         judgement = val_acc > max_acc
