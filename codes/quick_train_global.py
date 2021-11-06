@@ -357,6 +357,11 @@ def train(options):
         graphs = pickle.load(f)
 
     shuffle(graphs)
+    for g in graphs:
+        g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+
+        g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+        g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
     val_graphs = graphs[:int(len(graphs)/10)]
     train_graphs = graphs[int(len(graphs)/10):]
     # with open(val_data_file,'rb') as f:
@@ -367,7 +372,7 @@ def train(options):
 
 
 
-    sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
+    #sampler = Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include)
 
 
     if in_nlayers == -1:
