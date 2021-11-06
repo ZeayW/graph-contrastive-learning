@@ -504,6 +504,7 @@ def train(options):
                 print('ground-truth labels:',labels)
                 print('predict labels:',predict_labels)
                 train_loss = Loss(label_hats, labels)
+                print('loss:',train_loss)
                 total_num += len(labels)
                 total_loss += train_loss.item()*len(labels)
                 correct += (
