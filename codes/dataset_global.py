@@ -100,6 +100,7 @@ class Dataset_global(DGLDataset):
                         if not vf.endswith('.v') or 'hier' in vf:
                             continue
                         #PO = []
+                        print('processing {}'.format(vf))
                        # print('\ngenerate positive samples for {}'.format(vf))
                         #value = vf.split('_')[2].split('.')[0][1:]
                         parser = DcParser('test')
