@@ -110,7 +110,8 @@ class Dataset_global(DGLDataset):
                         graph, POs, depth = parse_single_file(nodes, edges)
                         #self.num_graph += 1
                         self.graphs.append((self.labels[i],graph,POs,depth))
-            print(self.graphs)
+            for label,graph,POs,depth in self.graphs:
+                print(label,graph,len(POs),depth)
             exit()
         #self.labels = th.zeros((len(self.graphs), 1), dtype=th.long)
 
