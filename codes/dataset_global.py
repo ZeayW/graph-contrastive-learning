@@ -131,7 +131,7 @@ class Dataset_global(DGLDataset):
                         #print(label, graph, len(POs), depth)
             # for label,graph,POs,depth in self.graphs:
             #     print(label,graph,len(POs),depth)
-            exit()
+
         #self.labels = th.zeros((len(self.graphs), 1), dtype=th.long)
 
         #self.depth = max_depth

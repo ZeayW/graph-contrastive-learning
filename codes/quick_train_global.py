@@ -41,8 +41,8 @@ def preprocess(data_path,device,options,in_dim):
     #     with open(val_data_file,'wb') as f:
     #         pickle.dump(graphs,f)
     if os.path.exists(train_data_file) is False:
-        datapaths = ["../arithmetic_netlists/multiplier/","../arithmetic_netlists/adders/"]
-        labels = [1,0]
+        datapaths = ["../arithmetic_netlists/adders/","../arithmetic_netlists/multiplier/"]
+        labels = [0,1]
         th.multiprocessing.set_sharing_strategy('file_system')
         dataset = Dataset(datapaths, labels)
         graphs = dataset.graphs
