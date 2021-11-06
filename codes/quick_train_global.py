@@ -458,7 +458,7 @@ def train(options):
         labels = th.tensor([]).to(device)
         global_embeddings = None
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
-            th.cat((labels,th.tensor([label]).to(device)))
+            labels = th.cat((labels,th.tensor([label]).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
             blocks = sampler.sample_blocks(graph,POs)
             # dataloader = MyNodeDataLoader(
@@ -470,7 +470,7 @@ def train(options):
             #     shuffle=True,
             #     drop_last=False,
             # )
-            print(idx,th.cuda.get_device_capability(device))
+            #print(idx,th.cuda.get_device_capability(device))
             start_time = time()
             blocks = [b.to(device) for b in blocks]
             if options.gnn:
