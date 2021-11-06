@@ -503,11 +503,12 @@ def train(options):
                 # output_labels = blocks[-1].dstdata[label_name].squeeze(1)
                 # total_num += len(output_labels)
                 po_embeddings = model(blocks,input_features)
-                print(po_embeddings.shape)
+                #print(po_embeddings.shape)
                 global_embedding = combine(po_embeddings)
-                print(global_embedding.shape)
+                #print(global_embedding.shape)
                 #label_hat = nn.functional.softmax(mlp(global_embedding), 1)[:, 1]
                 th.cat((global_embeddings,global_embedding))
+                print(global_embeddings.shape)
                 # if get_options().nlabels != 1:
                 #     pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
                 # else:
