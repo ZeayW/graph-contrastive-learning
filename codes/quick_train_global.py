@@ -511,13 +511,13 @@ def train(options):
                 if global_embeddings is None:
                     global_embeddings = global_embedding.unsqueeze(0)
                 else:
-                    print(global_embeddings.shape,global_embedding.unsqueeze(0).shape)
-                    th.cat((global_embeddings,global_embedding.unsqueeze(0)),dim=0)
-                    exit()
+                    #print(global_embeddings.shape,global_embedding.unsqueeze(0).shape)
+                    global_embeddings = th.cat((global_embeddings,global_embedding.unsqueeze(0)),dim=0)
+                    #exit()
                 #print(global_embedding.shape)
                 #print(global_embedding.unsqueeze(0).shape,global_embedding.unsqueeze(0))
                 #rint(global_embedding.unsqueeze(-1).shape, global_embedding.unsqueeze(-1))
-                #print(global_embeddings.shape)
+                print(global_embeddings.shape)
                 #exit()
                 # if get_options().nlabels != 1:
                 #     pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
