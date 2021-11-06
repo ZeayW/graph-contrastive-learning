@@ -97,7 +97,7 @@ class Dataset_global(DGLDataset):
                     imple_folder = os.path.join(folder_path,'implementation')
 
                     for vf in os.listdir(imple_folder):
-                        if not vf.endswith('.v') :
+                        if not vf.endswith('.v') or 'hier' in vf:
                             continue
                         #PO = []
                        # print('\ngenerate positive samples for {}'.format(vf))
