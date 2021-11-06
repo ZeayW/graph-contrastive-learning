@@ -62,7 +62,7 @@ def parse_single_file(nodes,edges):
     #assert len(PIs)==get_options().num_input
     #print(graph.nodes())
     depth = cal_depth(graph,PIs,POs)
-    print('\tdepth:', depth, 'total_nodes:', graph.number_of_nodes(), 'num PIs:', len(PIs), 'num POs:', len(POs))
+    print('\ttotal_nodes:', graph.number_of_nodes(), 'num PIs:', len(PIs), 'num POs:', len(POs),'depth:', depth,)
     return graph,POs,depth
 
     
