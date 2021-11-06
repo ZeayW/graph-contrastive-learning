@@ -92,9 +92,8 @@ class DcParser:
         top_module = None
 
         for module in ast.description.definitions:
-            if module.name == self.top_module:
-                top_module = module
-                break
+            top_module = module
+
         assert top_module is not None, "top module {} not found".format(self.top_module)
 
         for item in top_module.items:
