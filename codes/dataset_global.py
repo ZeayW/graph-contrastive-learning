@@ -103,8 +103,8 @@ class Dataset_global(DGLDataset):
                        # print('\ngenerate positive samples for {}'.format(vf))
                         #value = vf.split('_')[2].split('.')[0][1:]
                         parser = DcParser('test')
-                        print(os.path.join(datapath, vf))
-                        nodes, edges = parser.parse(os.path.join(datapath, vf))
+                        #print(os.path.join(datapath, vf))
+                        nodes, edges = parser.parse(os.path.join(imple_folder, vf))
                         if len(nodes) == 0:
                             print('empty...')
                             continue
