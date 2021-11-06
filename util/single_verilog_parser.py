@@ -314,8 +314,8 @@ class DcParser:
         node2id = {}
         new_edges = []
         #output_nid = None
-        for n in nodes:
-            print(n[1]['type'])
+        # for n in nodes:
+        #     print(n[1]['type'])
 
         return nodes,edges
         #return output_node,nodes, edges
