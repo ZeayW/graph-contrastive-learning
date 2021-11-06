@@ -142,10 +142,10 @@ def validate(val_graphs,sampler,device,model,mlp,combine,Loss,alpha,beta,options
     runtime = 0
     num_batch = 0
     with th.no_grad():
-        labels = th.tensor([]).to(device)
+        labels = th.tensor([],dtype=th.long).to(device)
         global_embeddings = None
         for idx, (label, graph, POs, depth) in enumerate(val_graphs):
-            th.cat((labels, th.tensor([label].to(device))))
+            th.cat((labels, th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
             blocks = sampler.sample_blocks(graph,blocks)
 
@@ -499,11 +499,11 @@ def train(options):
                 #print(global_embeddings.shape)
                 #print(mlp)
                 label_hats = mlp(global_embeddings)
-                print('label_hat',label_hats)
-                print('softmax',nn.functional.softmax(label_hats,1))
+                #print('label_hat',label_hats)
+                #print('softmax',nn.functional.softmax(label_hats,1))
                 predict_labels = th.argmax(nn.functional.softmax(label_hats,1),dim=1)
-                print('ground-truth labels:',labels.shape,labels)
-                print('predict labels:',predict_labels.shape,predict_labels)
+                #print('ground-truth labels:',labels.shape,labels)
+                #print('predict labels:',predict_labels.shape,predict_labels)
                 train_loss = Loss(label_hats, labels)
                 print('loss:',train_loss)
                 total_num += len(labels)
