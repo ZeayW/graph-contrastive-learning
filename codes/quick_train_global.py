@@ -516,6 +516,7 @@ def train(options):
                 print(global_embedding.unsqueeze(0).shape,global_embedding.unsqueeze(0))
                 print(global_embedding.unsqueeze(-1).shape, global_embedding.unsqueeze(-1))
                 print(global_embeddings.shape)
+                exit()
                 # if get_options().nlabels != 1:
                 #     pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
                 # else:
