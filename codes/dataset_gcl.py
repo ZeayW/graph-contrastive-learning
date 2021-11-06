@@ -17,6 +17,7 @@ from torch.nn.parameter import Parameter
 from codes.generate_data import *
 import pickle
 
+
 def parse_single_file(nodes,edges,output_node):
     # nodes: list of (node, {"type": type}) here node is a str ,like 'n123' or '1'b1'
     # note that here node type does not include buf /not

@@ -17,6 +17,19 @@ from torch.nn.parameter import Parameter
 #from codes.generate_data import *
 import pickle
 
+def get_reverse_graph(g):
+    edges = g.edges()
+    reverse_edges = (edges[1], edges[0])
+
+    rg = dgl.graph(reverse_edges, num_nodes=g.num_nodes())
+    for key, value in g.ndata.items():
+        # print(key,value)
+        rg.ndata[key] = value
+    for key, value in g.edata.items():
+        # print(key,value)
+        rg.edata[key] = value
+    return rg
+
 def parse_single_file(nodes,edges):
     # nodes: list of (node, {"type": type}) here node is a str ,like 'n123' or '1'b1'
     # note that here node type does not include buf /not
@@ -140,17 +153,18 @@ def change_order(nids,width):
             res.append(nids[width*module_index+bit_index])
     return res
 def cal_depth(g,PIs,POs):
-    g = g.to_networkx()
+    rg  = get_reverse_graph(g)
+    rg = rg.to_networkx()
 
     depths = []
     depth = 0
     dsts = POs
-    for src in PIs:
+    for src in POs:
         #print('src',id2nodes[src])
         max_path_length = 0
         #for dst in PIs[2*i:2*i+2]:
         path = None
-        for dst in dsts:
+        for dst in PIs:
             if nx.has_path(g, src, dst):
                 path = nx.shortest_path(g,src,dst)
                 path_length = len(path)
