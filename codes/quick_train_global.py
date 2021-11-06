@@ -147,7 +147,7 @@ def validate(val_graphs,sampler,device,model,mlp,combine,Loss,alpha,beta,options
         for idx, (label, graph, POs, depth) in enumerate(val_graphs):
             th.cat((labels, th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
-            blocks = sampler.sample_blocks(graph,blocks)
+            blocks = sampler.sample_blocks(graph,POs)
 
             start_time = time()
             blocks = [b.to(device) for b in blocks]
