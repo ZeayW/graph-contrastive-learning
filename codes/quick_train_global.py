@@ -500,6 +500,7 @@ def train(options):
                 #print(mlp)
                 label_hats = mlp(global_embeddings)
                 print('label_hat',label_hats)
+                print('softmax',nn.functional.softmax(label_hats,1))
                 predict_labels = th.argmax(nn.functional.softmax(label_hats,1),dim=1)
                 print('ground-truth labels:',labels.shape,labels)
                 print('predict labels:',predict_labels.shape,predict_labels)
@@ -516,7 +517,7 @@ def train(options):
                 optim.step()
                 labels = th.tensor([],dtype=th.long).to(device)
                 global_embeddings = None
-            th.cuda.empty_cache()
+
         endtime = time()
         runtime += endtime - start_time
 
