@@ -486,6 +486,7 @@ def train(options):
                 shuffle=True,
                 drop_last=False,
             )
+            print(idx)
             for ni, (central_nodes,input_nodes,blocks) in enumerate(dataloader):
 
                 #continue
@@ -513,6 +514,7 @@ def train(options):
                 else:
                     #print(global_embeddings.shape,global_embedding.unsqueeze(0).shape)
                     global_embeddings = th.cat((global_embeddings,global_embedding.unsqueeze(0)),dim=0)
+
                     #exit()
                 #print(global_embedding.shape)
                 #print(global_embedding.unsqueeze(0).shape,global_embedding.unsqueeze(0))
