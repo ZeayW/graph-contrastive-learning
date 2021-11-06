@@ -56,12 +56,13 @@ def parse_single_file(nodes,edges):
     graph.ndata["ntype"] = ntype
     PIs = th.tensor(range(graph.number_of_nodes()))[th.argmax(ntype,dim=1).squeeze(-1)==15]\
         .numpy().tolist()
-    print('total_nodes:',graph.number_of_nodes(),'num PIs:',len(PIs),'num POs:',len(POs))
+
     #if len(PIs)!=get_options().num_input:
     #print(PIs,output_nid)
     #assert len(PIs)==get_options().num_input
     #print(graph.nodes())
     depth = cal_depth(graph,PIs,POs)
+    print('\tdepth:', depth, 'total_nodes:', graph.number_of_nodes(), 'num PIs:', len(PIs), 'num POs:', len(POs))
     return graph,POs,depth
 
     
@@ -113,8 +114,10 @@ class Dataset_global(DGLDataset):
                         graph, POs, depth = parse_single_file(nodes, edges)
                         #self.num_graph += 1
                         self.graphs.append((self.labels[i],graph,POs,depth))
-            for label,graph,POs,depth in self.graphs:
-                print(label,graph,len(POs),depth)
+                        #print('\t label: {}, depth: {}'.format(self.labels[i],depth))
+                        #print(label, graph, len(POs), depth)
+            # for label,graph,POs,depth in self.graphs:
+            #     print(label,graph,len(POs),depth)
             exit()
         #self.labels = th.zeros((len(self.graphs), 1), dtype=th.long)
 
