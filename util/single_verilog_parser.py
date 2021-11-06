@@ -252,12 +252,12 @@ class DcParser:
 
                     pos = re.search("\d", mtype)
                     if pos:
-                        print(ntype)
+                        #print(ntype)
                         ntype = ntype[: pos.start()]
                     # if 'DFF' in ntype :
                     #     ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
-                        if ntype == '':
-                            exit()
+                    #     if ntype == '':
+                    #         exit()
                     inputs[fo.argname] = inputs.get(fo.argname, [])
                     for fi in fanins:
                         # dff ignore SET/RESET/CLOCK
@@ -314,7 +314,9 @@ class DcParser:
         node2id = {}
         new_edges = []
         #output_nid = None
-
+        for n in nodes:
+            if n[1]['type'] == '':
+                print(n[0])
         return nodes,edges
         #return output_node,nodes, edges
 
