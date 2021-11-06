@@ -473,7 +473,7 @@ def train(options):
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
         labels = th.tensor([]).to(device)
-        global_embeddings = th.tensor([]).to(device)
+        global_embeddings = None
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
             th.cat((labels,th.tensor([label]).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
@@ -508,7 +508,10 @@ def train(options):
                 #print(global_embedding.shape)
                 #label_hat = nn.functional.softmax(mlp(global_embedding), 1)[:, 1]
                 print(global_embedding.shape)
-                th.cat((global_embeddings,global_embedding))
+                if global_embeddings is None:
+                    global_embeddings = global_embedding
+                else:
+                    th.cat((global_embeddings,global_embedding))
                 print(global_embeddings.shape)
                 # if get_options().nlabels != 1:
                 #     pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
