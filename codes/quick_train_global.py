@@ -507,6 +507,7 @@ def train(options):
                 global_embedding = combine(po_embeddings)
                 #print(global_embedding.shape)
                 #label_hat = nn.functional.softmax(mlp(global_embedding), 1)[:, 1]
+                print(global_embedding.shape)
                 th.cat((global_embeddings,global_embedding))
                 print(global_embeddings.shape)
                 # if get_options().nlabels != 1:
