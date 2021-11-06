@@ -504,6 +504,7 @@ def train(options):
                 # total_num += len(output_labels)
                 po_embeddings = model(blocks,input_features)
                 global_embedding = combine(po_embeddings)
+                print(global_embedding.shape)
                 #label_hat = nn.functional.softmax(mlp(global_embedding), 1)[:, 1]
                 th.cat((global_embeddings,global_embedding))
                 # if get_options().nlabels != 1:
