@@ -455,10 +455,10 @@ def train(options):
 
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
-        labels = th.tensor([]).to(device)
+        labels = th.tensor([],dtype=th.long).to(device)
         global_embeddings = None
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
-            labels = th.cat((labels,th.tensor([label]).to(device)))
+            labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
             blocks = sampler.sample_blocks(graph,POs)
             # dataloader = MyNodeDataLoader(
@@ -495,14 +495,14 @@ def train(options):
             #     #print(mlp.layers[2].weight)
             #
 
-            if idx == len(train_graphs)-1 or (idx!=0 and idx%options.batch_size ==0):
+            if idx == len(train_graphs)-1 or (idx!=0 and (idx+1)%options.batch_size ==0):
                 #print(global_embeddings.shape)
                 #print(mlp)
                 label_hats = mlp(global_embeddings)
 
                 predict_labels = th.argmax(nn.functional.softmax(label_hats,1),dim=1)
-                print('ground-truth labels:',labels)
-                print('predict labels:',predict_labels)
+                print('ground-truth labels:',labels.shape,labels)
+                print('predict labels:',predict_labels.shape,predict_labels)
                 train_loss = Loss(label_hats, labels)
                 print('loss:',train_loss)
                 total_num += len(labels)
