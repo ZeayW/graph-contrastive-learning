@@ -49,7 +49,7 @@ def preprocess(data_path,device,options,in_dim):
         # print(g.ndata)
         # print(g.ndata)
         # print(g.edata['r'])
-        with open(val_data_file, 'wb') as f:
+        with open(train_data_file, 'wb') as f:
             pickle.dump(graphs, f)
 
 
@@ -146,6 +146,7 @@ def validate(val_graphs,sampler,device,model,mlp,combine,Loss,alpha,beta,options
         global_embeddings = th.tensor([]).to(device)
         for idx, (label, graph, POs, depth) in enumerate(val_graphs):
             th.cat((labels, th.tensor([label].to(device))))
+            sampler = Sampler([None] * depth, include_dst_in_src=options.include)
             dataloader = MyNodeDataLoader(
                 True,
                 graph,
@@ -470,6 +471,7 @@ def train(options):
         global_embeddings = th.tensor([]).to(device)
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
             th.cat((labels,th.tensor([label].to(device))))
+            sampler = Sampler([None] * depth, include_dst_in_src=options.include)
             dataloader = MyNodeDataLoader(
                 True,
                 graph,
