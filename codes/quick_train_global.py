@@ -539,7 +539,7 @@ def train(options):
                 # print(model.GCN1.layers[0].attn_n.grad)
                 optim.step()
                 labels = th.tensor([]).to(device)
-                global_embeddings = th.tensor([]).to(device)
+                global_embeddings = None
 
         endtime = time()
         runtime += endtime - start_time
