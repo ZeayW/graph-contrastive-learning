@@ -154,8 +154,11 @@ def cal_depth(g,PIs,POs):
             if nx.has_path(g, src, dst):
                 for p in nx.all_simple_paths(g, src, dst):
                     if len(p) > max_path_length:
-                        max_path_length = len(p)
                         path = p
+                        set_path = set(path)
+                        if len(p)!= len(set_path):
+                            continue
+                        max_path_length = len(p)
         depths.append(max_path_length)
         #print('src:{},dst:{},path:{}'.format(src,dst,path))
         depth = max(depth,max_path_length-1)
