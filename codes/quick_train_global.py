@@ -499,7 +499,7 @@ def train(options):
                 #print(global_embeddings.shape)
                 #print(mlp)
                 label_hats = mlp(global_embeddings)
-
+                print('label_hat',label_hats)
                 predict_labels = th.argmax(nn.functional.softmax(label_hats,1),dim=1)
                 print('ground-truth labels:',labels.shape,labels)
                 print('predict labels:',predict_labels.shape,predict_labels)
