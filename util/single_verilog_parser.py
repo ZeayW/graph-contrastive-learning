@@ -43,7 +43,7 @@ class DcParser:
         return port in ("Y", "S", "SO", "CO", "C1", "Q", "QN")
 
     def parse_port(
-            self, port: pyverilog.vparser.parser.Portlist
+            self, port: pyverilog.vparser.parser.Portlist,ios
     ) -> PortInfo:
         portname, argname = port.portname, port.argname
         if type(argname) == pyverilog.vparser.ast.Partselect:
@@ -66,8 +66,9 @@ class DcParser:
         else:
             port_info.ptype = "fanin"
 
-        if 'O' in argname:
-            port_info.is_output = True
+        for io in ios:
+            if io in argname:
+                port_info.is_output = True
         return port_info
 
 
@@ -94,6 +95,25 @@ class DcParser:
 
         for module in ast.description.definitions:
             top_module = module
+            ios = []
+            for sentence in module.children():
+                if type(sentence) == pyverilog.vparser.ast.Decl:
+
+                    for decl in sentence.children():
+                        name = decl.name
+                        if decl.width is None:
+                            high_bit, low_bit = 0, 0
+                        else:
+                            high_bit, low_bit = decl.width.children()
+                            high_bit,low_bit = int(high_bit.value),int(low_bit.value)
+                            if high_bit<low_bit:
+                                temp = high_bit
+                                high_bit = low_bit
+                                low_bit = temp
+                        if type(decl) == pyverilog.vparser.ast.Output:
+                            # if type(decl) == pyverilog.vparser.ast.Output and re.match('io_pmp_\d_addr',decl.name):
+                            #     decl.show()
+                            ios.append(name)
 
         assert top_module is not None, "top module {} not found".format(self.top_module)
 
@@ -124,7 +144,7 @@ class DcParser:
             fanouts: List[PortInfo] = []
 
             for p in ports:
-                port_info = self.parse_port(p)
+                port_info = self.parse_port(p,ios)
                 if port_info.is_output:
                     #output_node = port_info.argname
                     POs.append(port_info.argname)
