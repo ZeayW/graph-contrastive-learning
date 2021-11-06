@@ -504,30 +504,12 @@ def train(options):
                 # output_labels = blocks[-1].dstdata[label_name].squeeze(1)
                 # total_num += len(output_labels)
                 po_embeddings = model(blocks,input_features)
-                #print(po_embeddings.shape)
                 global_embedding = combine(po_embeddings)
-                #print(global_embedding.shape)
-                #label_hat = nn.functional.softmax(mlp(global_embedding), 1)[:, 1]
-                #print(global_embedding.shape)
                 if global_embeddings is None:
                     global_embeddings = global_embedding.unsqueeze(0)
                 else:
-                    #print(global_embeddings.shape,global_embedding.unsqueeze(0).shape)
                     global_embeddings = th.cat((global_embeddings,global_embedding.unsqueeze(0)),dim=0)
 
-                    #exit()
-                #print(global_embedding.shape)
-                #print(global_embedding.unsqueeze(0).shape,global_embedding.unsqueeze(0))
-                #rint(global_embedding.unsqueeze(-1).shape, global_embedding.unsqueeze(-1))
-                #print(global_embeddings.shape)
-                #exit()
-                # if get_options().nlabels != 1:
-                #     pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
-                # else:
-                #     pos_prob = th.sigmoid(label_hat)
-                # pos_prob[pos_prob >= beta] = 1
-                # pos_prob[pos_prob < beta] = 0
-                # pos_prob = label_hat
             if idx == len(train_graphs)-1 or (idx!=0 and idx%options.batch_size ==0):
                 print(global_embeddings.shape)
                 print(mlp)
