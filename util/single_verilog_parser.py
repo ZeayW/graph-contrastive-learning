@@ -84,6 +84,7 @@ class DcParser:
             Tuple[str, str, Dict[str, bool]]
         ] = []  # a list of (src, dst, {"is_reverted": is_reverted})
         num_wire = 0
+        buff_replace = {}
         ast, directives = parse([fname])
         index01 = [0, 0]
 
@@ -159,13 +160,16 @@ class DcParser:
                 if 'AO' in ntype or 'OA' in ntype:
 
                     num_inputs = ntype[re.search('\d', ntype).start():]
-                    ntype1 = 'AND2' if 'AO' in ntype else 'OR2'
-                    ntype2 = 'OR{}'.format(len(num_inputs)) if 'AO' in ntype else 'AND{}'.format(len(num_inputs))
+                    ntype1 = 'AND' if 'AO' in ntype else 'OR'
+                    ntype2 = 'OR' if 'AO' in ntype else 'AND'
                     if 'I' in ntype:
                         output_name = '{}_i'.format(fo.argname)
                         nodes.append((output_name, {"type": ntype2}))
                         nodes.append((fo.argname, {"type": 'INV'}))
-                        inputs[fo.argname] = [(output_name,'A')]
+                        inputs[fo.argname] = [output_name]
+
+                        # edges.append((output_name,fo.argname,
+                        #               {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
                     else:
                         output_name = fo.argname
                         nodes.append((output_name, {"type": ntype2}))
@@ -175,13 +179,20 @@ class DcParser:
                             h_node_name = '{}_h{}'.format(fo.argname, i)
                             nodes.append((h_node_name, {"type": ntype1}))
                             inputs[h_node_name] = inputs.get(h_node_name, [])
-                            inputs[h_node_name].append((fanins[2 * i].argname,'A1'))
-                            inputs[h_node_name].append((fanins[2 * i + 1].argname,'A2'))
+                            inputs[h_node_name].append(fanins[2 * i].argname)
+                            inputs[h_node_name].append(fanins[2 * i + 1].argname)
 
-                            inputs[output_name].append((h_node_name,'A{}'.format(i+1)))
-
+                            inputs[output_name].append(h_node_name)
+                            # edges.append((fanins[2*i].argname,h_node_name,
+                            #              {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
+                            # edges.append((fanins[2 * i+1].argname, h_node_name,
+                            #              {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
+                            # edges.append((h_node_name,output_name,
+                            #               {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
                         elif num_input == '1':
-                            inputs[output_name].append((fanins[2 * i].argname,'A{}'.format(i+1)))
+                            inputs[output_name].append(fanins[2 * i].argname)
+                            # edges.append((fanins[2*i].argname,output_name,
+                            #              {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
                         else:
                             print(ntype, i, num_input)
                             assert False
@@ -218,19 +229,31 @@ class DcParser:
                 #     #               {"is_reverted": False, "is_sequencial": "DFF" in mtype}))
 
                 else:
+
                     pos = re.search("\d", mtype)
                     if pos:
-                        ntype = ntype[: pos.start()+1]
+                        ntype = ntype[: pos.start()]
+                    # if 'DFF' in ntype :
+                    #     ntype = 'DFF' if port_info.portname =='Q' else 'DFFN'
 
                     inputs[fo.argname] = inputs.get(fo.argname, [])
-                    if mfunc in ('HADD','FADD'):
-                        for i,fi in enumerate(fanins):
-                            inputs[fo.argname].append((fi.argname, 'A{}'.format(i+1)))
-                    else:
-                        for fi in fanins:
-                            inputs[fo.argname].append((fi.argname,fi.portname))
+                    for fi in fanins:
+                        # dff ignore SET/RESET/CLOCK
+                        # if 'DFF' in ntype and fi.portname!='D':
+                        #     continue
+                        # if ntype == 'NBUFF' or ('DFF' in ntype and fo.portname=='Q'):
 
-                    nodes.append((fo.argname, {"type": ntype}))
+                        if ntype == 'NBUFF':
+                            buff_replace[fo.argname] = fi.argname
+                        else:
+                            inputs[fo.argname].append(fi.argname)
+
+                    # if ntype == 'IBUFF' or ('DFF' in ntype and fo.portname=='QN'):
+                    if ntype == 'IBUFF':
+                        ntype = 'INV'
+
+                    if buff_replace.get(fo.argname, None) is None:
+                        nodes.append((fo.argname, {"type": ntype}))
 
             for output, inputs in inputs.items():
 
@@ -242,7 +265,13 @@ class DcParser:
                             {"port": port},
                         )
                     )
-
+        new_edges = []
+        for edge in edges:
+            if buff_replace.get(edge[0], None) is not None:
+                new_edges.append((buff_replace[edge[0]], edge[1], edge[2]))
+            else:
+                new_edges.append(edge)
+        edges = new_edges
         gate_names = set([n[0] for n in nodes])
         pis = []
         for (src, _, _) in edges:
