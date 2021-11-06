@@ -496,8 +496,8 @@ def train(options):
             #
 
             if idx == len(train_graphs)-1 or (idx!=0 and idx%options.batch_size ==0):
-                print(global_embeddings.shape)
-                print(mlp)
+                #print(global_embeddings.shape)
+                #print(mlp)
                 label_hats = mlp(global_embeddings)
 
                 predict_labels = th.argmax(nn.functional.softmax(label_hats,1),dim=1)
