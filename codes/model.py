@@ -22,6 +22,17 @@ from options import get_options
 from time import time
 #  GCN Model\
 
+class Combine(nn.Module):
+    def __init__(self,
+                 in_feats,
+                 out_feats,
+                 bias=True,
+                 activation=th.nn.functional.relu,
+                 ):
+        super(Combine, self).__init__()
+    def forward(self,embeddings):
+        return th.mean(embeddings,dim=1)
+
 class Projection_Head(nn.Module):
     def __init__(self,
                  in_feats,

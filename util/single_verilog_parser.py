@@ -213,10 +213,8 @@ class DcParser:
             #         break
             # for cases that instance_name is not unique, e.g, have several add_x_1，each is instance of different cell,
             # in theses cases, mcomp contains both cell information and instance information
-            print(ios)
             for pname,(high_bit,low_bit) in ios.items():
                 if pname in argname:
-                    print(pname,argname)
                     bit_position = int(argname.split('_')[-1])
                     if bit_position>=low_bit and bit_position<=high_bit:
                         position = (pname,bit_position)
@@ -299,8 +297,7 @@ class DcParser:
                                 temp = high_bit
                                 high_bit = low_bit
                                 low_bit = temp
-                        #if type(decl) == pyverilog.vparser.ast.Input or type(decl) == pyverilog.vparser.ast.Output:
-                        if type(decl) == pyverilog.vparser.ast.Output:
+                        if type(decl) == pyverilog.vparser.ast.Input or type(decl) == pyverilog.vparser.ast.Output:
                             # if type(decl) == pyverilog.vparser.ast.Output and re.match('io_pmp_\d_addr',decl.name):
                             #     decl.show()
                             ios[name] = (high_bit, low_bit)
@@ -496,12 +493,14 @@ class DcParser:
 
             for (src, _, _) in edges:
                 if src not in gate_names and src not in pis:
-                    nodes.append((src, {"type": "PI"}))
+                    if "1'b0" in src:
+                        nodes.append((src, {"type": "1'b0"}))
+                    elif "1'b1" in src:
+                        nodes.append((src, {"type": "1'b1"}))
+                    else:
+                        nodes.append((src, {"type": "PI"}))
                     pis.append(src)
-                # if "1'b0" in src :
-                #     nodes.append((src,{"type":"1'b0"}))
-                # if "1'b1" in src :
-                #     nodes.append((src,{"type":"1'b1"}))
+
             print('------------')
             for n in nodes:
                 n[1]["is_input"] = n[0] in PIs
@@ -515,21 +514,26 @@ class DcParser:
 
 
 def main():
-    #folder = "./implementation/test/"
+    folder = "./implementation/test/"
     total_nodes = 0
     total_edges = 0
     ntype = set()
 
-    parser = DcParser("multi_16bit_unsigned", hier_keywords=["add", "inc"], adder_keywords=['add_x', 'alu_DP_OP', 'div_DP_OP'],
+    parser = DcParser("Rocket", hier_keywords=["add", "inc"], adder_keywords=['add_x', 'alu_DP_OP', 'div_DP_OP'],
                       hadd_type="xor")
-    vfile = '../arithmetic_netlists/muliplier/16bit_wallace/implementation/multi_16bit_unsigned.v'
-    nodes, edges = parser.parse(vfile)
-    print("nodes {}, edges {}".format(len(nodes), len(edges)))
-    for n in nodes:
-        ntype.add(n[1]["type"])
-    total_nodes += len(nodes)
-    total_edges += len(edges)
-    print(ntype)
+    for v in os.listdir(folder):
+        if v.endswith('.v') is False:
+            continue
+        nodes,edges = parser.parse(os.path.join(folder,v))
+        print("nodes {}, edges {}".format(len(nodes), len(edges)))
+        for n in nodes:
+            ntype.add(n[1]["type"])
+        total_nodes += len(nodes)
+        total_edges += len(edges)
+        # break
+        print(ntype)
+
+    print(total_nodes, total_edges)
 
 
 if __name__ == "__main__":
