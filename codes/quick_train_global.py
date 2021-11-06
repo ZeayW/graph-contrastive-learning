@@ -143,46 +143,27 @@ def validate(val_graphs,sampler,device,model,mlp,combine,Loss,alpha,beta,options
     num_batch = 0
     with th.no_grad():
         labels = th.tensor([]).to(device)
-        global_embeddings = th.tensor([]).to(device)
+        global_embeddings = None
         for idx, (label, graph, POs, depth) in enumerate(val_graphs):
             th.cat((labels, th.tensor([label].to(device))))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
-            dataloader = MyNodeDataLoader(
-                True,
-                graph,
-                POs,
-                sampler,
-                batch_size=len(POs),
-                shuffle=True,
-                drop_last=False,
-            )
-            for ni, (central_nodes, input_nodes, blocks) in enumerate(dataloader):
+            blocks = sampler.sample_blocks(graph,blocks)
 
-                # continue
-                # print(in_blocks)
-                # print('freeze gate:',model.conv.gate_functions[11].weight)
-                # print('not freeze gate:', model.conv.gate_functions[2].weight)
-                # print(mlp.layers[2].weight)
-                start_time = time()
-                blocks = [b.to(device) for b in blocks]
-                if options.gnn:
-                    input_features = blocks[0].srcdata["ntype"]
-                    # print(input_features.shape)
-                else:
-                    input_features = blocks[0].srcdata["f_input"]
-                # output_labels = blocks[-1].dstdata[label_name].squeeze(1)
-                # total_num += len(output_labels)
-                po_embeddings = model(blocks, input_features)
-                global_embedding = combine(po_embeddings)
-                # label_hat = nn.functional.softmax(mlp(global_embedding), 1)[:, 1]
-                th.cat((global_embeddings, global_embedding))
-                # if get_options().nlabels != 1:
-                #     pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
-                # else:
-                #     pos_prob = th.sigmoid(label_hat)
-                # pos_prob[pos_prob >= beta] = 1
-                # pos_prob[pos_prob < beta] = 0
-                # pos_prob = label_hat
+            start_time = time()
+            blocks = [b.to(device) for b in blocks]
+            if options.gnn:
+                input_features = blocks[0].srcdata["ntype"]
+                # print(input_features.shape)
+            else:
+                input_features = blocks[0].srcdata["f_input"]
+            # output_labels = blocks[-1].dstdata[label_name].squeeze(1)
+            # total_num += len(output_labels)
+            po_embeddings = model(blocks, input_features)
+            global_embedding = combine(po_embeddings)
+            if global_embeddings is None:
+                global_embeddings = global_embedding.unsqueeze(0)
+            else:
+                global_embeddings = th.cat((global_embeddings, global_embedding.unsqueeze(0)), dim=0)
 
         label_hats = mlp(global_embeddings)
         predict_labels = th.argmax(nn.functional.softmax(label_hats, 1), dim=1)
@@ -231,7 +212,9 @@ def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model,options):
                 input_features = blocks[0].srcdata["ntype"]
             else:
                 input_features = blocks[0].srcdata["f_input"]
+
             output_labels = blocks[-1].dstdata['label_o'].squeeze(1)
+
             embeddings = model(blocks, input_features)
 
             pos_embeddings = embeddings[pos_mask]
@@ -477,7 +460,7 @@ def train(options):
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
             th.cat((labels,th.tensor([label]).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
-            blocks = sample.sample_blocks(graph,POs)
+            blocks = sampler.sample_blocks(graph,POs)
             # dataloader = MyNodeDataLoader(
             #     True,
             #     graph,
