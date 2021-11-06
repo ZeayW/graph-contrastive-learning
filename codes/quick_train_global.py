@@ -509,12 +509,12 @@ def train(options):
                 #label_hat = nn.functional.softmax(mlp(global_embedding), 1)[:, 1]
                 #print(global_embedding.shape)
                 if global_embeddings is None:
-                    global_embeddings = global_embedding
+                    global_embeddings = global_embedding.unsqueeze(0)
                 else:
-                    th.cat((global_embeddings.unsqueeze(0),global_embedding.unsqueeze(0)),dim=0)
-                print(global_embedding.shape,global_embedding)
-                print(global_embedding.unsqueeze(0).shape,global_embedding.unsqueeze(0))
-                print(global_embedding.unsqueeze(-1).shape, global_embedding.unsqueeze(-1))
+                    th.cat((global_embeddings,global_embedding.unsqueeze(0)),dim=0)
+                #print(global_embedding.shape)
+                #print(global_embedding.unsqueeze(0).shape,global_embedding.unsqueeze(0))
+                #rint(global_embedding.unsqueeze(-1).shape, global_embedding.unsqueeze(-1))
                 print(global_embeddings.shape)
                 exit()
                 # if get_options().nlabels != 1:
