@@ -548,7 +548,7 @@ def train(options):
                 optim.step()
                 labels = th.tensor([]).to(device)
                 global_embeddings = None
-
+            th.cuda.empty_cache()
         endtime = time()
         runtime += endtime - start_time
 
