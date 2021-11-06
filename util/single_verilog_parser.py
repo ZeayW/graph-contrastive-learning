@@ -255,14 +255,14 @@ class DcParser:
                     if buff_replace.get(fo.argname, None) is None:
                         nodes.append((fo.argname, {"type": ntype}))
 
-            for output, inputs in inputs.items():
+            for output, input in inputs.items():
 
-                for (fi,port) in inputs:
+                for fi in input:
                     edges.append(
                         (
                             fi,
                             output,
-                            {"port": port},
+                            {"is_reverted": False, "is_sequencial": "DFF" in mtype},
                         )
                     )
         new_edges = []
