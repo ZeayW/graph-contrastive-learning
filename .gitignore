@@ -28,7 +28,7 @@ bin-release/
 # verilog
 *.vvp
 *.vcd
-*.v
+#*.v
 *.syn
 *.log
 *.mr
