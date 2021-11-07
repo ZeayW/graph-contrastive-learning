@@ -7,8 +7,8 @@ for folder in os.listdir(dir):
     with open(design_file,'r') as f:
         lines = f.readlines()
     l = lines[3]
-    print(l)
-    top_module = l.split(':').replace(' ','').replace('\n','')
+    #print(l)
+    top_module = l.split(':')[1].replace(' ','').replace('\n','')
     for i in range(1,7):
         with open('dc.tcl','r') as f:
             lines = f.readlines()
