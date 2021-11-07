@@ -8,7 +8,9 @@ for folder in os.listdir(dir):
         lines = f.readlines()
     l = lines[3]
     top_module = l.split(':').replace(' ','').replace('\n','')
-    with open('dc.tcl','r') as f:
-        lines = f.readlines()
-        
+    for i in range(1,7):
+        with open('dc.tcl','r') as f:
+            lines = f.readlines()
+        lines[0] = 'set top_module "{}"\n'.format(top_module)
+        lines[1] = 'set opt "{}"'.format()
     os.system('dc_shell-xg-t -f {}'.format(tcl_file))
