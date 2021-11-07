@@ -10,7 +10,7 @@ for folder in os.listdir(dir):
     #print(l)
     top_module = l.split(':')[1].replace(' ','').replace('\n','')
     for i in range(1,7):
-        with open('dc.tcl','r') as f:
+        with open('dc{}.tcl'.format(i),'r') as f:
             lines = f.readlines()
         lines[0] = 'set top_module "{}"\n'.format(top_module)
         lines[1] = 'set opt "{}"\n'.format(folder)
