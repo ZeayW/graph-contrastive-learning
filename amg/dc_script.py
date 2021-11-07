@@ -17,5 +17,5 @@ for folder in os.listdir(dir):
     lines[2] = 'set src "{}"\n'.format(design_file)
     with open('dc_{}.tcl'.format(folder), 'w') as f:
         f.writelines(lines)
-    os.system('dc_shell-xg-t -f dc{}_{}.tcl'.format(folder))
-    os.remove('dc{}_{}.tcl'.format(folder))
+    os.system('dc_shell-xg-t -f dc_{}.tcl'.format(folder))
+    os.remove('dc_{}.tcl'.format(folder))
