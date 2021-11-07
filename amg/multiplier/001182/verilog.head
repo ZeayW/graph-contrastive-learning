@@ -1,0 +1,13 @@
+/*----------------------------------------------------------------------------
+  Copyright (c) 2019 Homma laboratory. All rights reserved.
+
+  Top module: Multiplier_7_0_7_000
+
+  Number system: Unsigned binary
+  Multiplicand length: 8
+  Multiplier length: 8
+  Partial product generation: Simple PPG
+  Partial product accumulation: Array
+  Final stage addition: Brent-Kung adder
+----------------------------------------------------------------------------*/
+

@@ -1,0 +1,14 @@
+PPGType = Standard;
+ACCType = Array;
+CPAType = RippleCarry;
+NumberSystem = UnsignedBinary;
+OutARITHFileName = cgout.ari;
+OutVerilogFileName = cgout.v;
+OutVerilogFileNameDC = cgout_dc.v;
+OutVHDLFileName = cgout.vhd;
+OutReferenceDataFileName = cgout.ref;
+GenerateType = MULT;
+OpAHigh = 7;
+OpALow = 0;
+OpBHigh = 7;
+OpBLow = 0;

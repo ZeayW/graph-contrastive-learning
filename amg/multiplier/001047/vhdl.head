@@ -1,0 +1,10 @@
+------------------------------------------------------------------------------
+--  Copyright (c) 2019 Homma laboratory. All rights reserved.
+--
+--  Top module: Multiplier_7_0_7_000
+--
+--  Operand-1 length: 8
+--  Operand-2 length: 8
+--  Two-operand addition algorithm: Carry look-ahead adder
+------------------------------------------------------------------------------
+

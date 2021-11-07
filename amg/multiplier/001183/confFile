@@ -1,0 +1,57 @@
+# -*- comment-start: "#"; -*-
+#=============================================================================
+#  Module Generator が生成するモジュール用のコンフィグレーションファイル
+#    添字の指定だけではなく，真理値表により意味（符号化）を与えること．
+#=============================================================================
+
+#  Verilog-HDLへの配線変換規則の記述
+convert to Verilog
+
+# UB:(u);
+# 真理値表
+# u   0  1    <-- プラスの重み
+# 値  0 +1
+
+# NUB:(nu);
+# 真理値表
+# u   0  1    <-- マイナスの重み
+# 値  0 -1
+
+SD2:(dp,dn);
+SD2_PN_A:(dp,dn);
+# 真理値表
+# dp  0  0  1  1    <-- プラスの重み
+# dn  0  1  0  1    <-- マイナスの重み
+# 値  0 -1 +1  0   
+
+SD4_2:(ds,d1,d0);
+# 真理値表
+# ds  0  0  0  0  1  1  1  1    <-- 符号 (0:+,1:-) 
+# d1  0  0  1  1  0  0  1  1    <-- 2^1 の重み
+# d0  0  1  0  1  0  1  0  1    <-- 2^0 の重み
+# 値  0 +1 +2  X  0 -1 -2  X
+
+U4_2:(d1,d0);
+# 真理値表
+# d1  0  0  1  1    <-- 2^1 の重み
+# d0  0  1  0  1    <-- 2^0 の重み
+# 値  0 +1 +2  X
+
+# SIGN:(s);
+# 真理値表
+# s     0  1
+# 意味  +  -  
+
+end convert;
+
+convert to VHDL
+SD2:(((std_logic,std_logic_vector), dp),((std_logic,std_logic_vector), dn));
+SD4_2:(((std_logic,std_logic_vector), ds),((std_logic,std_logic_vector), d1),((std_logic,std_logic_vector), d0));
+U4_2:(((std_logic,std_logic_vector), d1),((std_logic,std_logic_vector), d0));
+
+necessary package
+std_logic : IEEE.std_logic_1164.all;
+std_logic_vector : IEEE.std_logic_1164.all;
+end convert;
+
+
