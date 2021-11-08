@@ -42,6 +42,7 @@ def preprocess(data_path,device,options,in_dim):
     #     #print(g.edata['r'])
     #     with open(val_data_file,'wb') as f:
     #         pickle.dump(graphs,f)
+    print(train_data_file)
     if os.path.exists(train_data_file) is False:
 
         datapath = "../arithmetic_netlists/{}".format(target)
