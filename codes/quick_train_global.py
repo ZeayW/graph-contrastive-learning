@@ -519,7 +519,7 @@ def train(options):
                 #print('ground-truth labels:',labels.shape,labels)
                 #print('predict labels:',predict_labels.shape,predict_labels)
                 train_loss = Loss(label_hats, labels)
-                print('loss:',train_loss)
+                print('loss:',train_loss.item())
                 total_num += len(labels)
                 total_loss += train_loss.item()*len(labels)
                 correct += (
