@@ -307,7 +307,7 @@ def train(options):
     freeze = options.freeze
     data_path = options.datapath
     print(data_path)
-    train_data_file = os.path.join(data_path,'train.pkl')
+    #train_data_file = os.path.join(data_path,'concat.pkl')
     val_data_file = os.path.join(data_path,'val.pkl')
     #split_dir = 'splits/rokcet'
     if options.region:
@@ -340,8 +340,17 @@ def train(options):
 
 
     print("Loading data...")
-    with open(train_data_file,'rb') as f:
-        graphs = pickle.load(f)
+    graphs = []
+    targets = ['adder','multiplier','divider','accumulator','subtractor']
+    for i,t in enumerate(targets):
+
+        with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
+            data = pickle.load(f)
+            #num_class = len(data)
+            for cls in data.keys():
+                circuits = data[cls]
+                for circuit in circuits:
+                    graphs.append((i,circuit[0],circuit[1],circuit[2]))
 
     shuffle(graphs)
     for _,g,_,_ in graphs:
