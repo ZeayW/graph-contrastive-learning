@@ -80,9 +80,9 @@ def parse_single_file(nodes,edges):
 
     
 class Dataset_global(DGLDataset):
-    def __init__(self,datapaths,labels):
-        self.datapaths = datapaths
-        self.labels = labels
+    def __init__(self,datapath):
+        self.datapath = datapath
+        #self.labels = label
         #self.split = split
         super(Dataset_global, self).__init__(name="dac")
         # self.alpha = Parameter(th.tensor([1]))
@@ -90,7 +90,7 @@ class Dataset_global(DGLDataset):
     def process(self):
         type2label = {"ling_adder":1,"hybrid_adder":2, "cond_sum_adder":3, "sklansky_adder":4, "brent_kung_adder":5, "bounded_fanout_adder":6,"unknown":7}
         self.batch_graphs = []
-        self.graphs = []
+        self.graphs = {}
         self.len = 0
 
         max_depth = 0
@@ -103,32 +103,33 @@ class Dataset_global(DGLDataset):
         # print(len(filelist))
         #print('file list{} start with {}'.format(self.split,filelist[0]))
         #self.num_graph = 0
-        for i,datapath in enumerate(self.datapaths):
-            for folder in os.listdir(datapath):
-                folder_path = os.path.join(datapath,folder)
-                if os.path.isdir(folder_path):
-                    if 'implementation' not in os.listdir(folder_path):
-                        continue
-                    imple_folder = os.path.join(folder_path,'implementation')
+        for folder in os.listdir(self.datapath):
+            folder_path = os.path.join(self.datapath, folder)
+            if os.path.isdir(folder_path):
+                if 'implementation' not in os.listdir(folder_path):
+                    continue
+                imple_folder = os.path.join(folder_path, 'implementation')
 
-                    for vf in os.listdir(imple_folder):
-                        if not vf.endswith('.v') or 'hier' in vf:
-                            continue
-                        #PO = []
-                        print('processing {} {}'.format(folder_path,vf))
-                       # print('\ngenerate positive samples for {}'.format(vf))
-                        #value = vf.split('_')[2].split('.')[0][1:]
-                        parser = DcParser('test')
-                        #print(os.path.join(datapath, vf))
-                        nodes, edges = parser.parse(os.path.join(imple_folder, vf))
-                        if len(nodes) == 0:
-                            print('empty...')
-                            continue
-                        graph, POs, depth = parse_single_file(nodes, edges)
-                        #self.num_graph += 1
-                        self.graphs.append((self.labels[i],graph,POs,depth))
-                        #print('\t label: {}, depth: {}'.format(self.labels[i],depth))
-                        #print(label, graph, len(POs), depth)
+                for vf in os.listdir(imple_folder):
+                    if not vf.endswith('.v') or 'hier' in vf:
+                        continue
+                    # PO = []
+                    print('processing {} {}'.format(folder_path, vf))
+                    # print('\ngenerate positive samples for {}'.format(vf))
+                    # value = vf.split('_')[2].split('.')[0][1:]
+                    parser = DcParser('test')
+                    # print(os.path.join(datapath, vf))
+                    nodes, edges = parser.parse(os.path.join(imple_folder, vf))
+                    if len(nodes) == 0:
+                        print('empty...')
+                        continue
+                    graph, POs, depth = parse_single_file(nodes, edges)
+                    self.graphs[folder] = self.graphs.get(folder, [])
+                    # self.num_graph += 1
+                    self.graphs[folder].append((graph, POs, depth))
+                    # print('\t label: {}, depth: {}'.format(self.labels[i],depth))
+                    # print(label, graph, len(POs), depth)
+
             # for label,graph,POs,depth in self.graphs:
             #     print(label,graph,len(POs),depth)
 

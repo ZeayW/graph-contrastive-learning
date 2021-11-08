@@ -26,7 +26,9 @@ def preprocess(data_path,device,options,in_dim):
     label2id = {}
     if os.path.exists(data_path) is False:
         os.makedirs(data_path)
-    train_data_file = os.path.join(data_path, 'train.pkl')
+        
+    target = options.label
+    train_data_file = os.path.join(data_path, '{}.pkl').format(target)
     val_data_file = os.path.join(data_path, 'val.pkl')
 
     # if os.path.exists(val_data_file) is False:
@@ -41,10 +43,12 @@ def preprocess(data_path,device,options,in_dim):
     #     with open(val_data_file,'wb') as f:
     #         pickle.dump(graphs,f)
     if os.path.exists(train_data_file) is False:
-        datapaths = ["../arithmetic_netlists/adders/","../arithmetic_netlists/multiplier/"]
+
+        datapath = "../arithmetic_netlists/{}".format(target)
+        #datapaths = ["../arithmetic_netlists/adders/","../arithmetic_netlists/multiplier/"]
         labels = [0,1]
         th.multiprocessing.set_sharing_strategy('file_system')
-        dataset = Dataset(datapaths, labels)
+        dataset = Dataset(datapath)
         graphs = dataset.graphs
         # print(g.ndata)
         # print(g.ndata)
