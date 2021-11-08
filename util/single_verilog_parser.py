@@ -68,8 +68,8 @@ class DcParser:
 
         for io in ios:
             #if re.match(io+'_d',argname):
-            if io+'_' in argname:
-                print(argname)
+            if argcomp==io:
+                print(argcomp)
                 port_info.is_output = True
         return port_info
 
