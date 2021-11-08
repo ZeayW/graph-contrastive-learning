@@ -69,7 +69,7 @@ class DcParser:
         for io in ios:
             #if re.match(io+'_d',argname):
             if argcomp==io:
-                print(argcomp)
+                #print(argcomp)
                 port_info.is_output = True
         return port_info
 
@@ -116,7 +116,7 @@ class DcParser:
                             # if type(decl) == pyverilog.vparser.ast.Output and re.match('io_pmp_\d_addr',decl.name):
                             #     decl.show()
                             ios.append(name)
-        print(ios)
+        #print(ios)
         assert top_module is not None, "top module {} not found".format(self.top_module)
 
         for item in top_module.items:
