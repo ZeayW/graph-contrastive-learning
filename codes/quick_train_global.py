@@ -26,7 +26,7 @@ def preprocess(data_path,device,options,in_dim):
     label2id = {}
     if os.path.exists(data_path) is False:
         os.makedirs(data_path)
-        
+
     target = options.label
     train_data_file = os.path.join(data_path, '{}.pkl').format(target)
     val_data_file = os.path.join(data_path, 'val.pkl')

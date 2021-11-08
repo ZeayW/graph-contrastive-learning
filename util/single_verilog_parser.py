@@ -114,7 +114,7 @@ class DcParser:
                             # if type(decl) == pyverilog.vparser.ast.Output and re.match('io_pmp_\d_addr',decl.name):
                             #     decl.show()
                             ios.append(name)
-
+        print(ios)
         assert top_module is not None, "top module {} not found".format(self.top_module)
 
         for item in top_module.items:
