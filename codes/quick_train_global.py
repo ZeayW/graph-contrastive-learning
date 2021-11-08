@@ -135,7 +135,7 @@ def get_reverse_graph(g):
         # print(key,value)
         rg.edata[key] = value
     return rg
-def validate(val_graphs,sampler,device,model,mlp,combine,Loss,alpha,beta,options):
+def validate(val_graphs,device,model,mlp,combine,Loss,alpha,beta,options):
 
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
@@ -484,7 +484,7 @@ def train(options):
             #     drop_last=False,
             # )
             #print(idx,th.cuda.get_device_capability(device))
-            start_time = time()
+            #start_time = time()
             blocks = [b.to(device) for b in blocks]
             if options.gnn:
                 input_features = blocks[0].srcdata["ntype"]
@@ -558,7 +558,7 @@ def train(options):
             #print('alpha = ',model.alpha)
         #validate_sim([val_g], pos_embeddings,sampler, device, model)
 
-        val_loss, val_acc = validate(val_graphs, sampler,device, model,
+        val_loss, val_acc = validate(val_graphs, device, model,
                                      mlp, combine,Loss, options.alpha, beta,options)
         #max_F1_score = max(max_F1_score,val_F1_score)
         #validate_sim(val_graphs, pos_embeddings, sampler, device, model,options)
