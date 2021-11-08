@@ -359,8 +359,8 @@ def train(options):
 
         g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
         g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
-    val_graphs = graphs[:int(len(graphs)/3)]
-    train_graphs = graphs[int(len(graphs)/3):]
+    val_graphs = graphs[:int(len(graphs)/options.train_percent)]
+    train_graphs = graphs[int(len(graphs)/options.train_percent):]
     # with open(val_data_file,'rb') as f:
     #     val_graphs = pickle.load(f)
         # val_graphs =dgl.unbatch(val_g)
