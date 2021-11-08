@@ -1,6 +1,7 @@
 import os
-
-dir = './adders/'
+import sys
+target = sys.argv[1]
+dir = './{}/'.format(target)
 
 for folder in os.listdir(dir):
     if os.path.isdir(dir+folder):
