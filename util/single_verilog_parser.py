@@ -67,7 +67,8 @@ class DcParser:
             port_info.ptype = "fanin"
 
         for io in ios:
-            if io in argname:
+            if re.match(io+'_d',argname):
+            #if io in argname:
                 print(argname)
                 port_info.is_output = True
         return port_info
