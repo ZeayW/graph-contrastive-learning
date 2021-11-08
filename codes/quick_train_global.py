@@ -582,7 +582,7 @@ def train(options):
               os.makedirs(options.model_saving_dir)
            with open(os.path.join(options.model_saving_dir, 'model.pkl'), 'wb') as f:
               parameters = options
-              pickle.dump((parameters, model,mlp), f)
+              pickle.dump((parameters, model,mlp,combine), f)
            print("Model successfully saved")
 
 
