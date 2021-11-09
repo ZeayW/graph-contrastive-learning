@@ -369,7 +369,7 @@ def train(options):
                     g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
                     g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
                     g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
-                val_graphs = graphs[:int(len(graphs) / options.train_percent)]
+                #val_graphs = graphs[:int(len(circuits) / options.train_percent)]
                 #shuffle(circuit)
                 val_circuits= circuits[:int(len(circuits)/options.val_percent)]
                 train_circuits = circuits[int(len(circuits) / options.val_percent):]
