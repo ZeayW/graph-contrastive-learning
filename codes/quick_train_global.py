@@ -338,29 +338,49 @@ def train(options):
 
     in_nlayers = options.in_nlayers if isinstance(options.in_nlayers,int) else options.in_nlayers[0]
     out_nlayers = options.out_nlayers if isinstance(options.out_nlayers,int) else options.out_nlayers[0]
-
-
-    print("Loading data...")
-    graphs = []
-    targets = ['adder','multiplier','divider','accumulator','subtractor']
+    
+    targets = ['adder', 'multiplier', 'divider', 'accumulator', 'subtractor']
     for i,t in enumerate(targets):
 
         with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
             data = pickle.load(f)
             #num_class = len(data)
-            for cls in data.keys():
+        for i,cls in enumerate(data.keys()):
+            circuits = data[cls]
+            shuffle(circuits)
+            data[cls] = circuits
+        print(data)
+
+    exit()
+    print("Loading data...")
+    graphs = []
+    targets = ['adder','multiplier','divider','accumulator','subtractor']
+    val_graphs = []
+    train_graphs = []
+    for i,t in enumerate(targets):
+
+        with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
+            data = pickle.load(f)
+            #num_class = len(data)
+            for i,cls in enumerate(data.keys()):
                 circuits = data[cls]
-                for circuit in circuits:
-                    graphs.append((i,circuit[0],circuit[1],circuit[2]))
-
-    shuffle(graphs)
-    for _,g,_,_ in graphs:
-        g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-
-        g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-        g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
-    val_graphs = graphs[:int(len(graphs)/options.train_percent)]
-    train_graphs = graphs[int(len(graphs)/options.train_percent):]
+                for g, _, _ in circuits:
+                    g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+                    g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+                    g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
+                val_graphs = graphs[:int(len(graphs) / options.train_percent)]
+                shuffle(circuit)
+                val_circuits= circuit[:int(len(circuits)/options.val_percent)]
+                train_circuits = circuit[int(len(circuits) / options.val_percent):]
+                for circuit in val_circuits:
+                    val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
+                if i<options.train_percent:
+                    for circuit in train_circuits:
+                        train_graphs.append((i, circuit[0], circuit[1], circuit[2]))
+    #shuffle(graphs)
+    #
+    # val_graphs = graphs[:int(len(graphs)/options.train_percent)]
+    # train_graphs = graphs[int(len(graphs)/options.train_percent):]
     # with open(val_data_file,'rb') as f:
     #     val_graphs = pickle.load(f)
         # val_graphs =dgl.unbatch(val_g)
