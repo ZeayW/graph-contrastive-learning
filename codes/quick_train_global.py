@@ -339,20 +339,20 @@ def train(options):
     in_nlayers = options.in_nlayers if isinstance(options.in_nlayers,int) else options.in_nlayers[0]
     out_nlayers = options.out_nlayers if isinstance(options.out_nlayers,int) else options.out_nlayers[0]
 
-    targets = ['adder', 'multiplier', 'divider', 'accumulator', 'subtractor']
-    for i,t in enumerate(targets):
-
-        with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
-            data = pickle.load(f)
-            #num_class = len(data)
-        #print(len(data))
-        for i,cls in enumerate(data.keys()):
-            circuits = data[cls]
-            shuffle(circuits)
-            data[cls] = circuits
-        with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'wb') as f:
-            pickle.dump(data,f)
-
+    # targets = ['adder', 'multiplier', 'divider', 'accumulator', 'subtractor']
+    # for i,t in enumerate(targets):
+    #
+    #     with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
+    #         data = pickle.load(f)
+    #         #num_class = len(data)
+    #     #print(len(data))
+    #     for i,cls in enumerate(data.keys()):
+    #         circuits = data[cls]
+    #         shuffle(circuits)
+    #         data[cls] = circuits
+    #     with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'wb') as f:
+    #         pickle.dump(data,f)
+    # exit()
     print("Loading data...")
     graphs = []
     targets = ['adder','multiplier','divider','accumulator','subtractor']
