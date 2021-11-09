@@ -5,7 +5,7 @@ for file in os.listdir(dir):
     #sub_dir = dir + '/'+ folder
     #design_file = os.path.join(sub_dir,'multilier_dc.v')
     target = file.split('.')[0]
-    with open(file,'r') as f:
+    with open(os.path.join(dir,file),'r') as f:
         lines = f.readlines()
     l = lines[3]
     #print(l)
