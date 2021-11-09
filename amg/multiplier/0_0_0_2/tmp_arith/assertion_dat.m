@@ -1,9 +1,0 @@
-Off[General::spell1];
-Set[assertion,List[Equal[S9,Times[S0,S18]]]];
-Set[symbol,S19];
-Set[symboleq,List[Equal[S19,S9]]];
-Set[function,List[Rule[S19,Times[S0,S18]]]];
-Set[asdigit,List[]];
-Set[assignal,List[]];
-Set[asdelsignal,List[]];
-Set[asrdigit,List[]];
