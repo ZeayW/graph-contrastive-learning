@@ -352,8 +352,8 @@ def train(options):
             shuffle(circuits)
             data[cls] = circuits
         print('\n')
-        for g,pos,d in data.values():
-            print(pos,d)
+        for v in data.values():
+            print(v[1],v[2])
         exit()
     exit()
     print("Loading data...")
