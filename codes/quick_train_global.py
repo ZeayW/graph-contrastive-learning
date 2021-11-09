@@ -363,7 +363,7 @@ def train(options):
         with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
             data = pickle.load(f)
             #num_class = len(data)
-            for i,cls in enumerate(data.keys()):
+            for j,cls in enumerate(data.keys()):
                 circuits = data[cls]
                 for g, _, _ in circuits:
                     g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
@@ -375,9 +375,11 @@ def train(options):
                 train_circuits = circuits[int(len(circuits) / options.val_percent):]
                 for circuit in val_circuits:
                     val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
-                if i<options.train_percent:
+                if j<options.train_percent:
                     for circuit in train_circuits:
                         train_graphs.append((i, circuit[0], circuit[1], circuit[2]))
+    print('num_train:',len(train_graphs))
+    print('num_val',len(val_graphs))
     #shuffle(graphs)
     #
     # val_graphs = graphs[:int(len(graphs)/options.train_percent)]
