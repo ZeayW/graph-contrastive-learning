@@ -371,8 +371,8 @@ def train(options):
                     g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
                 val_graphs = graphs[:int(len(graphs) / options.train_percent)]
                 #shuffle(circuit)
-                val_circuits= circuit[:int(len(circuits)/options.val_percent)]
-                train_circuits = circuit[int(len(circuits) / options.val_percent):]
+                val_circuits= circuits[:int(len(circuits)/options.val_percent)]
+                train_circuits = circuits[int(len(circuits) / options.val_percent):]
                 for circuit in val_circuits:
                     val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
                 if i<options.train_percent:
