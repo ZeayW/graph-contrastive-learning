@@ -346,7 +346,7 @@ def train(options):
             data = pickle.load(f)
             #num_class = len(data)
         for v in data.values():
-            print('aaaa',v[1], v[2])
+            print('aaaa',v[0],v[1], v[2])
         for i,cls in enumerate(data.keys()):
             circuits = data[cls]
             shuffle(circuits)
