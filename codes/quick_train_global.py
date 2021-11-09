@@ -345,15 +345,23 @@ def train(options):
         with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
             data = pickle.load(f)
             #num_class = len(data)
-        for v in data.values():
-            print('aaaa',v[0],v[1], v[2])
+        #print(len(data))
+        for i, cls in enumerate(data.keys()):
+            circuits = data[cls]
+            for c in circuits:
+                print(c[1],c[2])
+            break
+
         for i,cls in enumerate(data.keys()):
             circuits = data[cls]
             shuffle(circuits)
             data[cls] = circuits
         print('\n')
-        for v in data.values():
-            print(v[1],v[2])
+        for i, cls in enumerate(data.keys()):
+            circuits = data[cls]
+            for c in circuits:
+                print(c[1], c[2])
+            break
         exit()
     exit()
     print("Loading data...")
