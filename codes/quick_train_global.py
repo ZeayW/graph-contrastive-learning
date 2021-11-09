@@ -378,6 +378,8 @@ def train(options):
                 if j<options.train_percent:
                     for circuit in train_circuits:
                         train_graphs.append((i, circuit[0], circuit[1], circuit[2]))
+    shuffle(train_graphs)
+    #shuffle(val_graphs)
     print('num_train:',len(train_graphs))
     print('num_val',len(val_graphs))
     #shuffle(graphs)
@@ -494,6 +496,7 @@ def train(options):
         pos_count , neg_count =0, 0
         labels = th.tensor([],dtype=th.long).to(device)
         global_embeddings = None
+        shuffle(train_graphs)
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
             labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
