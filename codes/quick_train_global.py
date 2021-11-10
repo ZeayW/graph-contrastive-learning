@@ -31,18 +31,19 @@ def preprocess(data_path,device,options,in_dim):
     train_data_file = os.path.join(data_path, '{}.pkl').format(target)
     val_data_file = os.path.join(data_path, 'val.pkl')
 
-    # if os.path.exists(val_data_file) is False:
-    #     datapaths = ["../arithmetic_netlists/adders/"]
-    #     labels = [0]
-    #     th.multiprocessing.set_sharing_strategy('file_system')
-    #     dataset = Dataset(datapaths,labels)
-    #     graphs = dataset.graphs
-    #     #print(g.ndata)
-    #     #print(g.ndata)
-    #     #print(g.edata['r'])
-    #     with open(val_data_file,'wb') as f:
-    #         pickle.dump(graphs,f)
-    print(train_data_file)
+    if os.path.exists(val_data_file) is False:
+        datapath = "../amg/"
+        # datapaths = ["../arithmetic_netlists/adders/","../arithmetic_netlists/multiplier/"]
+        labels = [0, 1]
+        th.multiprocessing.set_sharing_strategy('file_system')
+        dataset = Dataset(datapath)
+        graphs = dataset.graphs
+        # print(g.ndata)
+        # print(g.ndata)
+        # print(g.edata['r'])
+        with open(train_data_file, 'wb') as f:
+            pickle.dump(graphs, f)
+    #print(train_data_file)
     if os.path.exists(train_data_file) is False:
 
         datapath = "../arithmetic_netlists/{}".format(target)
