@@ -35,6 +35,7 @@ def preprocess(data_path,device,options,in_dim):
         datapath = "../amg/"
         # datapaths = ["../arithmetic_netlists/adders/","../arithmetic_netlists/multiplier/"]
         labels = [0, 1]
+        print('generating validate dataset....')
         th.multiprocessing.set_sharing_strategy('file_system')
         dataset = Dataset(datapath)
         graphs = dataset.graphs
