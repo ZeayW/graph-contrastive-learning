@@ -11,7 +11,7 @@ from MyDataLoader_ud import *
 from time import time
 from random import shuffle
 import itertools
-
+import random
 # apply oversampling on the dataset
 
 
@@ -499,8 +499,10 @@ def train(options):
         pos_count , neg_count =0, 0
         labels = th.tensor([],dtype=th.long).to(device)
         global_embeddings = None
+        seed = random.randint(1,1000)
+        random.seed(seed)
         shuffle(train_graphs)
-        print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
+        #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
             labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
