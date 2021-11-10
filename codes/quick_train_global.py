@@ -175,8 +175,8 @@ def validate(val_graphs,device,model,mlp,combine,Loss,alpha,beta,options):
 
         label_hats = mlp(global_embeddings)
         predict_labels = th.argmax(nn.functional.softmax(label_hats, 1), dim=1)
-        print('val ground-truth labels:', labels.cpu().numpy().to_list())
-        print('val predict labels:', predict_labels.cpu().numpy().to_list())
+        print('val ground-truth labels:', labels.cpu().numpy().tolist())
+        print('val predict labels:', predict_labels.cpu().numpy().tolist())
         val_loss = Loss(label_hats, labels)
         #total_num += len(labels)
         #total_loss += train_loss.item() * len(labels)
