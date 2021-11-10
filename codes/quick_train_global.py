@@ -373,6 +373,7 @@ def train(options):
         for module in val_data.keys():
             label = labels[module]
             data = val_data[module]
+            print(module,'len: {}',len(data))
             for circuit in data:
                 g = circuit[0]
                 g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
