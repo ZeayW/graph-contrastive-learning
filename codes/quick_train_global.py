@@ -372,7 +372,7 @@ def train(options):
             data = val_data[module]
             for circuit in data:
                 val_graphs.append((label,circuit[0],circuit[1],circuit[2]))
-
+    print('len val1:',len(val_graphs))
     for i,t in enumerate(targets):
 
         with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
