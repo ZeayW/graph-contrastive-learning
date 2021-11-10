@@ -11,7 +11,10 @@ def extract_file(folder,target_dir):
                                        or 'Conditional' in file_path or 'select' in file_path):
                 continue
             prefix = folder.replace('\\','_')
-
+            prefix = prefix.replace('(','')
+            prefix = prefix.replace(')','')
+            prefix = prefix.replace(';','-')
+            prefix = prefix.replace(',','-')
             shutil.copy(file_path,os.path.join(target_dir,'{}.v'.format(prefix)))
         elif os.path.isdir(file_path):
             extract_file(file_path,target_dir)
