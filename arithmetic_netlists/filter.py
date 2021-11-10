@@ -6,6 +6,7 @@ for folder in os.listdir(dir):
     if os.path.isdir(dir+folder):
         for subfolder in os.listdir(dir+folder):
             if subfolder == 'implementation':
+                print("aaa")
                 #print(dir+folder+'/implementation')
                 size_dict = {}
                 for vf in os.listdir(dir+folder+'/implementation'):
