@@ -29,7 +29,7 @@ def preprocess(data_path,device,options,in_dim):
 
     target = options.label
     train_data_file = os.path.join(data_path, '{}.pkl').format(target)
-    val_data_file = os.path.join(data_path, 'val.pkl')
+    val_data_file = os.path.join(data_path, 'val2.pkl')
 
     if os.path.exists(val_data_file) is False:
         datapath = "../amg/"
@@ -314,7 +314,7 @@ def train(options):
     data_path = options.datapath
     print(data_path)
     #train_data_file = os.path.join(data_path,'concat.pkl')
-    val_data_file = os.path.join(data_path,'val.pkl')
+    #val_data_file = os.path.join(data_path,'val2.pkl')
     #split_dir = 'splits/rokcet'
     if options.region:
         label_name = 'label_ad'
