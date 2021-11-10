@@ -124,9 +124,10 @@ class Dataset_global(DGLDataset):
                         print('empty...')
                         continue
                     graph, POs, depth = parse_single_file(nodes, edges)
-                    self.graphs[folder] = self.graphs.get(folder, [])
-                    # self.num_graph += 1
-                    self.graphs[folder].append((graph, POs, depth))
+                    if depth<50:
+                        self.graphs[folder] = self.graphs.get(folder, [])
+                        # self.num_graph += 1
+                        self.graphs[folder].append((graph, POs, depth))
                     # print('\t label: {}, depth: {}'.format(self.labels[i],depth))
                     # print(label, graph, len(POs), depth)
 
