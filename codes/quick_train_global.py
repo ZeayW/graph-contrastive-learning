@@ -42,8 +42,9 @@ def preprocess(data_path,device,options,in_dim):
         # print(g.ndata)
         # print(g.ndata)
         # print(g.edata['r'])
-        with open(train_data_file, 'wb') as f:
+        with open(val_data_file, 'wb') as f:
             pickle.dump(graphs, f)
+            print('saving dataset...')
     #print(train_data_file)
     if os.path.exists(train_data_file) is False:
 
