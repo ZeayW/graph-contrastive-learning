@@ -4,10 +4,10 @@ def extract_file(folder,target_dir):
     for f in os.listdir(folder):
         file_path = os.path.join(folder,f)
         if f.endswith('.v') :
-            if 'FSA' in file_path and ('Koggle' in file_path or 'Brent' in file_path
+            if 'FSA' in file_path and ('Kogge' in file_path or 'Brent' in file_path
                                        or 'Conditional' in file_path or 'select' in file_path):
                 continue
-            if 'mult' in file_path and ('array' in file_path or 'Booth' in file_path or 'Koggle' in file_path or 'Brent' in file_path
+            if 'mult' in file_path and ('array' in file_path or 'Booth' in file_path or 'Kogge' in file_path or 'Brent' in file_path
                                        or 'Conditional' in file_path or 'select' in file_path):
                 continue
             prefix = folder.replace('\\','_')
