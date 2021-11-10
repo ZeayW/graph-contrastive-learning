@@ -175,8 +175,8 @@ def validate(val_graphs,device,model,mlp,combine,Loss,alpha,beta,options):
 
         label_hats = mlp(global_embeddings)
         predict_labels = th.argmax(nn.functional.softmax(label_hats, 1), dim=1)
-        print('val ground-truth labels:', labels.items())
-        print('val predict labels:', predict_labels.items())
+        print('val ground-truth labels:', labels.item())
+        print('val predict labels:', predict_labels.item())
         val_loss = Loss(label_hats, labels)
         #total_num += len(labels)
         #total_loss += train_loss.item() * len(labels)
@@ -519,8 +519,8 @@ def train(options):
         pos_count , neg_count =0, 0
         labels = th.tensor([],dtype=th.long).to(device)
         global_embeddings = None
-        seed = random.randint(1,1000)
-        random.seed(seed)
+        # seed = random.randint(1,1000)
+        # random.seed(seed)
         shuffle(train_graphs)
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
