@@ -371,6 +371,10 @@ def train(options):
             label = labels[module]
             data = val_data[module]
             for circuit in data:
+                g = circuit[0]
+                g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+                g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+                g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
                 val_graphs.append((label,circuit[0],circuit[1],circuit[2]))
     print('len val1:',len(val_graphs))
     for i,t in enumerate(targets):
