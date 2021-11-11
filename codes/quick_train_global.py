@@ -46,6 +46,7 @@ def preprocess(data_path,device,options,in_dim):
             pickle.dump(graphs, f)
             print('saving dataset...')
     #print(train_data_file)
+    exit()
     if os.path.exists(train_data_file) is False:
 
         datapath = "../arithmetic_netlists/{}".format(target)
