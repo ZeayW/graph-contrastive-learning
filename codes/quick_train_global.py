@@ -368,7 +368,7 @@ def train(options):
     val_graphs = []
     train_graphs = []
 
-    with open(os.path.join(options.datapath,'val2.pkl'),'rb') as f:
+    with open(os.path.join(options.datapath,'val.pkl'),'rb') as f:
         val_data = pickle.load(f)
         labels = {'adder':0,'multiplier':1}
         for module in val_data.keys():
