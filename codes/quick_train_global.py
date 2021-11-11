@@ -368,7 +368,7 @@ def train(options):
     val_graphs = []
     train_graphs = []
 
-    with open(os.path.join(options.datapath,'val.pkl'),'rb') as f:
+    with open(os.path.join(options.datapath,'val3.pkl'),'rb') as f:
         val_data = pickle.load(f)
         labels = {'adder':0,'multiplier':1}
         for module in val_data.keys():
@@ -502,7 +502,7 @@ def train(options):
     #     for i in range(options.in_dim):
     #         model.GCN2.gate_functions[i].train()
     print(options.alpha)
-    
+
     max_val_recall, max_val_precision = 0.0,0.0
     print("Start training")
     print(len(train_graphs))
@@ -514,7 +514,7 @@ def train(options):
     for epoch in range(options.num_epoch):
         runtime = 0
         start_time = time()
-        #options, model = load_model(device, options) 
+        #options, model = load_model(device, options)
         #optim = th.optim.Adam(
         #model.parameters(), options.learning_rate, weight_decay=options.weight_decay
         #)
