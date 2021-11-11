@@ -345,20 +345,20 @@ def train(options):
     in_nlayers = options.in_nlayers if isinstance(options.in_nlayers,int) else options.in_nlayers[0]
     out_nlayers = options.out_nlayers if isinstance(options.out_nlayers,int) else options.out_nlayers[0]
 
-    # targets = ['adder', 'multiplier', 'divider', 'accumulator', 'subtractor']
-    # for i,t in enumerate(targets):
-    #
-    #     with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
-    #         data = pickle.load(f)
-    #         #num_class = len(data)
-    #     #print(len(data))
-    #     for i,cls in enumerate(data.keys()):
-    #         circuits = data[cls]
-    #         shuffle(circuits)
-    #         data[cls] = circuits
-    #     with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'wb') as f:
-    #         pickle.dump(data,f)
-    # exit()
+    targets = ['adder', 'multiplier', 'divider', 'subtractor']
+    for i,t in enumerate(targets):
+
+        with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
+            data = pickle.load(f)
+            #num_class = len(data)
+        #print(len(data))
+        for i,cls in enumerate(data.keys()):
+            circuits = data[cls]
+            shuffle(circuits)
+            data[cls] = circuits
+        with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'wb') as f:
+            pickle.dump(data,f)
+    exit()
     print("Loading data...")
 
 
@@ -367,6 +367,7 @@ def train(options):
     targets = ['adder','multiplier','divider','subtractor']
     val_graphs = []
     train_graphs = []
+
 
     with open(os.path.join(options.datapath,'val3.pkl'),'rb') as f:
         val_data = pickle.load(f)
@@ -388,6 +389,7 @@ def train(options):
             data = pickle.load(f)
             #num_class = len(data)
             for j,cls in enumerate(data.keys()):
+
                 circuits = data[cls]
                 for g, _, _ in circuits:
                     g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
@@ -397,6 +399,7 @@ def train(options):
                 #shuffle(circuit)
                 val_circuits= circuits[:int(len(circuits)/options.val_percent)]
                 train_circuits = circuits[int(len(circuits) / options.val_percent):]
+
                 if  t not in ['adder','multiplier']:
                     for circuit in val_circuits:
                         val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
