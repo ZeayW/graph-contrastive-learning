@@ -28,11 +28,11 @@ def preprocess(data_path,device,options,in_dim):
         os.makedirs(data_path)
 
     target = options.label
-    train_data_file = os.path.join(data_path, '{}2.pkl').format(target)
+    train_data_file = os.path.join(data_path, '{}.pkl').format(target)
     val_data_file = os.path.join(data_path, 'val.pkl')
 
     if os.path.exists(val_data_file) is False:
-        datapath = "../amg/"
+        datapath = "../amg_new/"
         # datapaths = ["../arithmetic_netlists/adders/","../arithmetic_netlists/multiplier/"]
         labels = [0, 1]
         print('generating validate dataset....')
