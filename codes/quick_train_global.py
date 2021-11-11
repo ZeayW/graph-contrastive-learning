@@ -346,19 +346,19 @@ def train(options):
     out_nlayers = options.out_nlayers if isinstance(options.out_nlayers,int) else options.out_nlayers[0]
 
     targets = ['adder', 'multiplier', 'divider', 'subtractor']
-    for i,t in enumerate(targets):
-
-        with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
-            data = pickle.load(f)
-            #num_class = len(data)
-        #print(len(data))
-        for i,cls in enumerate(data.keys()):
-            circuits = data[cls]
-            shuffle(circuits)
-            data[cls] = circuits
-        with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'wb') as f:
-            pickle.dump(data,f)
-    exit()
+    # for i,t in enumerate(targets):
+    #
+    #     with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
+    #         data = pickle.load(f)
+    #         #num_class = len(data)
+    #     #print(len(data))
+    #     for i,cls in enumerate(data.keys()):
+    #         circuits = data[cls]
+    #         shuffle(circuits)
+    #         data[cls] = circuits
+    #     with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'wb') as f:
+    #         pickle.dump(data,f)
+    # exit()
     print("Loading data...")
 
 
@@ -388,6 +388,7 @@ def train(options):
         with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
             data = pickle.load(f)
             #num_class = len(data)
+            temp_circuits = []
             for j,cls in enumerate(data.keys()):
 
                 circuits = data[cls]
@@ -405,7 +406,9 @@ def train(options):
                         val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
                 if j<options.train_percent:
                     for circuit in train_circuits:
-                        train_graphs.append((i, circuit[0], circuit[1], circuit[2]))
+                        temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
+            
+            train_graphs.extend(temp_circuits)
     shuffle(train_graphs)
 
 
