@@ -18,7 +18,9 @@ def load_model(device,options):
     with open(os.path.join(model_dir,'model.pkl'), 'rb') as f:
         #print(f)
         #print(classifier)
-        if 'gcl' in model_dir:
+        if 'global' in model_dir:
+            param, classifier, mlp,combine = pickle.load(f)
+        elif 'gcl' in model_dir:
             param, classifier = pickle.load(f)
         else:
             param, classifier, mlp = pickle.load(f)
