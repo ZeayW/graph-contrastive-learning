@@ -407,7 +407,7 @@ def train(options):
 
             val_circuits = temp_circuits[:int(len(temp_circuits) / options.val_percent)]
             train_circuits = temp_circuits[int(len(temp_circuits) / options.val_percent):]
-
+            print(len(train_circuits))
             if t not in ['adder', 'multiplier']:
                 for circuit in val_circuits:
                     val_graphs.append((i, circuit[0], circuit[1], circuit[2]))
