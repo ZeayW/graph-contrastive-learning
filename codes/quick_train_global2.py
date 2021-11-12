@@ -398,7 +398,7 @@ def train(options):
                     g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
                 #val_graphs = graphs[:int(len(circuits) / options.train_percent)]
                 #shuffle(circuit)
-                print(circuits)
+                #print(circuits)
                 val_circuits= circuits[:int(len(circuits)/options.val_percent)]
                 train_circuits = circuits[int(len(circuits) / options.val_percent):]
 
@@ -411,9 +411,10 @@ def train(options):
                         temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
             #shuffle(temp_circuits)
             train_graphs.extend(temp_circuits)
-            shuffle(train_graphs)
+            #shuffle(train_graphs)
     shuffle(train_graphs)
-
+    with open(os.path.join(options.model_saving_dir,'train_data.pkl'),'wb') as f:
+        pickle.dump(train_graphs)
 
 
     #shuffle(val_graphs)
