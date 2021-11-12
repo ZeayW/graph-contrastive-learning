@@ -547,7 +547,7 @@ def train(options):
                 train_data.extend(sub_data)
         #for
         #shuffle(train_graphs)
-
+            print(len(train_data))
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
             for idx,(label,graph,POs,depth) in enumerate(train_data):
 
@@ -619,7 +619,7 @@ def train(options):
         runtime += endtime - start_time
 
         Train_loss = total_loss / total_num
-        Train_acc = correct / len(train_graphs)
+        Train_acc = correct / total_num
 
         total_pos_sim = 0
         #num = pos_embeddings.shape[0]
