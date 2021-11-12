@@ -412,7 +412,7 @@ def train(options):
             #shuffle(temp_circuits)
             train_graphs.extend(temp_circuits)
             #shuffle(train_graphs)
-    shuffle(train_graphs)
+    #shuffle(train_graphs)
     if not os.path.exists(os.path.join(options.model_saving_dir,'train_data.pkl')):
         with open(os.path.join(options.model_saving_dir,'train_data.pkl'),'wb') as f:
             pickle.dump(train_graphs,f)
@@ -539,7 +539,15 @@ def train(options):
         global_embeddings = None
         # seed = random.randint(1,1000)
         # random.seed(seed)
+
         shuffle(train_graphs)
+        if epoch==0:
+            if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
+                with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
+                    pickle.dump(train_graphs, f)
+            else:
+                with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'rb') as f:
+                    train_graphs = pickle.load(f)
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
             labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
