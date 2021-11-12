@@ -558,10 +558,10 @@ def train(options):
             # output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             # total_num += len(output_labels)
             po_embeddings = model(blocks, input_features)
-            mask = range(1,len(po_embeddings),2)
+            #mask = range(1,len(po_embeddings),2)
 
             #mask =
-            global_embedding = combine(po_embeddings[mask])
+            global_embedding = combine(po_embeddings)
             if global_embeddings is None:
                 global_embeddings = global_embedding.unsqueeze(0)
             else:
