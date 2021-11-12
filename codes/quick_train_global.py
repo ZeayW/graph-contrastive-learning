@@ -544,6 +544,7 @@ def train(options):
             train_data = []
             for dataset in train_graphs:
                 sub_data = random.sample(dataset,int(options.batch_size/len(train_graphs)))
+                print(len(sub_data))
                 train_data.extend(sub_data)
         #for
         #shuffle(train_graphs)
