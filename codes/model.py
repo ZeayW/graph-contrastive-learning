@@ -22,12 +22,15 @@ from options import get_options
 from time import time
 #  GCN Model\
 
+
+
 class Combine(nn.Module):
     def __init__(self,
                  ):
         super(Combine, self).__init__()
     def forward(self,embeddings):
-        return th.max(embeddings,dim=0)
+
+        return th.max(embeddings,dim=0).values
 
 class Projection_Head(nn.Module):
     def __init__(self,
