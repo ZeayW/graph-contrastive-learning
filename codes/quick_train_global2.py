@@ -413,9 +413,12 @@ def train(options):
             train_graphs.extend(temp_circuits)
             #shuffle(train_graphs)
     shuffle(train_graphs)
-    with open(os.path.join(options.model_saving_dir,'train_data.pkl'),'wb') as f:
-        pickle.dump(train_graphs,f)
-
+    if not os.path.exists(os.path.join(options.model_saving_dir,'train_data.pkl')):
+        with open(os.path.join(options.model_saving_dir,'train_data.pkl'),'wb') as f:
+            pickle.dump(train_graphs,f)
+    else:
+        with open(os.path.join(options.model_saving_dir,'train_data.pkl'),'rb') as f:
+            train_graphs = pickle.load(f)
 
     #shuffle(val_graphs)
     print('num_train:',len(train_graphs))

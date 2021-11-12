@@ -35,7 +35,7 @@ def get_options(args=None):
     parser.add_argument('--gat',action='store_true',help = 'choose a GAT-based model')
     parser.add_argument("--num_heads", type=int, nargs='+',default=2)
     parser.add_argument('--not_edge',action='store_true', help= 'whether to put the not gates on the edges or not')
-    parser.add_argument("--dataset",type=str,default='plus',help='choose a dataset, new means ICCAD2014/new while plus means ICCAD2014/plus')
+    parser.add_argument("--dataset",type=str,default=None,help='choose a dataset, new means ICCAD2014/new while plus means ICCAD2014/plus')
     parser.add_argument('--agg_type',type=str,default='mean',help='choose an aggregation type for GCN: mean / lstm / gcn / pool')
     parser.add_argument('--rgcn',action='store_true',help='choose a RGCN-based model')
     parser.add_argument('--rel',action='store_true',help='choose a relconv-based(implemented by myself) model')
@@ -82,6 +82,7 @@ def get_options(args=None):
     parser.add_argument('--val_percent', type=float, default=3)
     parser.add_argument('--loss_thred',type=float,default=0.1)
     parser.add_argument('--freeze',action='store_true')
+    parser.add_argument('--')
     #parser.add_argument('--in')
     options = parser.parse_args(args)
 
