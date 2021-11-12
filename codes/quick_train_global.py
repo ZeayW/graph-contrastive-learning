@@ -409,7 +409,7 @@ def train(options):
                         temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
 
             train_graphs.extend(temp_circuits)
-    #shuffle(train_graphs)
+    shuffle(train_graphs)
 
 
 
@@ -558,6 +558,7 @@ def train(options):
             # output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             # total_num += len(output_labels)
             po_embeddings = model(blocks, input_features)
+            #mask =
             global_embedding = combine(po_embeddings)
             if global_embeddings is None:
                 global_embeddings = global_embedding.unsqueeze(0)
