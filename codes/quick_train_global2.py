@@ -543,6 +543,7 @@ def train(options):
                     pickle.dump(train_graphs, f)
             else:
                 with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'rb') as f:
+                    print('load train data')
                     train_graphs = pickle.load(f)
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
