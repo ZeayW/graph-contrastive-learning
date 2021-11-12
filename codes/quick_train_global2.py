@@ -412,13 +412,9 @@ def train(options):
             #shuffle(temp_circuits)
             train_graphs.extend(temp_circuits)
             #shuffle(train_graphs)
-    #shuffle(train_graphs)
-    if not os.path.exists(os.path.join(options.model_saving_dir,'train_data.pkl')):
-        with open(os.path.join(options.model_saving_dir,'train_data.pkl'),'wb') as f:
-            pickle.dump(train_graphs,f)
-    else:
-        with open(os.path.join(options.model_saving_dir,'train_data.pkl'),'rb') as f:
-            train_graphs = pickle.load(f)
+    shuffle(train_graphs)
+    num_batch = int(len(train_graphs)/options.batch_size)
+    train_graphs = train_graphs[:num_batch*options.batch_size]
 
     #shuffle(val_graphs)
     print('num_train:',len(train_graphs))
