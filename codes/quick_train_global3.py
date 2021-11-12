@@ -414,9 +414,10 @@ def train(options):
     if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
         with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
             pickle.dump(train_graphs, f)
-    num_batch = int(len(train_graphs)/options.batch_size)
+
     num_train = int(options.train_percent * len(val_graphs))
     train_graphs = train_graphs[:num_train]
+    num_batch = int(len(train_graphs) / options.batch_size)
     train_graphs = train_graphs[:num_batch*options.batch_size]
     #train_graphs = train_graphs[:]
 
