@@ -399,15 +399,15 @@ def train(options):
                 #val_graphs = graphs[:int(len(circuits) / options.train_percent)]
                 #shuffle(circuit)
                 #print(circuits)
-                temp_circuits.append(circuits)
+                temp_circuits.extend(circuits)
             shuffle(temp_circuits)
 
             if t == 'divider' or t=='subtractor':
                 temp_circuits = temp_circuits[:750]
-
+            #print(len(temp_circuits))
             val_circuits = temp_circuits[:int(len(temp_circuits) / options.val_percent)]
             train_circuits = temp_circuits[int(len(temp_circuits) / options.val_percent):]
-            print(len(train_circuits))
+            #print(len(train_circuits))
             if t not in ['adder', 'multiplier']:
                 for circuit in val_circuits:
                     val_graphs.append((i, circuit[0], circuit[1], circuit[2]))
