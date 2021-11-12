@@ -544,11 +544,11 @@ def train(options):
             train_data = []
             for dataset in train_graphs:
                 sub_data = random.sample(dataset,int(options.batch_size/len(train_graphs)))
-                print(len(sub_data))
+                #print(len(sub_data))
                 train_data.extend(sub_data)
         #for
         #shuffle(train_graphs)
-            print(len(train_data))
+            #print(len(train_data))
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
             for idx,(label,graph,POs,depth) in enumerate(train_data):
 
@@ -593,7 +593,7 @@ def train(options):
                 #
 
                 #if idx == len(train_graphs)-1 or (idx!=0 and (idx+1)%options.batch_size ==0):
-                if idx == len(train_graphs) - 1:
+                if idx == len(train_data) - 1:
                     #print(global_embeddings.shape)
                     #print(mlp)
                     label_hats = mlp(global_embeddings)
