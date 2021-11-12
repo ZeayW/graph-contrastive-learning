@@ -368,7 +368,7 @@ def train(options):
     val_graphs = []
     train_graphs = []
 
-
+    total_size =0
     with open(os.path.join(options.datapath,'val3.pkl'),'rb') as f:
         val_data = pickle.load(f)
         labels = {'adder':0,'multiplier':1}
@@ -409,7 +409,7 @@ def train(options):
                         temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
             #shuffle(temp_circuits)
         shuffle(temp_circuits)
-
+        total_size += len(temp_circuits)
         train_graphs.append(temp_circuits)
         #shuffle(train_graphs)
     #shuffle(train_graphs)
@@ -417,7 +417,7 @@ def train(options):
 
 
     #shuffle(val_graphs)
-    print('num_train:',len(train_graphs))
+    print('num_train:',total_size)
     print('num_val',len(val_graphs))
     #shuffle(graphs)
     #
@@ -536,7 +536,7 @@ def train(options):
         # seed = random.randint(1,1000)
         # random.seed(seed)
         current_batch = 0
-        total_batch = int(len(train_graphs)/options.batch_size)
+        total_batch = int(total_size/options.batch_size)
         while current_batch <total_batch:
             labels = th.tensor([], dtype=th.long).to(device)
             global_embeddings = None
