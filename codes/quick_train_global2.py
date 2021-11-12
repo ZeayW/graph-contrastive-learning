@@ -414,7 +414,7 @@ def train(options):
             #shuffle(train_graphs)
     shuffle(train_graphs)
     with open(os.path.join(options.model_saving_dir,'train_data.pkl'),'wb') as f:
-        pickle.dump(train_graphs)
+        pickle.dump(train_graphs,f)
 
 
     #shuffle(val_graphs)
