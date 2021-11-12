@@ -364,7 +364,7 @@ def train(options):
 
     graphs = []
     #targets = ['adder','multiplier','divider','accumulator','subtractor']
-    targets = ['adder','multiplier','divider','subtractor']
+    targets = ['adder','multiplier','divider','accumulator','subtractor']
     val_graphs = []
     train_graphs = []
 
