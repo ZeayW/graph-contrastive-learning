@@ -407,9 +407,9 @@ def train(options):
                 if j<options.train_percent:
                     for circuit in train_circuits:
                         temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
-            
+
             train_graphs.extend(temp_circuits)
-    shuffle(train_graphs)
+    #shuffle(train_graphs)
 
 
 
