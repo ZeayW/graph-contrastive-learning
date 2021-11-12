@@ -399,18 +399,24 @@ def train(options):
                 #val_graphs = graphs[:int(len(circuits) / options.train_percent)]
                 #shuffle(circuit)
                 #print(circuits)
-                val_circuits= circuits[:int(len(circuits)/options.val_percent)]
-                train_circuits = circuits[int(len(circuits) / options.val_percent):]
+                temp_circuits.append(circuits)
+            shuffle(temp_circuits)
 
-                if  t not in ['adder','multiplier']:
-                    for circuit in val_circuits:
+            if t == 'divider' or t=='subtractor':
+                temp_circuits = temp_circuits[:750]
 
-                        val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
-                if j<=options.train_percent:
-                    for circuit in train_circuits:
-                        temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
+            val_circuits = temp_circuits[:int(len(temp_circuits) / options.val_percent)]
+            train_circuits = temp_circuits[int(len(temp_circuits) / options.val_percent):]
+
+            if t not in ['adder', 'multiplier']:
+                for circuit in val_circuits:
+                    val_graphs.append((i, circuit[0], circuit[1], circuit[2]))
+            if j <= options.train_percent:
+                for circuit in train_circuits:
+                    train_graphs.append((i, circuit[0], circuit[1], circuit[2]))
             #shuffle(temp_circuits)
-            train_graphs.extend(temp_circuits)
+
+            #train_graphs.extend(temp_circuits)
             #shuffle(train_graphs)
     shuffle(train_graphs)
     num_batch = int(len(train_graphs)/options.batch_size)
