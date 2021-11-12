@@ -414,7 +414,9 @@ def train(options):
     if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
         with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
             pickle.dump(train_graphs, f)
-
+    else:
+        with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
+            train_graphs=pickle.load(f)
     num_train = int(options.train_percent * len(val_graphs))
     train_graphs = train_graphs[:num_train]
     num_batch = int(len(train_graphs) / options.batch_size)
@@ -541,7 +543,8 @@ def train(options):
         global_embeddings = None
         # seed = random.randint(1,1000)
         # random.seed(seed)
-        shuffle(train_graphs)
+        if epoch!=0:
+            shuffle(train_graphs)
 
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
