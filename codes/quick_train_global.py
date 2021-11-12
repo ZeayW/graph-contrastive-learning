@@ -384,11 +384,11 @@ def train(options):
                 val_graphs.append((label,circuit[0],circuit[1],circuit[2]))
     print('len val1:',len(val_graphs))
     for i,t in enumerate(targets):
-
+        temp_circuits = []
         with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
             data = pickle.load(f)
             #num_class = len(data)
-            temp_circuits = []
+
             for j,cls in enumerate(data.keys()):
 
                 circuits = data[cls]
@@ -408,9 +408,11 @@ def train(options):
                     for circuit in train_circuits:
                         temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
             #shuffle(temp_circuits)
-            train_graphs.extend(temp_circuits)
-            shuffle(train_graphs)
-    shuffle(train_graphs)
+        shuffle(temp_circuits)
+
+        train_graphs.append(temp_circuits)
+        #shuffle(train_graphs)
+    #shuffle(train_graphs)
 
 
 
@@ -533,71 +535,85 @@ def train(options):
         global_embeddings = None
         # seed = random.randint(1,1000)
         # random.seed(seed)
-        shuffle(train_graphs)
+        current_batch = 0
+        total_batch = int(len(train_graphs)/options.batch_size)
+        while current_batch <total_batch:
+            labels = th.tensor([], dtype=th.long).to(device)
+            global_embeddings = None
+            current_batch += 1
+            train_data = []
+            for dataset in train_graphs:
+                sub_data = random.sample(dataset,int(options.batch_size/len(train_graphs)))
+                train_data.extend(sub_data)
+        #for
+        #shuffle(train_graphs)
+
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
-        for idx,(label,graph,POs,depth) in enumerate(train_graphs):
-            labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
-            sampler = Sampler([None] * depth, include_dst_in_src=options.include)
-            blocks = sampler.sample_blocks(graph,POs)
-            # dataloader = MyNodeDataLoader(
-            #     True,
-            #     graph,
-            #     POs,
-            #     sampler,
-            #     batch_size=len(POs),
-            #     shuffle=True,
-            #     drop_last=False,
-            # )
-            #print(idx,th.cuda.get_device_capability(device))
-            #start_time = time()
-            blocks = [b.to(device) for b in blocks]
-            if options.gnn:
-                input_features = blocks[0].srcdata["ntype"]
-                # print(input_features.shape)
-            else:
-                input_features = blocks[0].srcdata["f_input"]
-            # output_labels = blocks[-1].dstdata[label_name].squeeze(1)
-            # total_num += len(output_labels)
-            po_embeddings = model(blocks, input_features)
-            #mask = range(1,len(po_embeddings),2)
+            for idx,(label,graph,POs,depth) in enumerate(train_data):
 
-            #mask =
-            global_embedding = combine(po_embeddings)
-            if global_embeddings is None:
-                global_embeddings = global_embedding.unsqueeze(0)
-            else:
-                global_embeddings = th.cat((global_embeddings, global_embedding.unsqueeze(0)), dim=0)
-            # for ni, (central_nodes,input_nodes,blocks) in enumerate(dataloader):
-            #
-            #     #continue
-            #     #print(in_blocks)
-            #     # print('freeze gate:',model.conv.gate_functions[11].weight)
-            #     # print('not freeze gate:', model.conv.gate_functions[2].weight)
-            #     #print(mlp.layers[2].weight)
-            #
+                labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
+                sampler = Sampler([None] * depth, include_dst_in_src=options.include)
+                blocks = sampler.sample_blocks(graph,POs)
+                # dataloader = MyNodeDataLoader(
+                #     True,
+                #     graph,
+                #     POs,
+                #     sampler,
+                #     batch_size=len(POs),
+                #     shuffle=True,
+                #     drop_last=False,
+                # )
+                #print(idx,th.cuda.get_device_capability(device))
+                #start_time = time()
+                blocks = [b.to(device) for b in blocks]
+                if options.gnn:
+                    input_features = blocks[0].srcdata["ntype"]
+                    # print(input_features.shape)
+                else:
+                    input_features = blocks[0].srcdata["f_input"]
+                # output_labels = blocks[-1].dstdata[label_name].squeeze(1)
+                # total_num += len(output_labels)
+                po_embeddings = model(blocks, input_features)
+                #mask = range(1,len(po_embeddings),2)
 
-            if idx == len(train_graphs)-1 or (idx!=0 and (idx+1)%options.batch_size ==0):
-                #print(global_embeddings.shape)
-                #print(mlp)
-                label_hats = mlp(global_embeddings)
-                #print('label_hat',label_hats)
-                #print('softmax',nn.functional.softmax(label_hats,1))
-                predict_labels = th.argmax(nn.functional.softmax(label_hats,1),dim=1)
-                #print('ground-truth labels:',labels.shape,labels)
-                #print('predict labels:',predict_labels.shape,predict_labels)
-                train_loss = Loss(label_hats, labels)
-                print('loss:',train_loss.item())
-                total_num += len(labels)
-                total_loss += train_loss.item()*len(labels)
-                correct += (
-                        predict_labels == labels
-                ).sum().item()
-                optim.zero_grad()
-                train_loss.backward()
-                # print(model.GCN1.layers[0].attn_n.grad)
-                optim.step()
-                labels = th.tensor([],dtype=th.long).to(device)
-                global_embeddings = None
+                #mask =
+                global_embedding = combine(po_embeddings)
+                if global_embeddings is None:
+                    global_embeddings = global_embedding.unsqueeze(0)
+                else:
+                    global_embeddings = th.cat((global_embeddings, global_embedding.unsqueeze(0)), dim=0)
+                # for ni, (central_nodes,input_nodes,blocks) in enumerate(dataloader):
+                #
+                #     #continue
+                #     #print(in_blocks)
+                #     # print('freeze gate:',model.conv.gate_functions[11].weight)
+                #     # print('not freeze gate:', model.conv.gate_functions[2].weight)
+                #     #print(mlp.layers[2].weight)
+                #
+
+                #if idx == len(train_graphs)-1 or (idx!=0 and (idx+1)%options.batch_size ==0):
+                if idx == len(train_graphs) - 1:
+                    #print(global_embeddings.shape)
+                    #print(mlp)
+                    label_hats = mlp(global_embeddings)
+                    #print('label_hat',label_hats)
+                    #print('softmax',nn.functional.softmax(label_hats,1))
+                    predict_labels = th.argmax(nn.functional.softmax(label_hats,1),dim=1)
+                    #print('ground-truth labels:',labels.shape,labels)
+                    #print('predict labels:',predict_labels.shape,predict_labels)
+                    train_loss = Loss(label_hats, labels)
+                    print('loss:',train_loss.item())
+                    total_num += len(labels)
+                    total_loss += train_loss.item()*len(labels)
+                    correct += (
+                            predict_labels == labels
+                    ).sum().item()
+                    optim.zero_grad()
+                    train_loss.backward()
+                    # print(model.GCN1.layers[0].attn_n.grad)
+                    optim.step()
+                    labels = th.tensor([],dtype=th.long).to(device)
+                    global_embeddings = None
 
         endtime = time()
         runtime += endtime - start_time
