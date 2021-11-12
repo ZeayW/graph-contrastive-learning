@@ -29,7 +29,7 @@ class Combine(nn.Module):
                  ):
         super(Combine, self).__init__()
     def forward(self,embeddings):
-
+        return th.mean(embeddings,dim=0)
         return th.max(embeddings,dim=0).values
 
 class Projection_Head(nn.Module):
