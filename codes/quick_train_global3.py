@@ -411,15 +411,15 @@ def train(options):
                 if t in ['divider', 'subtractor']:
 
                     if cls in ['cond_sum_adder','sklansky_adder','brent_kung_adder']:
-                        if t == 'subtractor':
-                            size = int(len(circuits) * 0.6)
-                            circuits = circuits[:size]
+                        # if t == 'subtractor':
+                        #     size = int(len(circuits) * 0.6)
+                        #     circuits = circuits[:size]
                         for circuit in circuits:
                              val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
                     else:
-                        if t == 'subtractor':
-                            size = int(len(circuits) * 0.5)
-                            circuits = circuits[:size]
+                        # if t == 'subtractor':
+                        #     size = int(len(circuits) * 0.5)
+                        #     circuits = circuits[:size]
                         for circuit in circuits:
                             train_graphs.append((i,circuit[0],circuit[1],circuit[2]))
                 else:
