@@ -115,10 +115,9 @@ class Dataset_global(DGLDataset):
                     if not vf.endswith('.v') or 'hier' in vf:
                         continue
                     # PO = []
-                    print(num,folder,vf)
-                    num+=1
-                    continue
-                    print('processing {} {}'.format(folder_path, vf))
+
+                    #continue
+                    #print('processing {} {}'.format(folder_path, vf))
                     # print('\ngenerate positive samples for {}'.format(vf))
                     # value = vf.split('_')[2].split('.')[0][1:]
                     parser = DcParser('test')
@@ -129,6 +128,8 @@ class Dataset_global(DGLDataset):
                         continue
                     graph, POs, depth = parse_single_file(nodes, edges)
                     if depth<50:
+                        print(num, folder, vf)
+                        num += 1
                         self.graphs[folder] = self.graphs.get(folder, [])
                         # self.num_graph += 1
                         self.graphs[folder].append((graph, POs, depth))
