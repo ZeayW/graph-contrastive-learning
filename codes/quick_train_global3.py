@@ -535,7 +535,7 @@ def train(options):
             #                 model.conv.gate_functions[3].parameters(),
             #                 model.conv.gate_functions[4].parameters(),
             #                 model.conv.gate_functions[8].parameters()),
-            itertools.chain(mlp.parameters(),model.parameters()),
+            itertools.chain(model.parameters(),mlp.parameters()),
             #mlp.parameters(),
             options.learning_rate, weight_decay=options.weight_decay
         )
