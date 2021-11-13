@@ -29,7 +29,7 @@ def preprocess(data_path,device,options,in_dim):
 
     target = options.label
     train_data_file = os.path.join(data_path, '{}.pkl').format(target)
-    val_data_file = os.path.join(data_path, 'val_new.pkl')
+    val_data_file = os.path.join(data_path, 'val3.pkl')
 
     if os.path.exists(val_data_file) is False:
         datapath = "../amg_new/"
