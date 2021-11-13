@@ -187,7 +187,7 @@ def validate(val_graphs,device,model,mlp,combine,Loss,alpha,beta,options):
                 predict_labels == labels
         ).sum().item()
         errors = th.tensor(range(0,len(predict_labels)))[predict_labels != labels]
-        print('errors:',errorss)
+        print('errors:',errors)
         endtime = time()
         runtime += endtime - start_time
 
