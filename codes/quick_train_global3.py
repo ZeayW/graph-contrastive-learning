@@ -408,15 +408,15 @@ def train(options):
                 if t in ['divider','subtractor']:
                     val_circuits= circuits[:int(len(circuits)/options.val_percent)]
                     train_circuits = circuits[int(len(circuits) / options.val_percent):]
-                else:
-                    train_circuits = circuits
-                if  t not in ['adder','multiplier']:
                     for circuit in val_circuits:
                         val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
+                else:
+                    train_circuits = circuits
 
                 for circuit in train_circuits:
                     temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
             #shuffle(temp_circuits)
+            print(t,len(temp_circuits))
             train_graphs.extend(temp_circuits)
             shuffle(train_graphs)
     shuffle(train_graphs)
