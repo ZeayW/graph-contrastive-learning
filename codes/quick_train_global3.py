@@ -626,7 +626,7 @@ def train(options):
             #     #print(mlp.layers[2].weight)
             #
 
-            if idx == len(train_graphs)-1 or (idx!=0 and (idx+1)%options.batch_size ==0):
+            if (idx!=0 and (idx+1)%options.batch_size ==0):
                 #print(global_embeddings.shape)
                 #print(mlp)
                 label_hats = mlp(global_embeddings)
@@ -635,7 +635,7 @@ def train(options):
                 predict_labels = th.argmax(nn.functional.softmax(label_hats,1),dim=1)
                 #print('ground-truth labels:',labels.shape,labels)
                 #print('predict labels:',predict_labels.shape,predict_labels)
-                train_loss = Loss(label_hats, labels)
+                train_loss = Loss(2, labels)
                 print('loss:',train_loss.item())
                 total_num += len(labels)
                 total_loss += train_loss.item()*len(labels)
