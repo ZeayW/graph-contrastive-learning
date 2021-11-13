@@ -186,6 +186,8 @@ def validate(val_graphs,device,model,mlp,combine,Loss,alpha,beta,options):
         correct += (
                 predict_labels == labels
         ).sum().item()
+        errors = th.tensor(range(0,len(predict_labels)))[predict_labels != labels]
+        print('errors:',errors)
         endtime = time()
         runtime += endtime - start_time
 
@@ -383,11 +385,11 @@ def train(options):
                 g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
                 g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
                 temp_graphs.append((label, circuit[0], circuit[1], circuit[2]))
-            shuffle(temp_graphs)
-            if module == 'adder':
-                temp_graphs = temp_graphs[:300]
-            else:
-                temp_graphs = temp_graphs[:500]
+            # shuffle(temp_graphs)
+            # if module == 'adder':
+            #     temp_graphs = temp_graphs[:300]
+            # else:
+            #     temp_graphs = temp_graphs[:500]
             val_graphs.extend(temp_graphs)
     print('len val1:',len(val_graphs))
     for i,t in enumerate(targets):
