@@ -103,6 +103,7 @@ class Dataset_global(DGLDataset):
         # print(len(filelist))
         #print('file list{} start with {}'.format(self.split,filelist[0]))
         #self.num_graph = 0
+        num = 0
         for folder in os.listdir(self.datapath):
             folder_path = os.path.join(self.datapath, folder)
             if os.path.isdir(folder_path):
@@ -114,6 +115,9 @@ class Dataset_global(DGLDataset):
                     if not vf.endswith('.v') or 'hier' in vf:
                         continue
                     # PO = []
+                    print(num,folder,vf)
+                    num+=1
+                    continue
                     print('processing {} {}'.format(folder_path, vf))
                     # print('\ngenerate positive samples for {}'.format(vf))
                     # value = vf.split('_')[2].split('.')[0][1:]

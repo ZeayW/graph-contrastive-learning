@@ -31,20 +31,20 @@ def preprocess(data_path,device,options,in_dim):
     train_data_file = os.path.join(data_path, '{}.pkl').format(target)
     val_data_file = os.path.join(data_path, 'val.pkl')
 
-    # if os.path.exists(val_data_file) is False:
-    #     datapath = "../amg_new/"
-    #     # datapaths = ["../arithmetic_netlists/adders/","../arithmetic_netlists/multiplier/"]
-    #     labels = [0, 1]
-    #     print('generating validate dataset....')
-    #     th.multiprocessing.set_sharing_strategy('file_system')
-    #     dataset = Dataset(datapath)
-    #     graphs = dataset.graphs
-    #     # print(g.ndata)
-    #     # print(g.ndata)
-    #     # print(g.edata['r'])
-    #     with open(val_data_file, 'wb') as f:
-    #         pickle.dump(graphs, f)
-    #         print('saving dataset...')
+    if os.path.exists(val_data_file) is False:
+        datapath = "../amg_new/"
+        # datapaths = ["../arithmetic_netlists/adders/","../arithmetic_netlists/multiplier/"]
+        labels = [0, 1]
+        print('generating validate dataset....')
+        th.multiprocessing.set_sharing_strategy('file_system')
+        dataset = Dataset(datapath)
+        graphs = dataset.graphs
+        # print(g.ndata)
+        # print(g.ndata)
+        # print(g.edata['r'])
+        with open(val_data_file, 'wb') as f:
+            pickle.dump(graphs, f)
+            print('saving dataset...')
     #print(train_data_file)
     #exit()
     if os.path.exists(train_data_file) is False:
@@ -187,7 +187,7 @@ def validate(val_graphs,device,model,mlp,combine,Loss,alpha,beta,options):
                 predict_labels == labels
         ).sum().item()
         errors = th.tensor(range(0,len(predict_labels)))[predict_labels != labels]
-        print('errors:',errors)
+        print('errors:',errorss)
         endtime = time()
         runtime += endtime - start_time
 
