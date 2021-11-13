@@ -434,6 +434,7 @@ def train(options):
     train_graphs = train_graphs[:num_train]
     print(len(train_graphs))
     num_batch = int(len(train_graphs) / options.batch_size)
+    print(num_batch)
     train_graphs = train_graphs[:num_batch*options.batch_size]
     #train_graphs = train_graphs[:]
 
