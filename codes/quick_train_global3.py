@@ -431,6 +431,7 @@ def train(options):
 
     num_train = int(options.train_percent * len(val_graphs))
     print(options.train_percent,len(val_graphs),num_train)
+    print(len(train_graphs[:3000]))
     train_graphs = train_graphs[:num_train]
     print(len(train_graphs))
     num_batch = int(len(train_graphs) / options.batch_size)
