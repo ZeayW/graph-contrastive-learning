@@ -642,7 +642,7 @@ def train(options):
                 predict_labels = th.argmax(nn.functional.softmax(label_hats,1),dim=1)
                 #print('ground-truth labels:',labels.shape,labels)
                 #print('predict labels:',predict_labels.shape,predict_labels)
-                train_loss = Loss(2, labels)
+                train_loss = Loss(label_hats, labels)
                 print('loss:',train_loss.item())
                 total_num += len(labels)
                 total_loss += train_loss.item()*len(labels)
