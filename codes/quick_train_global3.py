@@ -386,10 +386,10 @@ def train(options):
                 g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
                 temp_graphs.append((label, circuit[0], circuit[1], circuit[2]))
             # shuffle(temp_graphs)
-            # if module == 'adder':
-            #     temp_graphs = temp_graphs[:300]
-            # else:
-            #     temp_graphs = temp_graphs[:500]
+            if module == 'adder':
+                temp_graphs = temp_graphs[:300]
+            else:
+                temp_graphs = temp_graphs[:500]
             val_graphs.extend(temp_graphs)
     print('len val1:',len(val_graphs))
     for i,t in enumerate(targets):
