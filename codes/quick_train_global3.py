@@ -406,20 +406,31 @@ def train(options):
                     g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
                 #val_graphs = graphs[:int(len(circuits) / options.train_percent)]
                 #shuffle(circuit)
-                if t in ['divider','subtractor']:
-                    val_circuits= circuits[:int(len(circuits)/options.val_percent)]
-                    train_circuits = circuits[int(len(circuits) / options.val_percent):]
-                    for circuit in val_circuits:
-                        val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
+                if t in ['divider', 'subtractor']:
+                    if cls in ['cond_sum_adder','sklansky_adder','brent_kung_adder']:
+                        for circuit in circuits:
+                             val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
+                    else:
+                        for circuit in circuits:
+                            train_graphs.append((i,circuit[0],circuit[1],circuit[2]))
                 else:
-                    train_circuits = circuits
+                    for circuit in circuits:
+                        train_graphs.append((i, circuit[0], circuit[1], circuit[2]))
+                # else:
+                # if t in ['divider','subtractor']:
+                #     val_circuits= circuits[:int(len(circuits)/options.val_percent)]
+                #     train_circuits = circuits[int(len(circuits) / options.val_percent):]
+                #     for circuit in val_circuits:
+                #         val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
+                # else:
+                #     train_circuits = circuits
 
-                for circuit in train_circuits:
-                    temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
+                # for circuit in train_circuits:
+                #     temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
             #shuffle(temp_circuits)
-            print(t,len(temp_circuits))
-            train_graphs.extend(temp_circuits)
-            shuffle(train_graphs)
+            # print(t,len(temp_circuits))
+            # train_graphs.extend(temp_circuits)
+            #shuffle(train_graphs)
     shuffle(train_graphs)
     print('len train_graphs',len(train_graphs))
     if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
