@@ -428,7 +428,9 @@ def train(options):
         with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'rb') as f:
             print('loading train data')
             train_graphs=pickle.load(f)
+
     num_train = int(options.train_percent * len(val_graphs))
+    print(options.train_percent,len(val_graphs),num_train)
     train_graphs = train_graphs[:num_train]
     num_batch = int(len(train_graphs) / options.batch_size)
     train_graphs = train_graphs[:num_batch*options.batch_size]
