@@ -409,7 +409,6 @@ def train(options):
                 #val_graphs = graphs[:int(len(circuits) / options.train_percent)]
                 #shuffle(circuit)
                 if t in ['divider', 'subtractor']:
-                    if t == 'substractor':
 
                     if cls in ['cond_sum_adder','sklansky_adder','brent_kung_adder']:
                         if t == 'substractor':
