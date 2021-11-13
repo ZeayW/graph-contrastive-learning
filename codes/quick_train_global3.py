@@ -29,7 +29,7 @@ def preprocess(data_path,device,options,in_dim):
 
     target = options.label
     train_data_file = os.path.join(data_path, '{}.pkl').format(target)
-    val_data_file = os.path.join(data_path, 'val.pkl')
+    val_data_file = os.path.join(data_path, 'val_new.pkl')
 
     if os.path.exists(val_data_file) is False:
         datapath = "../amg_new/"
@@ -370,9 +370,9 @@ def train(options):
     val_graphs = []
     train_graphs = []
 
-    with open(os.path.join(options.datapath, 'val3.pkl'), 'rb') as f:
+    with open(os.path.join(options.datapath, 'val_new.pkl'), 'rb') as f:
         val_data = pickle.load(f)
-        labels = {'adder': 0, 'multiplier': 1}
+        labels = {'adder': 0, 'multiplier': 1,'adder2':0,'multiplier2':1}
         for module in val_data.keys():
             temp_graphs = []
 
