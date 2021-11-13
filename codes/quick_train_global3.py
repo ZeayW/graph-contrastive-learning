@@ -391,7 +391,7 @@ def train(options):
             val_graphs.extend(temp_graphs)
     print('len val1:',len(val_graphs))
     for i,t in enumerate(targets):
-
+        print(t)
         with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
             data = pickle.load(f)
             #num_class = len(data)
@@ -399,6 +399,7 @@ def train(options):
             for j,cls in enumerate(data.keys()):
 
                 circuits = data[cls]
+                print('\t', cls, len(circuits))
                 for g, _, _ in circuits:
                     g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
                     g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
