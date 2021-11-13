@@ -5,6 +5,8 @@ dir = sys.argv[1]
 for file in os.listdir(dir):
     #sub_dir = dir + '/'+ folder
     #design_file = os.path.join(sub_dir,'multilier_dc.v')
+    if os.path.isdir(os.path.join(dir,file)):
+        continue
     target = file.split('.')[0]
     with open(os.path.join(dir,file),'r') as f:
         lines = f.readlines()
