@@ -445,7 +445,7 @@ def train(options):
     if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
         with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
             pickle.dump(train_graphs, f)
-   
+
     # if not os.path.exists(os.path.join(options.datapath, 'train_data.pkl')):
     #     with open(os.path.join(options.datapath, 'train_data.pkl'), 'wb') as f:
     #         pickle.dump(train_graphs, f)
