@@ -442,20 +442,20 @@ def train(options):
             #shuffle(train_graphs)
     shuffle(train_graphs)
     print('len train_graphs',len(train_graphs))
-    if not os.path.exists(os.path.join(options.datapath, 'train_data.pkl')):
-        with open(os.path.join(options.datapath, 'train_data.pkl'), 'wb') as f:
-            pickle.dump(train_graphs, f)
-    else:
-        with open(os.path.join(options.datapath, 'train_data.pkl'), 'rb') as f:
-            print('loading train data')
-            train_graphs=pickle.load(f)
-    if not os.path.exists(os.path.join(options.datapath, 'val_data.pkl')):
-        with open(os.path.join(options.datapath, 'val_data.pkl'), 'wb') as f:
-            pickle.dump(val_graphs, f)
-    else:
-        with open(os.path.join(options.datapath, 'val_data.pkl'), 'rb') as f:
-            print('loading val data')
-            val_graphs=pickle.load(f)
+    # if not os.path.exists(os.path.join(options.datapath, 'train_data.pkl')):
+    #     with open(os.path.join(options.datapath, 'train_data.pkl'), 'wb') as f:
+    #         pickle.dump(train_graphs, f)
+    # else:
+    #     with open(os.path.join(options.datapath, 'train_data.pkl'), 'rb') as f:
+    #         print('loading train data')
+    #         train_graphs=pickle.load(f)
+    # if not os.path.exists(os.path.join(options.datapath, 'val_data.pkl')):
+    #     with open(os.path.join(options.datapath, 'val_data.pkl'), 'wb') as f:
+    #         pickle.dump(val_graphs, f)
+    # else:
+    #     with open(os.path.join(options.datapath, 'val_data.pkl'), 'rb') as f:
+    #         print('loading val data')
+    #         val_graphs=pickle.load(f)
     print(len(train_graphs))
     num_train = int(options.train_percent * len(val_graphs))
     #print(options.train_percent,len(val_graphs),num_train)
