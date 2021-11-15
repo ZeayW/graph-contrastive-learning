@@ -288,7 +288,7 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
                 neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
                 val_loss = (alpha*pos_loss+neg_loss) / len(output_labels)
             else: val_loss = Loss(label_hat, output_labels)
-            print(val_loss.item())
+            print(val_loss)
             total_loss += val_loss.item() * len(output_labels)
 
             error_mask = predict_labels !=output_labels
