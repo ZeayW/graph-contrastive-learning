@@ -241,7 +241,7 @@ def cal_ratios(count1,count2):
 def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
     print('beta:',beta)
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
-    total_loss = th.tensor([0]).to(device)
+    #total_loss = th.tensor([0]).to(device)
     # valid_loss = []
     # vcorrect = 0
     # fn = 0
