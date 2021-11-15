@@ -281,7 +281,7 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
             predict_labels = pos_prob
             end = time()
             runtime += end - start
-            print(label_hat,output_labels)
+            #print(label_hat,output_labels)
             if alpha != 1 :
                 pos_index = (output_labels != 0)
                 neg_index = (output_labels == 0)
@@ -289,7 +289,7 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
                 neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
                 val_loss = (alpha*pos_loss+neg_loss) / len(output_labels)
             else: val_loss = Loss(label_hat, output_labels)
-            print(val_loss)
+            #print(val_loss)
             total_loss += val_loss.item() * len(output_labels)
 
             error_mask = predict_labels !=output_labels
@@ -428,6 +428,9 @@ def train(options):
     # print("ratio of or gate: ",num_or/g.num_nodes())
     train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
 
+    val_nids = th.tensor(range(val_g.number_of_nodes()))
+    val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1) != -1]
+
     rates = cal_ratios(neg_count,pos_count)
     print("neg/pos rates",rates)
     #train_g.edata['a'] = th.ones(size=(len(train_g.edata['r']),1))
@@ -454,7 +457,7 @@ def train(options):
     valdataloader = MyNodeDataLoader(
         True,
         val_g,
-        list(range(val_g.num_nodes())),
+        val_nids,
         sampler,
         batch_size=val_g.num_nodes(),
         shuffle=True,
