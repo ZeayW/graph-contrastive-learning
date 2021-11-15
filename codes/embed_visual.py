@@ -79,11 +79,10 @@ def visualize_val(val_graphs,device,model,mlp,combine,options):
             else:
                 global_embeddings = th.cat((global_embeddings, global_embedding.unsqueeze(0)), dim=0)
 
-        label_hats = mlp(global_embeddings)
-        writer.add_embedding(
-            label_hats,
-            label_img=labels,
-        )
+        #label_hats = mlp(global_embeddings)
+        os.makedirs('../embedding/data.pkl')
+        with open('../embedding/data.pkl','wb') as f:
+            pickle.dump((global_embeddings,labels),f)
 
 
 
