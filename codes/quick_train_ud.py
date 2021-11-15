@@ -281,6 +281,7 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
             predict_labels = pos_prob
             end = time()
             runtime += end - start
+            print(label_hat,output_labels)
             if alpha != 1 :
                 pos_index = (output_labels != 0)
                 neg_index = (output_labels == 0)
