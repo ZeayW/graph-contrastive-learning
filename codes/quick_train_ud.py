@@ -390,9 +390,9 @@ def train(options):
 
     with open(train_data_file,'rb') as f:
         train_g = pickle.load(f)
-        train_graphs = dgl.unbatch(train_g)
-        train_graphs = train_graphs[:int(options.train_percent)]
-        train_g = dgl.batch(train_graphs)
+        # train_graphs = dgl.unbatch(train_g)
+        # train_graphs = train_graphs[:int(options.train_percent)]
+        # train_g = dgl.batch(train_graphs)
         #train_g.ndata['label_i'] = th.FloatTensor(train_g.ndata['label_i'].float())
         #train_g.ndata['label_o'] = th.FloatTensor(train_g.ndata['label_o'].float())
 
@@ -416,7 +416,7 @@ def train(options):
     if options.train_percent == 1:
         train_graphs = [train_graphs[3]]
     else:
-        train_graphs = train_graphs[:options.train_percent]
+        train_graphs = train_graphs[:int(options.train_percent)]
     # temp = []
     # train_graphs.pop(1)
     train_g = dgl.batch(train_graphs)
