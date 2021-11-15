@@ -424,7 +424,7 @@ def train(options):
     # or_mask = th.argmax(g.ndata['ntype'],dim=1) == 5
     # num_or = len(g.ndata['ntype'][or_mask])
     # print("ratio of or gate: ",num_or/g.num_nodes())
-    train_nodes,pos_count,neg_count = oversample(train_g,options)
+    train_nodes,pos_count,neg_count = oversample(train_g,options,options.in_dim)
 
     rates = cal_ratios(neg_count,pos_count)
     print("neg/pos rates",rates)
