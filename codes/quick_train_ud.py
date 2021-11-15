@@ -10,15 +10,12 @@ import os
 from MyDataLoader_ud import *
 from time import time
 from random import shuffle
-def oversample(g,options):
+def oversample(g,options,in_dim):
     print("oversampling dataset......")
     #print(save_file)
 
     print("total number of nodes: ", g.num_nodes())
 
-    ratio = 1
-
-    nodes = th.tensor(range(g.num_nodes()))
 
     if options.region:
         labels = g.ndata['label_ad']
@@ -27,11 +24,19 @@ def oversample(g,options):
     elif options.label == 'out':
         labels = g.ndata['label_o']
 
-
     else:
         print("wrong label type")
         return
-    mask_pos = (labels != 0).squeeze(1)
+    lowbit_mask = g.ndata['position']<=3
+    # unlabel the nodes in muldiv
+    no_muldiv_mask = labels.squeeze(-1)!=-1
+    print('no_mul',len(labels[no_muldiv_mask]))
+    nodes = th.tensor(range(g.num_nodes()))
+    nodes = nodes[no_muldiv_mask]
+    labels = labels[no_muldiv_mask]
+    print(len(nodes))
+
+    mask_pos = (labels ==1).squeeze(1)
 
     mask_neg = (labels == 0).squeeze(1)
     pos_nodes = nodes[mask_pos].numpy().tolist()
@@ -45,8 +50,8 @@ def oversample(g,options):
     print("ratio=", ratio)
 
 
-    pos_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
-    neg_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
+    pos_count = th.zeros(size=(1, in_dim)).squeeze(0).numpy().tolist()
+    neg_count = th.zeros(size=(1, in_dim)).squeeze(0).numpy().tolist()
     pos_types = g.ndata['ntype'][pos_nodes]
     neg_types = g.ndata['ntype'][neg_nodes]
     pos_types = th.argmax(pos_types, dim=1)
@@ -63,12 +68,17 @@ def oversample(g,options):
     train_nodes.extend(neg_nodes)
 
     ratios = []
-    for type in range(get_options().in_dim):
+    for type in range(in_dim):
+        # skip XOR
         pos_mask = pos_types == type
         neg_mask = neg_types == type
         pos_nodes_n = th.tensor(pos_nodes)[pos_mask].numpy().tolist()
         neg_nodes_n = th.tensor(neg_nodes)[neg_mask].numpy().tolist()
-        if len(pos_nodes_n) == 0: ratio = 1
+
+        # if type==13:
+        #     train_nodes.extend(neg_nodes_n)
+
+        if len(pos_nodes_n) == 0: ratio = 0
         else: ratio = len(neg_nodes_n) / len(pos_nodes_n)
         ratios.append(ratio)
         if ratio >options.os_rate : ratio = options.os_rate
@@ -84,6 +94,7 @@ def oversample(g,options):
                 shuffle(short_nodes)
                 train_nodes.extend(short_nodes[:int(short_len * min(1, ratio - 1))])
                 ratio -= 1
+
     print("ratios:",ratios)
     return train_nodes,pos_count, neg_count
 
@@ -324,6 +335,10 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
     print("or error ratio:",error_count[5]/num_errors)
     return [loss, acc,recall,precision,F1_score]
 
+def unlabel_low(g,unlabel_threshold):
+    mask_low = g.ndata['position'] <= unlabel_threshold
+    g.ndata['label_o'][mask_low] = 0
+
 def DAG2UDG(g,options):
     edges = g.edges()
     reverse_edges = (edges[1],edges[0])
@@ -350,16 +365,11 @@ def train(options):
     device = th.device("cuda:"+str(options.gpu) if th.cuda.is_available() else "cpu")
     # Dump the preprocessing result to save time!
     # for region detecion, the data_path is 'data/region', for boundary(io) detection, the data_path is 'data/boundary'
-    data_path = 'data/boundary/'
+    data_path = options.datapath
     train_data_file = os.path.join(data_path,'boom2.pkl')
     val_data_file = os.path.join(data_path,'rocket2.pkl')
     #split_dir = 'splits/rokcet'
-    if options.region:
-        label_name = 'label_ad'
-    elif options.label == 'in':
-        label_name = 'label_i'
-    else:
-        label_name = 'label_o'
+
     if options.preprocess :
         preprocess(data_path,device,options)
         return
@@ -378,12 +388,36 @@ def train(options):
 
     with open(train_data_file,'rb') as f:
         train_g = pickle.load(f)
+        train_graphs = dgl.unbatch(train_g)
+        train_graphs = train_graphs[:options.train_percent]
+        train_g = dgl.batch(train_graphs)
         #train_g.ndata['label_i'] = th.FloatTensor(train_g.ndata['label_i'].float())
         #train_g.ndata['label_o'] = th.FloatTensor(train_g.ndata['label_o'].float())
+
     with open(val_data_file,'rb') as f:
         val_g = pickle.load(f)
         #val_g.ndata['label_i'] = th.FloatTensor(val_g.ndata['label_i'].float())
         #val_g.ndata['label_i'] = th.FloatTensor(val_g.ndata['label_o'].float())
+
+    train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
+    unlabel_low(train_g, options.unlabel)
+    unlabel_low(val_g, options.unlabel)
+    label_name = 'label_o'
+    train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = 1
+    val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
+    train_graphs = dgl.unbatch(train_g)
+    temp = train_graphs[1]
+    train_graphs[1] = train_graphs[2]
+    train_graphs[2] = temp
+
+    if options.train_percent == 1:
+        train_graphs = [train_graphs[3]]
+    else:
+        train_graphs = train_graphs[:options.train_percent]
+    # temp = []
+    # train_graphs.pop(1)
+    train_g = dgl.batch(train_graphs)
 
     train_g = DAG2UDG(train_g,options)
     val_g = DAG2UDG(val_g,options)
