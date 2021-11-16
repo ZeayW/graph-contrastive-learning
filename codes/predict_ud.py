@@ -154,7 +154,7 @@ def main(options):
     th.multiprocessing.set_sharing_strategy('file_system')
     device = th.device("cuda:" + str(options.gpu) if th.cuda.is_available() else "cpu")
     label = options.label
-    options, model,mlp = load_model(device, options)
+    options, model = load_model(device, options)
     if model is None:
         print("No model, please prepocess first , or choose a pretrain model")
         return
