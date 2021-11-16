@@ -34,16 +34,19 @@ def load_model(device,options):
     else:
         model_dir = options.model_saving_dir
     if os.path.exists(os.path.join(model_dir)) is False:
-        return None,None
+        return None,None,None
 
 
     with open(os.path.join(model_dir), 'rb') as f:
-        param, classifier = pickle.load(f)
+        param, model,mlp = pickle.load(f)
         param.beta = options.beta
     with open(os.path.join(model_dir), 'wb') as f:
-        pickle.dump((param, classifier), f)
-    classifier = classifier.to(device)
-    return param,classifier
+        pickle.dump((param, model,mlp), f)
+    #classifier = classifier.to(device)
+    model = model.to(device)
+    mlp = mlp.to(device)
+    return param,model,mlp
+
 
 
 def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
@@ -143,24 +146,26 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
     print("or error ratio:",error_count[5]/num_errors)
     return [loss, acc,recall,precision,F1_score]
 
+def unlabel_low(g,unlabel_threshold):
+    mask_low = g.ndata['position'] <= unlabel_threshold
+    g.ndata['label_o'][mask_low] = 0
+    
 def main(options):
     th.multiprocessing.set_sharing_strategy('file_system')
     device = th.device("cuda:" + str(options.gpu) if th.cuda.is_available() else "cpu")
     label = options.label
-    options, model = load_model(device, options)
+    options, model,mlp = load_model(device, options)
     if model is None:
         print("No model, please prepocess first , or choose a pretrain model")
         return
     #print(model)
     beta = options.beta
     # Dump the preprocessing result to save time!
-    data_path = 'data/fadd/'
+    data_path = options.datapath
     val_data_file = os.path.join(data_path, 'rocket2.pkl')
     # split_dir = 'splits/rokcet'
-    if label == 'in':
-        label_name = 'label_i'
-    else:
-        label_name = 'label_o'
+
+    label_name = 'label_o'
     #print(options.beta)
     if isinstance(options.in_nlayers, int):
         in_nlayers = options.in_nlayers
@@ -177,11 +182,14 @@ def main(options):
         val_g = pickle.load(f)
         # val_g.ndata['label_i'] = th.FloatTensor(val_g.ndata['label_i'].float())
         # val_g.ndata['label_i'] = th.FloatTensor(val_g.ndata['label_o'].float())
-
+    unlabel_low(val_g, options.unlabel)
+    val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
     # or_mask = th.argmax(g.ndata['ntype'],dim=1) == 5
     # num_or = len(g.ndata['ntype'][or_mask])
     # print("ratio of or gate: ",num_or/g.num_nodes())
     val_g = DAG2UDG(val_g,options)
+    val_nids = th.tensor(range(val_g.number_of_nodes()))
+    val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1) != -1]
     if options.gat:
         add_self_loop = True
     else:
@@ -192,7 +200,7 @@ def main(options):
     valdataloader = MyNodeDataLoader(
         True,
         val_g,
-        list(range(val_g.num_nodes())),
+        val_nids,
         sampler,
         batch_size=val_g.num_nodes(),
         shuffle=True,
