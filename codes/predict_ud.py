@@ -52,6 +52,7 @@ def load_model(device,options):
 def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
     print('beta:',beta)
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
+    #total_loss = th.tensor([0]).to(device)
     # valid_loss = []
     # vcorrect = 0
     # fn = 0
@@ -91,6 +92,7 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
             predict_labels = pos_prob
             end = time()
             runtime += end - start
+            #print(label_hat,output_labels)
             if alpha != 1 :
                 pos_index = (output_labels != 0)
                 neg_index = (output_labels == 0)
@@ -98,7 +100,7 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
                 neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
                 val_loss = (alpha*pos_loss+neg_loss) / len(output_labels)
             else: val_loss = Loss(label_hat, output_labels)
-
+            #print(val_loss)
             total_loss += val_loss.item() * len(output_labels)
 
             error_mask = predict_labels !=output_labels
@@ -182,6 +184,7 @@ def main(options):
         val_g = pickle.load(f)
         # val_g.ndata['label_i'] = th.FloatTensor(val_g.ndata['label_i'].float())
         # val_g.ndata['label_i'] = th.FloatTensor(val_g.ndata['label_o'].float())
+    val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
     unlabel_low(val_g, options.unlabel)
     val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
     # or_mask = th.argmax(g.ndata['ntype'],dim=1) == 5
