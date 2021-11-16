@@ -38,14 +38,14 @@ def load_model(device,options):
 
 
     with open(os.path.join(model_dir), 'rb') as f:
-        param, model,mlp = pickle.load(f)
+        param, model = pickle.load(f)
         param.beta = options.beta
     with open(os.path.join(model_dir), 'wb') as f:
-        pickle.dump((param, model,mlp), f)
+        pickle.dump((param, model), f)
     #classifier = classifier.to(device)
     model = model.to(device)
-    mlp = mlp.to(device)
-    return param,model,mlp
+    #mlp = mlp.to(device)
+    return param,model
 
 
 
@@ -149,7 +149,7 @@ def validate(valid_dataloader,label_name,device,model,Loss,alpha,beta):
 def unlabel_low(g,unlabel_threshold):
     mask_low = g.ndata['position'] <= unlabel_threshold
     g.ndata['label_o'][mask_low] = 0
-    
+
 def main(options):
     th.multiprocessing.set_sharing_strategy('file_system')
     device = th.device("cuda:" + str(options.gpu) if th.cuda.is_available() else "cpu")
