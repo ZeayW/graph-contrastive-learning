@@ -480,12 +480,16 @@ def train(options):
             #shuffle(train_graphs)
     shuffle(train_graphs)
     print('len train_graphs',len(train_graphs))
-    print(train_graphs[0][1])
-    for _,tg,_,_ in train_graphs:
-        tg = DAG2UDG(tg,options)
-    for _,vg,_,_ in val_graphs:
-        vg = DAG2UDG(vg,options)
-    print(train_graphs[0][1])
+    print(train_graphs[0][1].number_of_edges())
+    new_train_graphs = []
+    new_val_graphs = []
+    for label,tg,POs,depth in train_graphs:
+        new_train_graphs.append(( label,DAG2UDG(tg,options),POs,depth))
+    for label, vg, POs, depth in val_graphs:
+        new_val_graphs.append((label, DAG2UDG(vg, options), POs, depth))
+    train_graphs = new_train_graphs
+    val_graphs = new_val_graphs
+    print(train_graphs[0][1].number_of_edges())
     if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
         with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
             pickle.dump(train_graphs, f)
