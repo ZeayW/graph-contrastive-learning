@@ -91,12 +91,30 @@ def preprocess(data_path,device,options,in_dim):
         with open(os.path.join(data_path,'label2id.pkl'),'wb') as f:
             pickle.dump(label2id,f)
 
-    with open(os.path.join(options.pre_model_dir,'model.pkl'),'rb') as f:
-        if 'proj' in options.pre_model_dir or 'shuffle' in options.pre_model_dir or 'abgnn' in options.pre_model_dir:
-            _, model,_ = pickle.load(f)
-        else:
-            _,model = pickle.load(f)
+    # with open(os.path.join(options.pre_model_dir,'model.pkl'),'rb') as f:
+    #     if 'proj' in options.pre_model_dir or 'shuffle' in options.pre_model_dir or 'abgnn' in options.pre_model_dir:
+    #         _, model,_ = pickle.load(f)
+    #     else:
+    #         _,model = pickle.load(f)
+    if isinstance(options.num_heads, int):
+        num_heads = [options.num_heads, options.num_heads]
+    else:
+        num_heads = options.num_heads
 
+    in_nlayers = options.in_nlayers
+    model = GCN(
+            label = options.label,
+            include=options.include,
+            device=device,
+            in_dim=in_dim,
+            hidden_dim=options.hidden_dim,
+            out_dim=options.out_dim,
+            num_heads=num_heads,
+            n_layers=in_nlayers,
+            dropout=options.gcn_dropout,
+            aggregation_type=options.agg_type,
+            combine_type=options.combine,
+        )
     mlp = MLP(
         in_dim = model.out_dim,
         out_dim = options.nlabels,
