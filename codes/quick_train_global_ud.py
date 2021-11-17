@@ -656,7 +656,7 @@ def train(options):
             labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * in_nlayers, include_dst_in_src=options.include)
             blocks = sampler.sample_blocks(graph,POs)
-            print('num block',len(blocks))
+            #print('num block',len(blocks))
             # dataloader = MyNodeDataLoader(
             #     True,
             #     graph,
@@ -704,7 +704,7 @@ def train(options):
                 #print('ground-truth labels:',labels.shape,labels)
                 #print('predict labels:',predict_labels.shape,predict_labels)
                 train_loss = Loss(label_hats, labels)
-                print('loss:',train_loss.item())
+                #print('loss:',train_loss.item())
                 total_num += len(labels)
                 total_loss += train_loss.item()*len(labels)
                 correct += (
