@@ -105,7 +105,7 @@ def preprocess(data_path,device,options,in_dim):
         in_nlayers = options.in_nlayers
     else:
         in_nlayers = options.in_nlayers[0]
-    model = GCN(
+    model = GCN_1l(
             label = options.label,
             include=options.include,
             device=device,
