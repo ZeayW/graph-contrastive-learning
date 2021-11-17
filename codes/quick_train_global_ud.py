@@ -15,7 +15,26 @@ import random
 # apply oversampling on the dataset
 
 
+def DAG2UDG(g,options):
+    edges = g.edges()
+    reverse_edges = (edges[1],edges[0])
+    new_edges = (th.cat((edges[0],reverse_edges[0])),th.cat((edges[1],reverse_edges[1])))
+    udg =  dgl.graph(new_edges,num_nodes=g.num_nodes())
+    # if options.gat:
+    #     udg.add_edges(udg.nodes(),udg.nodes())
+    for key, value in g.ndata.items():
+        # print(key,value)
+        udg.ndata[key] = value
 
+    udg.edata['direction'] = th.cat((th.zeros(size=(1,g.number_of_edges())).squeeze(0),th.ones(size=(1,g.number_of_edges())).squeeze(0)))
+    print('edge attribute')
+    print(udg.edata['direction'])
+    # for key, value in g.edata.items():
+    #     value = th.sum(value,dim=1)
+    #     print(key,value)
+        #udg.edata[key] = th.cat((value,value))
+
+    return udg
 def preprocess(data_path,device,options,in_dim):
     #datapaths = ['../dataset/test/ICCAD2014/v/']
     # datapaths = ["../dc/boom/implementation/"]
@@ -443,6 +462,12 @@ def train(options):
             #shuffle(train_graphs)
     shuffle(train_graphs)
     print('len train_graphs',len(train_graphs))
+    print(train_graphs[0][1])
+    for _,tg,_,_ in train_graphs:
+        tg = DAG2UDG(tg,options)
+    for _,vg,_,_ in val_graphs:
+        vg = DAG2UDG(vg,options)
+    print(train_graphs[0][1])
     # if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
     #     with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
     #         pickle.dump(train_graphs, f)
@@ -464,6 +489,8 @@ def train(options):
         with open(os.path.join(options.datapath, 'val_data.pkl'), 'rb') as f:
             print('loading val data')
             val_graphs=pickle.load(f)
+
+
     print(len(train_graphs))
     num_train = int(options.train_percent * len(val_graphs))
     #print(options.train_percent,len(val_graphs),num_train)
@@ -602,7 +629,7 @@ def train(options):
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
             labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
-            sampler = Sampler([None] * depth, include_dst_in_src=options.include)
+            sampler = Sampler([None] * options.in_nlayers, include_dst_in_src=options.include)
             blocks = sampler.sample_blocks(graph,POs)
             # dataloader = MyNodeDataLoader(
             #     True,
