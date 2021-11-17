@@ -101,7 +101,10 @@ def preprocess(data_path,device,options,in_dim):
     else:
         num_heads = options.num_heads
 
-    in_nlayers = options.in_nlayers
+    if isinstance(options.in_nlayers, int):
+        in_nlayers = options.in_nlayers
+    else:
+        in_nlayers = options.in_nlayers[0]
     model = GCN(
             label = options.label,
             include=options.include,
