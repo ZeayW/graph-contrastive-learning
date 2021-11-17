@@ -27,8 +27,8 @@ def DAG2UDG(g,options):
         udg.ndata[key] = value
 
     udg.edata['direction'] = th.cat((th.zeros(size=(1,g.number_of_edges())).squeeze(0),th.ones(size=(1,g.number_of_edges())).squeeze(0)))
-    print('edge attribute')
-    print(udg.edata['direction'])
+    #print('edge attribute')
+    #print(udg.edata['direction'])
     # for key, value in g.edata.items():
     #     value = th.sum(value,dim=1)
     #     print(key,value)
