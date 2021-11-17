@@ -654,7 +654,7 @@ def train(options):
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
             labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
-            sampler = Sampler([None] * in_nlayers, include_dst_in_src=options.include)
+            sampler = Sampler([None] * in_nlayers+1, include_dst_in_src=options.include)
             blocks = sampler.sample_blocks(graph,POs)
             #print('num block',len(blocks))
             # dataloader = MyNodeDataLoader(
