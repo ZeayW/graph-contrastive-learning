@@ -687,7 +687,7 @@ def train(options):
             global_embedding1 = combine(po_embeddings)
             global_embedding2 = combine(pi_embeddings)
             global_embedding = (global_embedding1+global_embedding2)*0.5
-            print('global1:{},  global2:{}, global:{}'.format(global_embedding1,global_embedding2,global_embedding))
+            print('global1:{},  global2:{}, global:{}'.format(global_embedding1[:10],global_embedding2[:10],global_embedding[:10]))
             if global_embeddings is None:
                 global_embeddings = global_embedding.unsqueeze(0)
             else:
