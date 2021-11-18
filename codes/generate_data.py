@@ -492,7 +492,7 @@ equal_replaces['OR3'] = [
         output_link='o',
         input_links= {'A1':[('w1','A1'),('w2','A1')],'A2':[('i1','A1')],'A3':[('i1','A2')]}
     ),
-    #a+b+c = a+a'(b+c+d) = a(b+b'+c') +a'(b+c)
+    #a+b+c = a+a'(b+c) = a(b+b'+c') +a'(b+c)
     #        = ab+xor(a,b)+xor(a,c)
     Cell(
         nodes = {'o':(1,{'type':'OR3'}),

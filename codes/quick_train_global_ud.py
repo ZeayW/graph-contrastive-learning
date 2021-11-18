@@ -655,7 +655,12 @@ def train(options):
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
             labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * (in_nlayers+1), include_dst_in_src=options.include)
-            blocks = sampler.sample_blocks(graph,POs)
+            ntype = th.argmax(graph.ndata['ntype'], dim=1).squeeze(-1)
+            PIs = th.tensor(range(graph.number_of_nodes()))[ntype==15].numpy().tolist()
+
+            PO_blocks = sampler.sample_blocks(graph,POs)
+            PI_blocks = sampler.sample_blocks(graph,PIs)
+
             #print('num block',len(blocks))
             # dataloader = MyNodeDataLoader(
             #     True,
@@ -668,19 +673,20 @@ def train(options):
             # )
             #print(idx,th.cuda.get_device_capability(device))
             #start_time = time()
-            blocks = [b.to(device) for b in blocks]
-            if options.gnn:
-                input_features = blocks[0].srcdata["ntype"]
-                # print(input_features.shape)
-            else:
-                input_features = blocks[0].srcdata["f_input"]
+            PO_blocks = [b.to(device) for b in PO_blocks]
+            PI_blocks = [b.to(device) for b in PI_blocks]
+            PO_features = PO_blocks[0].srcdata["ntype"]
+            PI_features = PI_blocks[0].srcdata["ntype"]
             # output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             # total_num += len(output_labels)
-            po_embeddings = model(blocks, input_features)
+            po_embeddings = model(PO_blocks, PO_features)
+            pi_embeddings = model(PI_blocks, PI_features)
             #mask = range(1,len(po_embeddings),2)
 
             #mask =
-            global_embedding = combine(po_embeddings)
+            global_embedding1 = combine(po_embeddings)
+            global_embedding2 = combine(po_embeddings)
+            global_embedding = (global_embedding1+global_embedding2)*0.5
             if global_embeddings is None:
                 global_embeddings = global_embedding.unsqueeze(0)
             else:
