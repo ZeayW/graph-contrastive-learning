@@ -271,7 +271,7 @@ def test(ocnn):
         unlabel_low(g, 1)
         g.ndata['label_o'][g.ndata['label_o'].squeeze(-1) == 2] = 1
         nids = torch.tensor(range(g.number_of_nodes()))
-        #nids = nids[g.ndata['label_o'].squeeze(-1) != -1].numpy().tolist()
+        nids = nids[g.ndata['label_o'].squeeze(-1) != -1].numpy().tolist()
         print(torch.max(g.ndata["ntype"]))
         nxg = g.to_networkx()
         data = []
