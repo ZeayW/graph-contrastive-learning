@@ -493,20 +493,20 @@ def train(options):
     train_graphs = new_train_graphs
     val_graphs = new_val_graphs
     print(train_graphs[0][1].number_of_edges())
-    if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
-        with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
-            pickle.dump(train_graphs, f)
-    else:
-        with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'rb') as f:
-            print('loading train data')
-            train_graphs=pickle.load(f)
-    # if not os.path.exists(os.path.join(options.datapath, 'train_data3.pkl')):
-    #     with open(os.path.join(options.datapath, 'train_data3.pkl'), 'wb') as f:
+    # if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
+    #     with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
     #         pickle.dump(train_graphs, f)
     # else:
-    #     with open(os.path.join(options.datapath, 'train_data3.pkl'), 'rb') as f:
+    #     with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'rb') as f:
     #         print('loading train data')
     #         train_graphs=pickle.load(f)
+    if not os.path.exists(os.path.join(options.datapath, 'train_data3.pkl')):
+        with open(os.path.join(options.datapath, 'train_data3.pkl'), 'wb') as f:
+            pickle.dump(train_graphs, f)
+    else:
+        with open(os.path.join(options.datapath, 'train_data3.pkl'), 'rb') as f:
+            print('loading train data')
+            train_graphs=pickle.load(f)
     if not os.path.exists(os.path.join(options.datapath, 'val_data.pkl')):
         with open(os.path.join(options.datapath, 'val_data.pkl'), 'wb') as f:
             pickle.dump(val_graphs, f)
