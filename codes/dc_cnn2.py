@@ -262,7 +262,7 @@ def baseline():
         )
 
 
-def test(icnn, ocnn):
+def test( ocnn):
     if os.path.exists("../data/faddrocket_data.pkl"):
         with open("../data/fadd/rocket_data.pkl", "rb") as f:
             data = torch.load(f)
@@ -307,26 +307,26 @@ def test(icnn, ocnn):
         label_i = label_i.long().cuda()
         label_o = label_o.long().cuda()
         with torch.no_grad():
-            icnn.eval()
+            #icnn.eval()
             ocnn.eval()
-            pred_i = torch.nn.functional.softmax(icnn(feature), dim=1)
+            #pred_i = torch.nn.functional.softmax(icnn(feature), dim=1)
             pred_o = torch.nn.functional.softmax(ocnn(feature), dim=1)
-            itp += torch.sum(((pred_i[:, 1] >= 0.5) & (label_i == 1))).item()
-            itn += torch.sum(((pred_i[:, 0] > 0.5) & (label_i == 0))).item()
-            ifp += torch.sum(((pred_i[:, 1] >= 0.5) & (label_i == 0))).item()
-            ifn += torch.sum(((pred_i[:, 0] > 0.5) & (label_i == 1))).item()
+            #itp += torch.sum(((pred_i[:, 1] >= 0.5) & (label_i == 1))).item()
+            #itn += torch.sum(((pred_i[:, 0] > 0.5) & (label_i == 0))).item()
+            #ifp += torch.sum(((pred_i[:, 1] >= 0.5) & (label_i == 0))).item()
+            #ifn += torch.sum(((pred_i[:, 0] > 0.5) & (label_i == 1))).item()
             otp += torch.sum(((pred_o[:, 1] >= 0.5) & (label_o == 1))).item()
             otn += torch.sum(((pred_o[:, 0] > 0.5) & (label_o == 0))).item()
             ofp += torch.sum(((pred_o[:, 1] >= 0.5) & (label_o == 0))).item()
             ofn += torch.sum(((pred_o[:, 0] > 0.5) & (label_o == 1))).item()
 
-    irecall = itp / (itp + ifn)
-    iprecision = 0 if itp == 0 else itp / (itp + ifp)
-    if1 = (
-        0
-        if irecall + iprecision == 0
-        else 2 * irecall * iprecision / (irecall + iprecision)
-    )
+    # irecall = itp / (itp + ifn)
+    # iprecision = 0 if itp == 0 else itp / (itp + ifp)
+    # if1 = (
+    #     0
+    #     if irecall + iprecision == 0
+    #     else 2 * irecall * iprecision / (irecall + iprecision)
+    # )
     orecall = otp / (otp + ofn)
     oprecision = 0 if otp == 0 else otp / (otp + ofp)
     of1 = (
@@ -334,11 +334,11 @@ def test(icnn, ocnn):
         if orecall + oprecision == 0
         else 2 * orecall * oprecision / (orecall + oprecision)
     )
-    print(
-        "[TEST, i] recall:{:.3f}, precision:{:.3f}, F1:{:.3f}".format(
-            irecall, iprecision, if1
-        )
-    )
+    # print(
+    #     "[TEST, i] recall:{:.3f}, precision:{:.3f}, F1:{:.3f}".format(
+    #         irecall, iprecision, if1
+    #     )
+    # )
     print(
         "[TEST, o] recall:{:.3f}, precision:{:.3f}, F1:{:.3f}".format(
             orecall, oprecision, of1
@@ -402,12 +402,12 @@ def train():
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=128, sampler=sampler,)
     print("batch per epoch:{}".format(len(dataloader)))
 
-    icnn = EVCNN(22).cuda()
+    #icnn = EVCNN(22).cuda()
     ocnn = EVCNN(22).cuda()
-    optim1 = torch.optim.Adam(icnn.parameters(), lr=0.0005)
+    #optim1 = torch.optim.Adam(icnn.parameters(), lr=0.0005)
     optim2 = torch.optim.Adam(ocnn.parameters(), lr=0.0005)
     for epoch in range(100):
-        icnn.train()
+        #icnn.train()
         ocnn.train()
         i_running_loss = 0
         o_running_loss = 0
@@ -415,17 +415,17 @@ def train():
             feature = feature.cuda()
             label_i = label_i.long().cuda()
             label_o = label_o.long().cuda()
-            pred_i = icnn(feature)
+            #pred_i = icnn(feature)
             pred_o = ocnn(feature)
-            iloss = nn.functional.cross_entropy(pred_i, label_i)
+            #iloss = nn.functional.cross_entropy(pred_i, label_i)
             oloss = nn.functional.cross_entropy(pred_o, label_o)
-            optim1.zero_grad()
+            #optim1.zero_grad()
             optim2.zero_grad()
-            iloss.backward()
+            #iloss.backward()
             oloss.backward()
-            optim1.step()
+            #optim1.step()
             optim2.step()
-            i_running_loss += iloss.item()
+            #i_running_loss += iloss.item()
             o_running_loss += oloss.item()
             if i % 1000 == 999:
                 print(
@@ -436,9 +436,9 @@ def train():
                 i_running_loss = 0
                 o_running_loss = 0
         if epoch % 5 == 0:
-            test(icnn, ocnn)
+            test(ocnn)
         if epoch >= 95:
-            torch.save(icnn, str(epoch) + "icnn.pkl")
+            #torch.save(icnn, str(epoch) + "icnn.pkl")
             torch.save(ocnn, str(epoch) + "ocnn.pkl")
 
 
