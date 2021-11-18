@@ -500,6 +500,7 @@ def train(options):
     #     with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'rb') as f:
     #         print('loading train data')
     #         train_graphs=pickle.load(f)
+
     if not os.path.exists(os.path.join(options.datapath, 'train_data3.pkl')):
         with open(os.path.join(options.datapath, 'train_data3.pkl'), 'wb') as f:
             pickle.dump(train_graphs, f)
