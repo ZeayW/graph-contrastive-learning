@@ -348,8 +348,8 @@ def unlabel_low(g,unlabel_threshold):
 
 def train():
 
-    if os.path.exists("boom_data.pkl"):
-        data = torch.load("boom_data.pkl")
+    if os.path.exists("../data/ev/boom_data.pkl"):
+        data = torch.load("../data/ev/boom_data.pkl")
         print(torch.max(data))
     else:
         with open("../data/simplify16/boom2.pkl", "rb") as f:
@@ -379,7 +379,7 @@ def train():
         data = torch.stack(data)
         print(data.size())
         print(max_t)
-        torch.save(data, "boom_data.pkl")
+        torch.save(data, "../data/ev/boom_data.pkl")
 
     dataset = Dataset(data)
     weights = [20 if data[i][16] + data[i][17] > 0 else 1 for i in range(data.size(0))]
