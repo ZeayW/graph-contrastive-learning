@@ -263,11 +263,11 @@ def baseline():
 
 
 def test(icnn, ocnn):
-    if os.path.exists("rocket_data.pkl"):
-        with open("rocket_data.pkl", "rb") as f:
+    if os.path.exists("../data/faddrocket_data.pkl"):
+        with open("../data/fadd/rocket_data.pkl", "rb") as f:
             data = torch.load(f)
     else:
-        with open("../GCN/data/fadd/rocket2.pkl", "rb") as f:
+        with open("../data/fadd/rocket2.pkl", "rb") as f:
             g = pickle.load(f)
         print(torch.max(g.ndata["ntype"]))
         nxg = g.to_networkx()
@@ -290,7 +290,7 @@ def test(icnn, ocnn):
         data = torch.stack(data)
         print(data.size())
         print(max_t)
-        torch.save(data, "rocket_data.pkl")
+        torch.save(data, "../data/fadd/rocket_data.pkl")
 
     dataset = Dataset(data)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=128)
