@@ -656,10 +656,10 @@ def train(options):
             labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * (in_nlayers+1), include_dst_in_src=options.include)
             ntype = th.argmax(graph.ndata['ntype'], dim=1).squeeze(-1)
-            PIs = th.tensor(range(graph.number_of_nodes()))[ntype==15].numpy().tolist()
+            #PIs = th.tensor(range(graph.number_of_nodes()))[ntype==15].numpy().tolist()
             #print('num PO:{}, num PI:{}'.format(len(POs),len(PIs)))
             PO_blocks = sampler.sample_blocks(graph,POs)
-            PI_blocks = sampler.sample_blocks(graph,PIs)
+            #PI_blocks = sampler.sample_blocks(graph,PIs)
 
             #print('num block',len(blocks))
             # dataloader = MyNodeDataLoader(
@@ -674,19 +674,19 @@ def train(options):
             #print(idx,th.cuda.get_device_capability(device))
             #start_time = time()
             PO_blocks = [b.to(device) for b in PO_blocks]
-            PI_blocks = [b.to(device) for b in PI_blocks]
+            #PI_blocks = [b.to(device) for b in PI_blocks]
             PO_features = PO_blocks[0].srcdata["ntype"]
-            PI_features = PI_blocks[0].srcdata["ntype"]
+            #PI_features = PI_blocks[0].srcdata["ntype"]
             # output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             # total_num += len(output_labels)
             po_embeddings = model(PO_blocks, PO_features)
-            pi_embeddings = model(PI_blocks, PI_features)
+            #pi_embeddings = model(PI_blocks, PI_features)
             #mask = range(1,len(po_embeddings),2)
 
             #mask =
-            global_embedding1 = combine(po_embeddings)
-            global_embedding2 = combine(pi_embeddings)
-            global_embedding = (global_embedding1+global_embedding2)*0.5
+            global_embedding = combine(po_embeddings)
+            #global_embedding2 = combine(pi_embeddings)
+            #global_embedding = (global_embedding1+global_embedding2)*0.5
             #print('global1:{},  global2:{}, global:{}'.format(global_embedding1[:10],global_embedding2[:10],global_embedding[:10]))
             if global_embeddings is None:
                 global_embeddings = global_embedding.unsqueeze(0)
