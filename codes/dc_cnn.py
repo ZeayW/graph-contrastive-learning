@@ -382,7 +382,7 @@ def train():
         torch.save(data, "boom_data.pkl")
 
     dataset = Dataset(data)
-    weights = [20 if data[i][22] + data[i][23] > 0 else 1 for i in range(data.size(0))]
+    weights = [20 if data[i][16] + data[i][17] > 0 else 1 for i in range(data.size(0))]
     sampler = torch.utils.data.WeightedRandomSampler(weights, len(weights))
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=128, sampler=sampler,)
     print("batch per epoch:{}".format(len(dataloader)))
