@@ -7,7 +7,7 @@ import dgl
 
 sys.path.append("..")
 from util.cut_enumeration import Cut, cut_enum
-from util.dc_verilog_parser_baseline import DcParser
+
 
 import networkx as nx
 import random
