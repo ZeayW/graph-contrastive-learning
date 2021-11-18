@@ -267,11 +267,16 @@ def test(ocnn):
     else:
         with open("../data/simplify9/rocket2.pkl", "rb") as f:
             g = pickle.load(f)
+        g.ndata['position'][g.ndata['label_o'].squeeze(-1) == -1] = 100
+        unlabel_low(g, 1)
+        g.ndata['label_o'][g.ndata['label_o'].squeeze(-1) == 2] = 1
+        nids = torch.tensor(range(g.number_of_nodes()))
+        #nids = nids[g.ndata['label_o'].squeeze(-1) != -1].numpy().tolist()
         print(torch.max(g.ndata["ntype"]))
         nxg = g.to_networkx()
         data = []
         max_t = 0
-        for i in range(g.num_nodes()):
+        for i in nids:
             ev = torch.clone(g.ndata["ntype"][i]).detach()
             l = nx.single_source_shortest_path_length(nxg, i, cutoff=2)
             for n, d in l.items():
