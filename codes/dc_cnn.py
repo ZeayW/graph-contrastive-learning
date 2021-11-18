@@ -379,6 +379,7 @@ def train():
         data = torch.stack(data)
         print(data.size())
         print(max_t)
+        os.makedirs("../data/ev/")
         torch.save(data, "../data/ev/boom_data.pkl")
 
     dataset = Dataset(data)
