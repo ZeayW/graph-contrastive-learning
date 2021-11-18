@@ -440,5 +440,5 @@ def train():
 
 
 if __name__ == "__main__":
-    # train()
-    baseline()
+    train()
+    #baseline()
