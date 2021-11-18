@@ -29,7 +29,7 @@ class Dataset(torch.utils.data.Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        return (self.data[idx][:22], self.data[idx][22], self.data[idx][23])
+        return (self.data[idx][:16], self.data[idx][16], self.data[idx][17])
 
 
 class EVCNN(nn.Module):
