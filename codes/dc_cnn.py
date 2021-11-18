@@ -352,7 +352,7 @@ def train():
         data = torch.load("../data/ev/boom_data.pkl")
         print(torch.max(data))
     else:
-        with open("../data/simplify16/boom2.pkl", "rb") as f:
+        with open("../data/simplify9/boom2.pkl", "rb") as f:
             g = pickle.load(f)
         g.ndata['position'][g.ndata['label_o'].squeeze(-1) == -1] = 100
         unlabel_low(g, 1)
