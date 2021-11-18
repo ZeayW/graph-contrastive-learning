@@ -362,6 +362,7 @@ def train():
         temp = graphs[0]
         graphs[0] = graphs[3]
         graphs[3] = temp
+        print('\t')
         print(graphs)
         # if train_percent == 1:
         #     graphs = [graphs[3]]
