@@ -357,7 +357,7 @@ def train():
         g.ndata['position'][g.ndata['label_o'].squeeze(-1) == -1] = 100
         unlabel_low(g, 1)
         g.ndata['label_o'][g.ndata['label_o'].squeeze(-1) == 2] = 1
-        nids = th.tensor(range(g.number_of_nodes()))
+        nids = torch.tensor(range(g.number_of_nodes()))
         nids = nids[g.ndata['label_o'].squeeze(-1) != -1].numpy().tolist()
         nxg = g.to_networkx()
         data = []
