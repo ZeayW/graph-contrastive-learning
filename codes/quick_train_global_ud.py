@@ -657,7 +657,7 @@ def train(options):
             sampler = Sampler([None] * (in_nlayers+1), include_dst_in_src=options.include)
             ntype = th.argmax(graph.ndata['ntype'], dim=1).squeeze(-1)
             PIs = th.tensor(range(graph.number_of_nodes()))[ntype==15].numpy().tolist()
-            print('num PO:{}, num PI:{}'.format(len(POs),len(PIs)))
+            #print('num PO:{}, num PI:{}'.format(len(POs),len(PIs)))
             PO_blocks = sampler.sample_blocks(graph,POs)
             PI_blocks = sampler.sample_blocks(graph,PIs)
 
@@ -687,6 +687,7 @@ def train(options):
             global_embedding1 = combine(po_embeddings)
             global_embedding2 = combine(po_embeddings)
             global_embedding = (global_embedding1+global_embedding2)*0.5
+            print('global1:{},  global2:{}, global:{}'.format(global_embedding1,global_embedding2,global_embedding))
             if global_embeddings is None:
                 global_embeddings = global_embedding.unsqueeze(0)
             else:
