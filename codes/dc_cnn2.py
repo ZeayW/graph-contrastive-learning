@@ -393,7 +393,7 @@ def train():
         print(max_t)
         os.makedirs("../data/fadd/",exist_ok=True)
         torch.save(data, "../data/fadd/boom_data.pkl")
-
+    data = data[:int(data.size(0)/6*train_percent)]
     dataset = Dataset(data)
     weights = [20 if data[i][22] + data[i][23] > 0 else 1 for i in range(data.size(0))]
     sampler = torch.utils.data.WeightedRandomSampler(weights, len(weights))
