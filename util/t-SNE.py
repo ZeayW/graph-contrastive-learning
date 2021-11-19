@@ -346,7 +346,7 @@ class TSNEVisualizer(TextVisualizer):
         # Fit our internal transformer and transform the data.
         vecs = self.transformer_.fit_transform(X)
         self.n_instances_ = vecs.shape[0]
-
+        print(vecs)
         # Draw the vectors
         self.draw(vecs, y, **kwargs)
 
