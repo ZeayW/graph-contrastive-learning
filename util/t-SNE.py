@@ -9,10 +9,11 @@ import pickle
 device = th.device("cuda" if th.cuda.is_available() else "cpu")
 with open('../embedding/data.pkl','rb') as f:
     emebddings,labels = pickle.load(f)
+
+emebddings=emebddings.cpu()
+labels=labels.cpu()
 print('embeddings:',emebddings[:10])
 print('labels:',labels[:10])
-emebddings.cpu()
-labels.cpu()
 #corpus = load_corpus('./data/hobbies')
 # tfidf  = TfidfVectorizer()
 # print(corpus.data[0])
