@@ -81,7 +81,7 @@ def visualize_val(val_graphs,device,model,mlp,combine,options):
 
         #label_hats = mlp(global_embeddings)
         os.makedirs('../embedding/',exist_ok=True)
-        with open('../embedding/data.pkl','wb') as f:
+        with open('../embedding/data_pretrained.pkl','wb') as f:
             pickle.dump((global_embeddings,labels),f)
 
 
