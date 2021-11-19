@@ -6,7 +6,7 @@ import pickle
 
 def top_k(evs,k):
     evs2 = th.clone(evs)
-    evs2[evs2>1]=1
+    evs2[evs2>0]=1
     count = th.sum(evs2,dim=1)
     _,order = th.sort(count)
     topk = reversed(order)[:k]
