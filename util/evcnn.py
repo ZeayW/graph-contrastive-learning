@@ -1,3 +1,6 @@
+import sys
+sys.path.append('../codes')
+from options import get_options
 import os
 import networkx as nx
 from networkx import topological_sort
@@ -125,19 +128,117 @@ def load_data(path):
 
     return train_data,val_data
 
+def validate(val_data, device, model,loss, options):
+    total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
+    with th.no_grad():
+        for i, (label,feature)  in enumerate(val_data):
+            labels = th.cat((labels, th.tensor([label], dtype=th.long).to(device)))
+            label_hat = model(feature)
+            if label_hats is None:
+                label_hats = label_hat.unsqueeze(0)
+            else:
+                label_hats = th.cat((label_hats,label_hat),dim=0)
+
+        predict_labels = th.argmax(nn.functional.softmax(label_hats, 1), dim=1)
+        # print('ground-truth labels:',labels.shape,labels)
+        # print('predict labels:',predict_labels.shape,predict_labels)
+        val_loss = loss(label_hats, labels)
+        #print('val loss:', val_loss.item())
+        total_num += len(labels)
+
+        correct += (
+                predict_labels == labels
+        ).sum().item()
+        errors = th.tensor(range(0, len(predict_labels)))[predict_labels != labels]
+        print('errors:', errors)
+        val_acc = correct / len(val_data)
+
+    print("  validate:")
+    print("\tloss:{:.3f}, acc:{:.3f}".format(val_loss, val_acc))
+
+    return [val_loss, val_acc]
 
 def train():
+    options = get_options()
     train_data,val_data = load_data('../data/evcnn/data.pkl')
     device = th.device("cuda"  if th.cuda.is_available() else "cpu")
     #shuffle(train_dataset)
-    model =EVCNN(16)
-    for epoch in range(100):
+    if os.path.exists(options.model_saving_dir):
+        with open(os.path.join(options.model_saving_dir,'model.pkl'),'rb') as f:
+            model = pickle.load(f)
+    else:
+        model =EVCNN(16)
+    model.to(device)
+
+    Loss = nn.CrossEntropyLoss()
+    optim = th.optim.Adam(
+        model.parameters(),
+        options.learning_rate, weight_decay=options.weight_decay
+    )
+    model.train()
+
+    max_acc = 0
+    print('Start training ')
+    for epoch in range(options.num_epoch):
+        total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
         shuffle(train_data)
         labels = th.tensor([], dtype=th.long).to(device)
-        global_embeddings = None
+        label_hats = None
         for i, (label,feature)  in enumerate(train_data):
-            label = model(feature)
+            labels = th.cat((labels, th.tensor([label], dtype=th.long).to(device)))
+            label_hat = model(feature)
+            if label_hats is None:
+                label_hats = label_hat.unsqueeze(0)
+            else:
+                label_hats = th.cat((label_hats,label_hat),dim=0)
+
+            if (i!=0 and (i+1)%options.batch_size ==0):
+                predict_labels = th.argmax(nn.functional.softmax(label_hats, 1), dim=1)
+                # print('ground-truth labels:',labels.shape,labels)
+                # print('predict labels:',predict_labels.shape,predict_labels)
+                train_loss = Loss(label_hats, labels)
+                print('loss:', train_loss.item())
+                total_num += len(labels)
+                total_loss += train_loss.item() * len(labels)
+                correct += (
+                        predict_labels == labels
+                ).sum().item()
+                optim.zero_grad()
+                train_loss.backward()
+                # print(model.GCN1.layers[0].attn_n.grad)
+                optim.step()
+                labels = th.tensor([], dtype=th.long).to(device)
+                label_hats = None
+
+        Train_loss = total_loss / total_num
+        Train_acc = correct / len(train_data)
+        print("epoch[{:d}]".format(epoch))
+        print("  train:")
+        # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
+        print("\tloss:{:.8f}, acc:{:.3f}, ".format(Train_loss, Train_acc))
+        val_loss, val_acc = validate(val_data, device, model,Loss, options)
+        with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
+            f.write(str(round(Train_loss, 8)) + " " + str(round(Train_acc, 3))  + "\n")
+            f.write(str(round(val_loss.item(), 3)) + " " + str(round(val_acc, 3)) + "\n")
+            f.write('\n')
+
+        judgement = val_acc > max_acc
+        #judgement = True
+        if judgement:
+           max_acc = val_acc
+           print("Saving model.... ", os.path.join(options.model_saving_dir))
+           if os.path.exists(options.model_saving_dir) is False:
+              os.makedirs(options.model_saving_dir)
+           with open(os.path.join(options.model_saving_dir, 'model.pkl'), 'wb') as f:
+              parameters = options
+              pickle.dump((parameters, model), f)
+           print("Model successfully saved")
 
 
-train()
+if __name__ == "__main__":
+    seed = 1234
+    # th.set_deterministic(True)
+    th.manual_seed(seed)
+    th.cuda.manual_seed(seed)
+    train()
