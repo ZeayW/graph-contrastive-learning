@@ -37,7 +37,7 @@ def build_feature(graph,p,k):
     evs = construct_ev(graph)
     feature = None
     order = list(topological_sort(graph.to_networkx()))
-    print(order)
+    #print(order)
     group_size = int(len(order)/p)
     groups = []
     for i in range(p):
