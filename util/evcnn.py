@@ -23,11 +23,11 @@ class Dataset(th.utils.data.Dataset):
         return (self.data[idx][0], self.data[idx][1])
 
 class EVCNN(nn.Module):
-    def __init__(self, in_dim, out_dim=2):
+    def __init__(self, in_dim, hidden_dim):
         super().__init__()
         self.bn = nn.BatchNorm1d(in_dim)
         self.cnn = nn.Sequential(
-            nn.Conv1d(120, 64, 8), nn.ReLU(), nn.MaxPool1d(2), nn.Dropout(0.25),
+            nn.Conv1d(hidden_dim, 64, 8), nn.ReLU(), nn.MaxPool1d(2), nn.Dropout(0.25),
         )
         self.fc = nn.Sequential(
             nn.Linear(int(64 * (in_dim - 8) / 2), 32),
@@ -184,7 +184,7 @@ def train():
             options,model = pickle.load(f)
     else:
         os.makedirs(options.model_saving_dir, exist_ok=True)
-        model =EVCNN(16)
+        model =EVCNN(16,p*k)
         with open(os.path.join(options.model_saving_dir,'model.pkl'),'wb') as f:
             pickle.dump((options,model),f)
         with open(os.path.join(options.model_saving_dir, 'res.txt'),'wb') as f:
