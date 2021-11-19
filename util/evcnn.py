@@ -186,8 +186,8 @@ def train():
     model.train()
 
     max_acc = 0
-    for td in train_data:
-        print(td.shape)
+    for lb,ft in train_data:
+        print(ft.shape)
     exit()
     train_dataset = Dataset(train_data)
     train_dataloader = th.utils.data.DataLoader(train_dataset, batch_size=options.batch_size)
