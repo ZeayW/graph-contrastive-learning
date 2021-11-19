@@ -85,7 +85,9 @@ def build_feature(graph,p,k):
     group_size = int(len(order)/p)
     groups = []
     if len(order)<p*k:
+
         feature = th.cat((evs,evs[:p*k-len(order)]))
+        print(len(feature))
     else:
         for i in range(p):
             if i ==p-1:
