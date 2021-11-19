@@ -184,6 +184,10 @@ def train():
             options,model = pickle.load(f)
     else:
         os.makedirs(options.model_saving_dir, exist_ok=True)
+        if options.datapath=='data2':
+            p,k=40,2
+        else:
+            p,k=40,3
         model =EVCNN(16,p*k)
         with open(os.path.join(options.model_saving_dir,'model.pkl'),'wb') as f:
             pickle.dump((options,model),f)
