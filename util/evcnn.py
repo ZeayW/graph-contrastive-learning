@@ -146,6 +146,8 @@ def validate(val_dataloader, device, model,loss, options):
 
     with th.no_grad():
         for i, (labels,features)  in enumerate(val_dataloader):
+            features = features.to(device)
+            labels = labels.to(device)
             label_hats = model(features)
             predict_labels = th.argmax(nn.functional.softmax(label_hats, 1), dim=1)
         # print('ground-truth labels:',labels.shape,labels)
@@ -203,6 +205,7 @@ def train():
             #print(labels.shape,features.shape)
             #labels = th.cat((labels, th.tensor([label], dtype=th.long).to(device)))
             features = features.to(device)
+            labels = labels.to(device)
             label_hats = model(features)
             print(label_hats.shape)
             print(labels,label_hats)
