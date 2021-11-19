@@ -80,14 +80,17 @@ print(remove_train,remove_val)
 train_features = None
 for g in train_graphs:
     feature = build_feature(g,40,3).unsqueeze(0)
+    print(feature, '\n')
     if train_features is None:
         train_features = feature
     else:
         train_features = th.cat((train_features,feature),dim=0)
 
 val_features = None
+print('generating val features...')
 for g in val_graphs:
     feature = build_feature(g,40,3).unsqueeze(0)
+    print(feature,'\n')
     if val_features is None:
         val_features = feature
     else:
