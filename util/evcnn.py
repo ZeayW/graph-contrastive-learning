@@ -100,7 +100,9 @@ def build_feature(graph,p,k):
                 feature = ktop_evs
             else:
                 feature = th.cat((feature,ktop_evs))
-
+    if feature.shape[0]!=120:
+        print(graph)
+        exit()
     return feature
 
 def load_data(path,p,k):
