@@ -161,7 +161,7 @@ def validate(val_dataloader, device, model,loss, options):
             ).sum().item()
             errors = th.tensor(range(0, len(predict_labels)))[predict_labels != labels]
             print('errors:', errors)
-            val_acc = correct / len(val_dataloader)
+            val_acc = correct / total_num
 
     print("  validate:")
     print("\tloss:{:.3f}, acc:{:.3f}".format(val_loss, val_acc))
@@ -178,6 +178,8 @@ def train():
             model = pickle.load(f)
     else:
         model =EVCNN(16)
+        with open(os.path.join(options.model_saving_dir, 'res.txt'),'wb') as f:
+            pass
     model.to(device)
 
     Loss = nn.CrossEntropyLoss()
@@ -236,6 +238,7 @@ def train():
         # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
         print("\tloss:{:.8f}, acc:{:.3f}, ".format(Train_loss, Train_acc))
         val_loss, val_acc = validate(val_dataloader, device, model,Loss, options)
+        #if not os.path.exists(os.path.join(options.model_saving_dir, 'res.txt'))
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
             f.write(str(round(Train_loss, 8)) + " " + str(round(Train_acc, 3))  + "\n")
             f.write(str(round(val_loss.item(), 3)) + " " + str(round(val_acc, 3)) + "\n")
