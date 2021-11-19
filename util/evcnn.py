@@ -104,7 +104,7 @@ def load_data(path):
                 remove_train += 1
                 continue
 
-            feature = build_feature(g, 40, 3).unsqueeze(0)
+            feature = build_feature(g, 40, 3)
             train_data.append((label, feature))
             print(i,feature.shape,feature, '\n')
 
@@ -114,7 +114,7 @@ def load_data(path):
                 remove_val += 1
                 continue
 
-            feature = build_feature(g, 40, 3).unsqueeze(0)
+            feature = build_feature(g, 40, 3)
             val_data.append((label, feature))
             print(i, feature.shape,feature, '\n')
 
