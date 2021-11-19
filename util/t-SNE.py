@@ -342,7 +342,7 @@ class TSNEVisualizer(TextVisualizer):
             self.classes_ = np.array([self.labels[0]])
         else:
             self.classes_ = np.array([self.NULL_CLASS])
-
+        print(self.classes_)
         # Fit our internal transformer and transform the data.
         vecs = self.transformer_.fit_transform(X)
         self.n_instances_ = vecs.shape[0]
