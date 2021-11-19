@@ -137,3 +137,6 @@ def train():
         global_embeddings = None
         for i, (label,feature)  in enumerate(train_data):
             label = model(feature)
+
+
+train()
