@@ -159,8 +159,9 @@ def validate(val_dataloader, device, model,loss, options):
             correct += (
                     predict_labels == labels
             ).sum().item()
-            errors = th.tensor(range(0, len(predict_labels)))[predict_labels != labels]
+            #errors = th.tensor(range(0, len(predict_labels)))[predict_labels != labels]
             #print('errors:', errors)
+            print(correct,total_num)
             val_acc = correct / total_num
 
     print("  validate:")
