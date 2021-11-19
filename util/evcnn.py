@@ -76,6 +76,26 @@ for _,g,_,_ in val_data:
     val_graphs.append(g)
 
 print(remove_train,remove_val)
-print(train_graphs[0])
-feature = build_feature(train_graphs[0],40,3)
-print(feature.shape,feature)
+
+train_features = None
+for g in train_graphs:
+    feature = build_feature(train_graphs[0],40,3).unsqueeze(0)
+    if train_features is None:
+        train_features = feature
+    else:
+        train_features = th.cat((train_features,feature),dim=0)
+
+val_features = None
+for g in val_graphs:
+    feature = build_feature(val_graphs[0],40,3).unsqueeze(0)
+    if val_features is None:
+        val_features = feature
+    else:
+        val_features = th.cat((val_features,feature),dim=0)
+
+print(len(train_graphs),train_features.shape)
+print(len(val_graphs),val_features.shape)
+with open('../data/evcnn/train_data.pkl','wb') as f:
+    pickle.dump((train_graphs,train_features),f)
+with open('../data/evcnn/val_data.pkl','wb') as f:
+    pickle.dump((val_graphs,val_features),f)
