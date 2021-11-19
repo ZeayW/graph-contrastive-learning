@@ -174,7 +174,8 @@ def validate(val_dataloader, device, model,loss, options):
 def train():
     options = get_options()
     p,k = 40,3
-    train_data,val_data = load_data('../data/evcnn/data3.pkl',p,k)
+
+    train_data,val_data = load_data('../data/evcnn/{}}.pkl'.format(options.datapath),p,k)
     device = th.device("cuda"  if th.cuda.is_available() else "cpu")
     #shuffle(train_dataset)
 
