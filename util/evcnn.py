@@ -19,7 +19,7 @@ class Dataset(th.utils.data.Dataset):
         return len(self.data)
 
     def __getitem__(self, idx):
-        print(self.data[idx][1].shape)
+        #print(self.data[idx][1].shape)
         return (self.data[idx][0], self.data[idx][1])
 
 class EVCNN(nn.Module):
