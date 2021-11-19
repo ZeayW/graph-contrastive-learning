@@ -141,31 +141,25 @@ def load_data(path):
 
     return train_data,val_data
 
-def validate(val_data, device, model,loss, options):
+def validate(val_dataloader, device, model,loss, options):
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
 
     with th.no_grad():
-        for i, (label,feature)  in enumerate(val_data):
-            labels = th.cat((labels, th.tensor([label], dtype=th.long).to(device)))
-            label_hat = model(feature)
-            if label_hats is None:
-                label_hats = label_hat.unsqueeze(0)
-            else:
-                label_hats = th.cat((label_hats,label_hat),dim=0)
-
-        predict_labels = th.argmax(nn.functional.softmax(label_hats, 1), dim=1)
+        for i, (labels,features)  in enumerate(val_dataloader):
+            label_hats = model(features)
+            predict_labels = th.argmax(nn.functional.softmax(label_hats, 1), dim=1)
         # print('ground-truth labels:',labels.shape,labels)
         # print('predict labels:',predict_labels.shape,predict_labels)
-        val_loss = loss(label_hats, labels)
+            val_loss = loss(label_hats, labels)
         #print('val loss:', val_loss.item())
-        total_num += len(labels)
+            total_num += len(labels)
 
-        correct += (
-                predict_labels == labels
-        ).sum().item()
-        errors = th.tensor(range(0, len(predict_labels)))[predict_labels != labels]
-        print('errors:', errors)
-        val_acc = correct / len(val_data)
+            correct += (
+                    predict_labels == labels
+            ).sum().item()
+            errors = th.tensor(range(0, len(predict_labels)))[predict_labels != labels]
+            print('errors:', errors)
+            val_acc = correct / len(val_dataloader)
 
     print("  validate:")
     print("\tloss:{:.3f}, acc:{:.3f}".format(val_loss, val_acc))
@@ -194,6 +188,8 @@ def train():
     max_acc = 0
     train_dataset = Dataset(train_data)
     train_dataloader = th.utils.data.DataLoader(train_dataset, batch_size=options.batch_size)
+    val_dataset = Dataset(val_data)
+    val_dataloader = th.utils.data.DataLoader(val_dataset, batch_size=len(val_dataset))
     print('Start training ')
     for epoch in range(options.num_epoch):
         total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
@@ -232,7 +228,7 @@ def train():
         print("  train:")
         # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
         print("\tloss:{:.8f}, acc:{:.3f}, ".format(Train_loss, Train_acc))
-        val_loss, val_acc = validate(val_data, device, model,Loss, options)
+        val_loss, val_acc = validate(val_dataloader, device, model,Loss, options)
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
             f.write(str(round(Train_loss, 8)) + " " + str(round(Train_acc, 3))  + "\n")
             f.write(str(round(val_loss.item(), 3)) + " " + str(round(val_acc, 3)) + "\n")
