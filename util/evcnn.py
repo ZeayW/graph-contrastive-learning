@@ -8,6 +8,19 @@ import torch as th
 import pickle
 import torch.nn as nn
 from random import shuffle
+
+class Dataset(th.utils.data.Dataset):
+    def __init__(self, data):
+        # print("init dataset, len=", len(data))
+        # print(torch.max(data))
+        self.data = data
+
+    def __len__(self):
+        return len(self.data)
+
+    def __getitem__(self, idx):
+        return (self.data[idx][0], self.data[idx][1])
+
 class EVCNN(nn.Module):
     def __init__(self, in_dim, out_dim=2):
         super().__init__()
@@ -179,40 +192,39 @@ def train():
     model.train()
 
     max_acc = 0
+    train_dataset = Dataset(train_data)
+    train_dataloader = th.utils.data.DataLoader(train_dataset, batch_size=options.batch_size)
     print('Start training ')
     for epoch in range(options.num_epoch):
         total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
         shuffle(train_data)
         labels = th.tensor([], dtype=th.long).to(device)
         label_hats = None
-        for i, (label,feature)  in enumerate(train_data):
-            labels = th.cat((labels, th.tensor([label], dtype=th.long).to(device)))
-            feature = feature.to(device)
-            label_hat = model(feature)
-            print(label_hat.shape)
-            print(label,label_hat)
-            if label_hats is None:
-                label_hats = label_hat.unsqueeze(0)
-            else:
-                label_hats = th.cat((label_hats,label_hat),dim=0)
+        for i, (labels,features)  in enumerate(train_dataloader):
+            #labels = th.cat((labels, th.tensor([label], dtype=th.long).to(device)))
+            features = features.to(device)
+            label_hats = model(features)
+            print(label_hats.shape)
+            print(labels,label_hats)
+            # if label_hats is None:
+            #     label_hats = label_hat.unsqueeze(0)
+            # else:
+            #     label_hats = th.cat((label_hats,label_hat),dim=0)
 
-            if (i!=0 and (i+1)%options.batch_size ==0):
-                predict_labels = th.argmax(nn.functional.softmax(label_hats, 1), dim=1)
-                # print('ground-truth labels:',labels.shape,labels)
-                # print('predict labels:',predict_labels.shape,predict_labels)
-                train_loss = Loss(label_hats, labels)
-                print('loss:', train_loss.item())
-                total_num += len(labels)
-                total_loss += train_loss.item() * len(labels)
-                correct += (
-                        predict_labels == labels
-                ).sum().item()
-                optim.zero_grad()
-                train_loss.backward()
-                # print(model.GCN1.layers[0].attn_n.grad)
-                optim.step()
-                labels = th.tensor([], dtype=th.long).to(device)
-                label_hats = None
+            predict_labels = th.argmax(nn.functional.softmax(label_hats, 1), dim=1)
+            # print('ground-truth labels:',labels.shape,labels)
+            # print('predict labels:',predict_labels.shape,predict_labels)
+            train_loss = Loss(label_hats, labels)
+            print('loss:', train_loss.item())
+            total_num += len(labels)
+            total_loss += train_loss.item() * len(labels)
+            correct += (
+                    predict_labels == labels
+            ).sum().item()
+            optim.zero_grad()
+            train_loss.backward()
+            # print(model.GCN1.layers[0].attn_n.grad)
+            optim.step()
 
         Train_loss = total_loss / total_num
         Train_acc = correct / len(train_data)
