@@ -5,7 +5,9 @@ import torch as th
 import pickle
 
 def top_k(evs,k):
-    count = th.sum(evs,dim=1)
+    evs2 = th.cone(evs)
+    evs2[evs2>1]=1
+    count = th.sum(evs2,dim=1)
     _,order = th.sort(count)
     topk = reversed(order)[:k]
     return evs[topk]
