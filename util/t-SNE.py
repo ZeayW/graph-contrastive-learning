@@ -10,8 +10,8 @@ device = th.device("cuda" if th.cuda.is_available() else "cpu")
 with open('../embedding/data.pkl','rb') as f:
     emebddings,labels = pickle.load(f)
 
-emebddings=emebddings.cpu()
-labels=labels.cpu()
+emebddings=emebddings.cpu().numpy()
+labels=labels.cpu().numpy()
 print('embeddings:',emebddings[:10])
 print('labels:',labels[:10])
 print(emebddings.shape,labels.shape)
