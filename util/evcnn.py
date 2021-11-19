@@ -89,7 +89,7 @@ def build_feature(graph,p,k):
         while added<p*k:
             feature = th.cat((feature,evs[:p*k-len(feature)]))
         #feature = th.cat((evs,evs[:p*k-len(order)]))
-        print(len(feature))
+        #print(len(feature))
     else:
         for i in range(p):
             if i ==p-1:
