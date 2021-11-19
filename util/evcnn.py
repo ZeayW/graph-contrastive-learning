@@ -61,13 +61,21 @@ with open(os.path.join('../data/global_new', 'val_data.pkl'), 'rb') as f:
 
 train_graphs = []
 val_graphs = []
+remove_train = 0
+remove_val = 0
 for _,g,_,_ in train_data:
-    train_graphs.append(g)
+
     if g.number_of_nodes()<120:
-        print(g)
+        remove_train +=1
+        continue
+    train_graphs.append(g)
 for _,g,_,_ in val_data:
+    if g.number_of_nodes()<120:
+        remove_val +=1
+        continue
     val_graphs.append(g)
 
-print(train_graphs[0][1])
+print(remove_train,remove_val)
+print(train_graphs[0])
 feature = build_feature(train_graphs[0],40,3)
 print(feature.shape,feature)
