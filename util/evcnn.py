@@ -5,7 +5,7 @@ import torch as th
 import pickle
 
 def top_k(evs,k):
-    evs2 = th.cone(evs)
+    evs2 = th.clone(evs)
     evs2[evs2>1]=1
     count = th.sum(evs2,dim=1)
     _,order = th.sort(count)
