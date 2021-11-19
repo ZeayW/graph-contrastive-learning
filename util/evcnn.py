@@ -63,7 +63,7 @@ train_graphs = []
 val_graphs = []
 for _,g,_,_ in train_data:
     train_graphs.append(g)
-    if g.number_of_nodes<120:
+    if g.number_of_nodes()<120:
         print(g)
 for _,g,_,_ in val_data:
     val_graphs.append(g)
