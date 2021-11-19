@@ -197,6 +197,8 @@ def train():
     # for lb,ft in train_data:
     #     print(ft.shape)
     # exit()
+    shuffle(train_data)
+    train_data = train_data[:int(len(val_data)*options.train_percent)]
     print('num train:',len(train_data))
     print('num_val:',len(val_data))
     train_dataset = Dataset(train_data)
