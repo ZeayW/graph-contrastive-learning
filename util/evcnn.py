@@ -79,7 +79,7 @@ print(remove_train,remove_val)
 
 train_features = None
 for g in train_graphs:
-    feature = build_feature(train_graphs[0],40,3).unsqueeze(0)
+    feature = build_feature(g,40,3).unsqueeze(0)
     if train_features is None:
         train_features = feature
     else:
@@ -87,7 +87,7 @@ for g in train_graphs:
 
 val_features = None
 for g in val_graphs:
-    feature = build_feature(val_graphs[0],40,3).unsqueeze(0)
+    feature = build_feature(g,40,3).unsqueeze(0)
     if val_features is None:
         val_features = feature
     else:
