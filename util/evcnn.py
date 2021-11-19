@@ -84,6 +84,8 @@ def build_feature(graph,p,k):
     #print(order)
     group_size = int(len(order)/p)
     groups = []
+    if len(order)<p*k:
+        feature = th.cat((evs,evs[:p*k-len(order)]))
     for i in range(p):
         if i ==p-1:
             group = order[i*group_size:]
@@ -170,7 +172,7 @@ def validate(val_dataloader, device, model,loss, options):
 
 def train():
     options = get_options()
-    p,k = 40,2
+    p,k = 40,3
     train_data,val_data = load_data('../data/evcnn/data2.pkl',p,k)
     device = th.device("cuda"  if th.cuda.is_available() else "cpu")
     #shuffle(train_dataset)
