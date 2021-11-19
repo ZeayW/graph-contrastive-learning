@@ -213,8 +213,8 @@ def train():
             features = features.to(device)
             labels = labels.to(device)
             label_hats = model(features)
-            print(label_hats.shape)
-            print(labels,label_hats)
+            #print(label_hats.shape)
+            #print(labels,label_hats)
             # if label_hats is None:
             #     label_hats = label_hat.unsqueeze(0)
             # else:
