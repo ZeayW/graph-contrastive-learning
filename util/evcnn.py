@@ -39,7 +39,6 @@ class EVCNN(nn.Module):
     def forward(self, x):
         # x = self.bn(x)
         # print(x)
-        x = x.unsqueeze(1)
         x = self.cnn(x)
         # print(x)
         x = x.view(x.size(0), -1)
