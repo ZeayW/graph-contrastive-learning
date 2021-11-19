@@ -200,7 +200,7 @@ def train():
         labels = th.tensor([], dtype=th.long).to(device)
         label_hats = None
         for i, (labels,features)  in enumerate(train_dataloader):
-            print(labels.shape,features.shape)
+            #print(labels.shape,features.shape)
             #labels = th.cat((labels, th.tensor([label], dtype=th.long).to(device)))
             features = features.to(device)
             label_hats = model(features)
