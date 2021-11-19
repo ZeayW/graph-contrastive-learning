@@ -82,6 +82,7 @@ def get_options(args=None):
     parser.add_argument('--val_percent', type=float, default=3)
     parser.add_argument('--loss_thred',type=float,default=0.1)
     parser.add_argument('--freeze',action='store_true')
+    parser.add_argument('--depth_thred',type=int,default=20)
     #parser.add_argument('--in')
     options = parser.parse_args(args)
 
