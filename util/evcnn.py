@@ -126,6 +126,7 @@ def load_data(path):
     return train_data,val_data
 
 
+
 def train():
     train_data,val_data = load_data('../data/evcnn/data.pkl')
     device = th.device("cuda"  if th.cuda.is_available() else "cpu")
