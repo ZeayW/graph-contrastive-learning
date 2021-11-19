@@ -54,10 +54,19 @@ def build_feature(graph,p,k):
     return feature
 
 with open(os.path.join('../data/global_new', 'train_data.pkl'), 'rb') as f:
-    train_graphs=pickle.load(f)
+    train_data=pickle.load(f)
 with open(os.path.join('../data/global_new', 'val_data.pkl'), 'rb') as f:
-    val_graphs=pickle.load(f)
+    val_data=pickle.load(f)
+
+train_graphs = []
+val_graphs = []
+for _,g,_,_ in train_data:
+    train_graphs.append(g)
+    if g.number_of_nodes<120:
+        print(g)
+for _,g,_,_ in val_data:
+    val_graphs.append(g)
 
 print(train_graphs[0][1])
-feature = build_feature(train_graphs[0][1],40,3)
+feature = build_feature(train_graphs[0],40,3)
 print(feature.shape,feature)
