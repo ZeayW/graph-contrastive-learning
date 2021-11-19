@@ -187,6 +187,7 @@ def train():
         label_hats = None
         for i, (label,feature)  in enumerate(train_data):
             labels = th.cat((labels, th.tensor([label], dtype=th.long).to(device)))
+            feature = feature.to(device)
             label_hat = model(feature)
             if label_hats is None:
                 label_hats = label_hat.unsqueeze(0)
