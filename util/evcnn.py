@@ -3,6 +3,34 @@ import networkx as nx
 from networkx import topological_sort
 import torch as th
 import pickle
+import torch.nn as nn
+from random import shuffle
+class EVCNN(nn.Module):
+    def __init__(self, in_dim, out_dim=2):
+        super().__init__()
+        self.bn = nn.BatchNorm1d(in_dim)
+        self.cnn = nn.Sequential(
+            nn.Conv1d(1, 64, 8), nn.ReLU(), nn.MaxPool1d(2), nn.Dropout(0.25),
+        )
+        self.fc = nn.Sequential(
+            nn.Linear(int(64 * (in_dim - 8) / 2), 32),
+            nn.ReLU(),
+            nn.Dropout(0.5),
+            nn.Linear(32, 4),
+        )
+
+    def forward(self, x):
+        # x = self.bn(x)
+        # print(x)
+        x = x.unsqueeze(1)
+        x = self.cnn(x)
+        # print(x)
+        x = x.view(x.size(0), -1)
+        # print(x.size())
+        x = self.fc(x)
+        # print(x)
+        # input()
+        return x
 
 def top_k(evs,k):
     evs2 = th.clone(evs)
@@ -54,51 +82,58 @@ def build_feature(graph,p,k):
 
     return feature
 
-with open(os.path.join('../data/global_new', 'train_data.pkl'), 'rb') as f:
-    train_data=pickle.load(f)
-with open(os.path.join('../data/global_new', 'val_data.pkl'), 'rb') as f:
-    val_data=pickle.load(f)
-
-train_graphs = []
-val_graphs = []
-remove_train = 0
-remove_val = 0
-for _,g,_,_ in train_data:
-
-    if g.number_of_nodes()<120:
-        remove_train +=1
-        continue
-    train_graphs.append(g)
-for _,g,_,_ in val_data:
-    if g.number_of_nodes()<120:
-        remove_val +=1
-        continue
-    val_graphs.append(g)
-
-print(remove_train,remove_val)
-
-train_features = None
-for g in train_graphs:
-    feature = build_feature(g,40,3).unsqueeze(0)
-    print(feature, '\n')
-    if train_features is None:
-        train_features = feature
+def load_data(path):
+    if os.path.exists(path):
+        with open(path,'rb') as f:
+            train_data,val_data = pickle.load(f)
     else:
-        train_features = th.cat((train_features,feature),dim=0)
+        with open(os.path.join('../data/global_new', 'train_data.pkl'), 'rb') as f:
+            train_data = pickle.load(f)
+        with open(os.path.join('../data/global_new', 'val_data.pkl'), 'rb') as f:
+            val_data = pickle.load(f)
 
-val_features = None
-print('generating val features...')
-for g in val_graphs:
-    feature = build_feature(g,40,3).unsqueeze(0)
-    print(feature,'\n')
-    if val_features is None:
-        val_features = feature
-    else:
-        val_features = th.cat((val_features,feature),dim=0)
+        train_data = []
+        val_data = []
+        train_labels =  th.tensor([],dtype=th.long)
+        val_labels = th.tensor([],dtype=th.long)
+        remove_train = 0
+        remove_val = 0
+        for i,(label, g, _, _) in enumerate(train_data):
 
-print(len(train_graphs),train_features.shape)
-print(len(val_graphs),val_features.shape)
-with open('../data/evcnn/train_data.pkl','wb') as f:
-    pickle.dump((train_graphs,train_features),f)
-with open('../data/evcnn/val_data.pkl','wb') as f:
-    pickle.dump((val_graphs,val_features),f)
+            if g.number_of_nodes() < 120:
+                remove_train += 1
+                continue
+
+            feature = build_feature(g, 40, 3).unsqueeze(0)
+            train_data.append((label, feature))
+            print(i,feature, '\n')
+
+        for i, (label, g, _, _) in enumerate(val_data):
+
+            if g.number_of_nodes() < 120:
+                remove_val += 1
+                continue
+
+            feature = build_feature(g, 40, 3).unsqueeze(0)
+            val_data.append((label, feature))
+            print(i, feature, '\n')
+
+        print(remove_train, remove_val)
+        os.makedirs('../data/evcnn/',exist_ok=True)
+        with open('../data/evcnn/data.pkl', 'wb') as f:
+            pickle.dump((train_data, val_data), f)
+
+    return train_data,val_data
+
+
+def train():
+    train_data,val_data = load_data('../data/evcnn/data.pkl')
+    device = th.device("cuda"  if th.cuda.is_available() else "cpu")
+    #shuffle(train_dataset)
+    model =EVCNN(16)
+    for epoch in range(100):
+        shuffle(train_data)
+        labels = th.tensor([], dtype=th.long).to(device)
+        global_embeddings = None
+        for i, (label,feature)  in enumerate(train_data):
+            label = model(feature)
