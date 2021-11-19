@@ -161,11 +161,10 @@ def validate(val_dataloader, device, model,loss, options):
             ).sum().item()
             #errors = th.tensor(range(0, len(predict_labels)))[predict_labels != labels]
             #print('errors:', errors)
-            print(correct,total_num)
+            #print(correct,total_num)
             val_acc = correct / total_num
 
-    print("  validate:")
-    print("\tloss:{:.3f}, acc:{:.3f}".format(val_loss, val_acc))
+
 
     return [val_loss, val_acc]
 
@@ -198,6 +197,8 @@ def train():
     # for lb,ft in train_data:
     #     print(ft.shape)
     # exit()
+    print('num train:',len(train_data))
+    print('num_val:',len(val_data))
     train_dataset = Dataset(train_data)
     train_dataloader = th.utils.data.DataLoader(train_dataset, batch_size=options.batch_size)
     val_dataset = Dataset(val_data)
@@ -238,10 +239,10 @@ def train():
 
         Train_loss = total_loss / total_num
         Train_acc = correct / len(train_data)
-        print("epoch[{:d}]".format(epoch))
-        print("  train:")
-        # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
-        print("\tloss:{:.8f}, acc:{:.3f}, ".format(Train_loss, Train_acc))
+        # print("epoch[{:d}]".format(epoch))
+        # print("  train:")
+        # # print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
+        # print("\tloss:{:.8f}, acc:{:.3f}, ".format(Train_loss, Train_acc))
         val_loss, val_acc = validate(val_dataloader, device, model,Loss, options)
         #if not os.path.exists(os.path.join(options.model_saving_dir, 'res.txt'))
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
@@ -252,6 +253,8 @@ def train():
         judgement = val_acc > max_acc
         #judgement = True
         if judgement:
+           print("epoch {}".format(epoch))
+           print("\tval loss:{:.3f}, acc:{:.3f}".format(val_loss, val_acc))
            max_acc = val_acc
            print("Saving model.... ", os.path.join(options.model_saving_dir))
            if os.path.exists(options.model_saving_dir) is False:
