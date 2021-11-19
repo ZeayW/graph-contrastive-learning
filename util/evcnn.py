@@ -106,7 +106,7 @@ def load_data(path):
 
             feature = build_feature(g, 40, 3).unsqueeze(0)
             train_data.append((label, feature))
-            print(i,feature, '\n')
+            print(i,feature.shape,feature, '\n')
 
         for i, (label, g, _, _) in enumerate(val_dataset):
 
