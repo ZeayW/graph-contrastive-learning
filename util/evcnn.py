@@ -27,7 +27,7 @@ class EVCNN(nn.Module):
         super().__init__()
         self.bn = nn.BatchNorm1d(in_dim)
         self.cnn = nn.Sequential(
-            nn.Conv1d(1, 64, 8), nn.ReLU(), nn.MaxPool1d(2), nn.Dropout(0.25),
+            nn.Conv1d(120, 64, 8), nn.ReLU(), nn.MaxPool1d(2), nn.Dropout(0.25),
         )
         self.fc = nn.Sequential(
             nn.Linear(int(64 * (in_dim - 8) / 2), 32),
