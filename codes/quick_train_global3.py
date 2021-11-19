@@ -155,6 +155,7 @@ def validate(val_graphs,device,model,mlp,combine,Loss,alpha,beta,options):
         labels = th.tensor([],dtype=th.long).to(device)
         global_embeddings = None
         for idx, (label, graph, POs, depth) in enumerate(val_graphs):
+            depth = min(10,depth)
             labels = th.cat((labels, th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
             blocks = sampler.sample_blocks(graph,POs)
@@ -601,6 +602,7 @@ def train(options):
 
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
+            depth = min(10, depth)
             labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * depth, include_dst_in_src=options.include)
             blocks = sampler.sample_blocks(graph,POs)
