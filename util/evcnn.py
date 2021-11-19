@@ -176,12 +176,12 @@ def train():
 
     if os.path.exists(options.model_saving_dir):
         with open(os.path.join(options.model_saving_dir,'model.pkl'),'rb') as f:
-            model = pickle.load(f)
+            options,model = pickle.load(f)
     else:
         os.makedirs(options.model_saving_dir, exist_ok=True)
         model =EVCNN(16)
         with open(os.path.join(options.model_saving_dir,'model.pkl'),'wb') as f:
-            pickle.dump(model,f)
+            pickle.dump((options,model),f)
         with open(os.path.join(options.model_saving_dir, 'res.txt'),'wb') as f:
             pass
     model.to(device)
