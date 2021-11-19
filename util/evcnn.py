@@ -88,9 +88,9 @@ def load_data(path):
             train_data,val_data = pickle.load(f)
     else:
         with open(os.path.join('../data/global_new', 'train_data.pkl'), 'rb') as f:
-            train_data = pickle.load(f)
+            train_dataset = pickle.load(f)
         with open(os.path.join('../data/global_new', 'val_data.pkl'), 'rb') as f:
-            val_data = pickle.load(f)
+            val_dataset = pickle.load(f)
 
         train_data = []
         val_data = []
@@ -98,7 +98,7 @@ def load_data(path):
         val_labels = th.tensor([],dtype=th.long)
         remove_train = 0
         remove_val = 0
-        for i,(label, g, _, _) in enumerate(train_data):
+        for i,(label, g, _, _) in enumerate(train_dataset):
 
             if g.number_of_nodes() < 120:
                 remove_train += 1
@@ -108,7 +108,7 @@ def load_data(path):
             train_data.append((label, feature))
             print(i,feature, '\n')
 
-        for i, (label, g, _, _) in enumerate(val_data):
+        for i, (label, g, _, _) in enumerate(val_dataset):
 
             if g.number_of_nodes() < 120:
                 remove_val += 1
@@ -116,7 +116,7 @@ def load_data(path):
 
             feature = build_feature(g, 40, 3).unsqueeze(0)
             val_data.append((label, feature))
-            print(i, feature, '\n')
+            print(i, feature.shape,feature, '\n')
 
         print(remove_train, remove_val)
         os.makedirs('../data/evcnn/',exist_ok=True)
