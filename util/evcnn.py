@@ -56,5 +56,5 @@ with open(os.path.join('../data/global_new', 'train_data.pkl'), 'rb') as f:
 with open(os.path.join('../data/global_new', 'val_data.pkl'), 'rb') as f:
     val_graphs=pickle.load(f)
 
-feature = build_feature(train_graphs[0],40,3)
+feature = build_feature(train_graphs[0][1],40,3)
 print(feature.shape,feature)
