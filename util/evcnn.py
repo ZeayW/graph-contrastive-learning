@@ -119,9 +119,9 @@ def load_data(path,p,k):
         remove_val = 0
         for i,(label, g, _, _) in enumerate(train_dataset):
 
-            if g.number_of_nodes() < p*k:
-                remove_train += 1
-                continue
+            # if g.number_of_nodes() < p*k:
+            #     remove_train += 1
+            #     continue
 
             feature = build_feature(g, p, k)
             train_data.append((label, feature))
@@ -129,9 +129,9 @@ def load_data(path,p,k):
 
         for i, (label, g, _, _) in enumerate(val_dataset):
 
-            if g.number_of_nodes() < p*k:
-                remove_val += 1
-                continue
+            # if g.number_of_nodes() < p*k:
+            #     remove_val += 1
+            #     continue
 
             feature = build_feature(g, p, k)
             val_data.append((label, feature))
@@ -173,7 +173,7 @@ def validate(val_dataloader, device, model,loss, options):
 
 def train():
     options = get_options()
-    p,k = 40,2
+    p,k = 40,3
 
     train_data,val_data = load_data('../data/evcnn/{}.pkl'.format(options.datapath),p,k)
     device = th.device("cuda"  if th.cuda.is_available() else "cpu")
