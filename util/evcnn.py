@@ -98,7 +98,7 @@ def build_feature(graph,p,k):
 
     return feature
 
-def load_data(path):
+def load_data(path,p,k):
     if os.path.exists(path):
         with open(path,'rb') as f:
             train_data,val_data = pickle.load(f)
@@ -116,27 +116,27 @@ def load_data(path):
         remove_val = 0
         for i,(label, g, _, _) in enumerate(train_dataset):
 
-            if g.number_of_nodes() < 120:
+            if g.number_of_nodes() < p*k:
                 remove_train += 1
                 continue
 
-            feature = build_feature(g, 40, 3)
+            feature = build_feature(g, p, k)
             train_data.append((label, feature))
             print(i,feature.shape,feature, '\n')
 
         for i, (label, g, _, _) in enumerate(val_dataset):
 
-            if g.number_of_nodes() < 120:
+            if g.number_of_nodes() < p*k:
                 remove_val += 1
                 continue
 
-            feature = build_feature(g, 40, 3)
+            feature = build_feature(g, p, k)
             val_data.append((label, feature))
             print(i, feature.shape,feature, '\n')
 
         print(remove_train, remove_val)
         os.makedirs('../data/evcnn/',exist_ok=True)
-        with open('../data/evcnn/data.pkl', 'wb') as f:
+        with open(path, 'wb') as f:
             pickle.dump((train_data, val_data), f)
 
     return train_data,val_data
@@ -170,7 +170,8 @@ def validate(val_dataloader, device, model,loss, options):
 
 def train():
     options = get_options()
-    train_data,val_data = load_data('../data/evcnn/data.pkl')
+    p,k = 40,2
+    train_data,val_data = load_data('../data/evcnn/data2.pkl',p,k)
     device = th.device("cuda"  if th.cuda.is_available() else "cpu")
     #shuffle(train_dataset)
 
