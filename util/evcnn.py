@@ -47,7 +47,7 @@ def build_feature(graph,p,k):
         if feature is None:
             feature = ktop_evs
         else:
-            feature = th.cat(feature,ktop_evs)
+            feature = th.cat((feature,ktop_evs))
 
     return feature
 
