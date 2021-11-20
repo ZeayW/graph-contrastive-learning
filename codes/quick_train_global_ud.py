@@ -725,7 +725,7 @@ def train(options):
 
         #print(train_graphs[0][0],train_graphs[0][2],train_graphs[0][3])
         for idx,(label,graph,POs,depth) in enumerate(train_graphs):
-            print(POs)
+            #print(POs)
             labels = th.cat((labels,th.tensor([label],dtype=th.long).to(device)))
             sampler = Sampler([None] * (in_nlayers+1), include_dst_in_src=options.include)
             ntype = th.argmax(graph.ndata['ntype'], dim=1).squeeze(-1)
