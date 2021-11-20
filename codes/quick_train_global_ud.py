@@ -22,7 +22,7 @@ def top_k(evs,k):
     count = th.sum(evs2,dim=1)
     _,order = th.sort(count)
     topk = reversed(order)[:k]
-    return topk.numpy().tolist()
+    return topk
 
 def construct_ev(graph):
     evs = None
@@ -408,6 +408,15 @@ def load_data(path,options):
     if os.path.exists(os.path.join(path,'data.pkl')):
         with open(os.path.join(path, 'data.pkl'), 'rb') as f:
             train_graphs,val_graphs = pickle.load(f)
+        new_train_graphs,new_val_graphs = [],[]
+        for label,g,nids,depth in train_graphs:
+            nodes = th.reshape(nids,(-1,)).numpy().tolist()
+            new_train_graphs.append((label,g,nodes,depth))
+        for label,g,nids,depth in val_graphs:
+            nodes = th.reshape(nids,(-1,)).numpy().tolist()
+            new_val_graphs.append((label,g,nodes,depth))
+        train_graphs = new_train_graphs
+        val_graphs = new_val_graphs
     else:
         targets = ['adder', 'multiplier', 'divider', 'subtractor']
         val_graphs = []
