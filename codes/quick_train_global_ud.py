@@ -22,7 +22,7 @@ def top_k(evs,k):
     count = th.sum(evs2,dim=1)
     _,order = th.sort(count)
     topk = reversed(order)[:k]
-    return topk
+    return topk.numpy().tolist()
 
 def construct_ev(graph):
     evs = None
