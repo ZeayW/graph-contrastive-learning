@@ -22,6 +22,7 @@ def top_k(evs,k):
     count = th.sum(evs2,dim=1)
     _,order = th.sort(count)
     topk = reversed(order)[:k]
+    topk = topk.numpy().tolist()
     return topk
 
 def construct_ev(graph):
@@ -440,9 +441,10 @@ def load_data(path,options):
                     g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
                     g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
                     selected_nids = select_nodes(g, 40, 3)
-                    print(g.number_of_edges())
+                    #print(g.number_of_edges())
                     temp_graphs.append((label, DAG2UDG(g,options), selected_nids, circuit[2]))
-                    print(temp_graphs[-1][1].number_of_edges())
+                    print(selected_nids)
+                    #print(temp_graphs[-1][1].number_of_edges())
                 # shuffle(temp_graphs)
                 if module == 'adder':
                     temp_graphs = temp_graphs[:300]
