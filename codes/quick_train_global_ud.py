@@ -11,9 +11,65 @@ from MyDataLoader_ud import *
 from time import time
 from random import shuffle
 import itertools
+from networkx import topological_sort
 import random
 # apply oversampling on the dataset
 
+def top_k(evs,k):
+    evs2 = th.clone(evs)
+    evs2[evs2>0]=1
+    count = th.sum(evs2,dim=1)
+    _,order = th.sort(count)
+    topk = reversed(order)[:k]
+    return topk
+
+def construct_ev(graph):
+    evs = None
+    max_t= 0
+    nxg = graph.to_networkx()
+    for i in  range(graph.number_of_nodes()):
+        ev = th.clone(graph.ndata["ntype"][i]).detach()
+        l = nx.single_source_shortest_path_length(nxg, i, cutoff=2)
+        for n, d in l.items():
+            ev += graph.ndata["ntype"][n] * (1 if d == 1 else 0.5)
+        l = nx.single_source_shortest_path_length(
+            nxg.reverse(copy=False), i, cutoff=2
+        )
+        for n, d in l.items():
+            ev += graph.ndata["ntype"][n] * (1 if d == 1 else 0.5)
+        max_t = max(max_t, th.max(ev).item())
+        ev = th.clamp(ev, 0, 64).unsqueeze(0)
+        if evs is None:
+            evs = ev
+        else:
+            evs = th.cat((evs,ev),dim=0)
+    return evs
+def select_nodes(graph,p,k):
+    evs = construct_ev(graph)
+    selected = []
+    order = list(topological_sort(graph.to_networkx()))
+    #print(order)
+    group_size = int(len(order)/p)
+    groups = []
+
+    if len(order)<p*k:
+        return list(range(graph.number_of_nodes()))
+        #feature = th.cat((evs,evs[:p*k-len(order)]))
+        #print(len(feature))
+    else:
+        start_nid = 0
+        for i in range(p):
+            if i ==p-1:
+                group = order[i*group_size:]
+            else:
+                group = order[i*group_size:(i+1)*group_size]
+            group_evs = evs[group]
+            topk_nids = top_k(group_evs,k)
+            topk_nids = [nid+start_nid for nid in topk_nids]
+            selected.append(topk_nids)
+            start_nid += group_size
+
+    return selected
 
 def DAG2UDG(g,options):
     edges = g.edges()
@@ -347,6 +403,86 @@ def split_val(g):
     val_nodes = th.tensor(val_nodes)
     return val_nodes
 
+def load_data(path,options):
+    if os.path.exists(os.path.join(path,'data.pkl')):
+        with open(os.path.join(path, 'data.pkl'), 'rb') as f:
+            train_graphs,val_graphs = pickle.load(f)
+    else:
+        targets = ['adder', 'multiplier', 'divider', 'subtractor']
+        val_graphs = []
+        train_graphs = []
+
+        with open(os.path.join(options.datapath, 'val3.pkl'), 'rb') as f:
+            val_data = pickle.load(f)
+            labels = {'adder': 0, 'multiplier': 1, 'adder2': 0, 'multiplier2': 1}
+            for module in val_data.keys():
+                temp_graphs = []
+
+                label = labels[module]
+                data = val_data[module]
+                print(module, 'len: {}', len(data))
+                for circuit in data:
+                    g = circuit[0]
+                    g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+                    g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+                    g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
+                    selected_nids = select_nodes(g, 40, 3)
+                    print(g.number_of_edges())
+                    temp_graphs.append((label, DAG2UDG(g,options), selected_nids, circuit[2]))
+                    print(temp_graphs[-1][1].number_of_edges())
+                # shuffle(temp_graphs)
+                if module == 'adder':
+                    temp_graphs = temp_graphs[:300]
+                else:
+                    temp_graphs = temp_graphs[:500]
+                val_graphs.extend(temp_graphs)
+        print('len val1:', len(val_graphs))
+        for i, t in enumerate(targets):
+            print(t)
+            with open(os.path.join(options.datapath, '{}.pkl'.format(t)), 'rb') as f:
+                data = pickle.load(f)
+                # num_class = len(data)
+                temp_circuits = []
+                for j, cls in enumerate(data.keys()):
+
+                    circuits = data[cls]
+                    print('\t', cls, len(circuits))
+                    for g, _, _ in circuits:
+                        g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+                        g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
+                        g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
+                    # val_graphs = graphs[:int(len(circuits) / options.train_percent)]
+                    # shuffle(circuit)
+
+                    if t in ['divider', 'subtractor']:
+
+                        if cls in ['cond_sum_adder', 'sklansky_adder', 'brent_kung_adder']:
+                            # if t == 'subtractor':
+                            #     size = int(len(circuits) * 0.6)
+                            #     circuits = circuits[:size]
+                            for circuit in circuits:
+                                g= circuit[0]
+                                selected_nids = select_nodes(g, 40, 3)
+                                val_graphs.append((i, DAG2UDG(g,options), selected_nids, circuit[2]))
+                        else:
+                            # if t == 'subtractor':
+                            #     size = int(len(circuits) * 0.5)
+                            #     circuits = circuits[:size]
+                            for circuit in circuits:
+                                g = circuit[0]
+                                selected_nids = select_nodes(g, 40, 3)
+                                train_graphs.append((i, DAG2UDG(g, options), selected_nids, circuit[2]))
+                    else:
+                        for circuit in circuits:
+                            g = circuit[0]
+                            selected_nids = select_nodes(g, 40, 3)
+                            train_graphs.append((i, DAG2UDG(g, options), selected_nids, circuit[2]))
+
+        os.makedirs(path,exist_ok=True)
+        with open(os.path.join(path,'data.pkl'),'wb') as f:
+            pickle.dump((train_graphs,val_graphs),f)
+
+    return train_graphs,val_graphs
 def train(options):
 
     th.multiprocessing.set_sharing_strategy('file_system')
@@ -411,88 +547,9 @@ def train(options):
     val_graphs = []
     train_graphs = []
 
-    with open(os.path.join(options.datapath, 'val3.pkl'), 'rb') as f:
-        val_data = pickle.load(f)
-        labels = {'adder': 0, 'multiplier': 1,'adder2':0,'multiplier2':1}
-        for module in val_data.keys():
-            temp_graphs = []
-
-            label = labels[module]
-            data = val_data[module]
-            print(module, 'len: {}', len(data))
-            for circuit in data:
-                g = circuit[0]
-                g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-                g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-                g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
-                temp_graphs.append((label, circuit[0], circuit[1], circuit[2]))
-            # shuffle(temp_graphs)
-            if module == 'adder':
-                temp_graphs = temp_graphs[:300]
-            else:
-                temp_graphs = temp_graphs[:500]
-            val_graphs.extend(temp_graphs)
-    print('len val1:',len(val_graphs))
-    for i,t in enumerate(targets):
-        print(t)
-        with open(os.path.join(options.datapath,'{}.pkl'.format(t)),'rb') as f:
-            data = pickle.load(f)
-            #num_class = len(data)
-            temp_circuits = []
-            for j,cls in enumerate(data.keys()):
-
-                circuits = data[cls]
-                print('\t', cls, len(circuits))
-                for g, _, _ in circuits:
-                    g.ndata['f_input'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-                    g.ndata['temp'] = th.ones(size=(g.number_of_nodes(), options.hidden_dim), dtype=th.float)
-                    g.ndata['ntype2'] = th.argmax(g.ndata['ntype'], dim=1).squeeze(-1)
-                #val_graphs = graphs[:int(len(circuits) / options.train_percent)]
-                #shuffle(circuit)
-                if t in ['divider', 'subtractor']:
-
-                    if cls in ['cond_sum_adder','sklansky_adder','brent_kung_adder']:
-                        # if t == 'subtractor':
-                        #     size = int(len(circuits) * 0.6)
-                        #     circuits = circuits[:size]
-                        for circuit in circuits:
-                             val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
-                    else:
-                        # if t == 'subtractor':
-                        #     size = int(len(circuits) * 0.5)
-                        #     circuits = circuits[:size]
-                        for circuit in circuits:
-                            train_graphs.append((i,circuit[0],circuit[1],circuit[2]))
-                else:
-                    for circuit in circuits:
-                        train_graphs.append((i, circuit[0], circuit[1], circuit[2]))
-                # else:
-                # if t in ['divider','subtractor']:
-                #     val_circuits= circuits[:int(len(circuits)/options.val_percent)]
-                #     train_circuits = circuits[int(len(circuits) / options.val_percent):]
-                #     for circuit in val_circuits:
-                #         val_graphs.append((i,circuit[0],circuit[1],circuit[2]))
-                # else:
-                #     train_circuits = circuits
-
-                # for circuit in train_circuits:
-                #     temp_circuits.append((i, circuit[0], circuit[1], circuit[2]))
-            #shuffle(temp_circuits)
-            # print(t,len(temp_circuits))
-            # train_graphs.extend(temp_circuits)
-            #shuffle(train_graphs)
+    train_graphs,val_graphs = load_data('../data/global_ud',options)
     shuffle(train_graphs)
-    print('len train_graphs',len(train_graphs))
-    print(train_graphs[0][1].number_of_edges())
-    new_train_graphs = []
-    new_val_graphs = []
-    for label,tg,POs,depth in train_graphs:
-        new_train_graphs.append(( label,DAG2UDG(tg,options),POs,depth))
-    for label, vg, POs, depth in val_graphs:
-        new_val_graphs.append((label, DAG2UDG(vg, options), POs, depth))
-    train_graphs = new_train_graphs
-    val_graphs = new_val_graphs
-    print(train_graphs[0][1].number_of_edges())
+
     # if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
     #     with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
     #         pickle.dump(train_graphs, f)
@@ -500,24 +557,22 @@ def train(options):
     #     with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'rb') as f:
     #         print('loading train data')
     #         train_graphs=pickle.load(f)
+    #
+    # if not os.path.exists(os.path.join(options.datapath, 'train_data3.pkl')):
+    #     with open(os.path.join(options.datapath, 'train_data3.pkl'), 'wb') as f:
+    #         pickle.dump(train_graphs, f)
+    # else:
+    #     with open(os.path.join(options.datapath, 'train_data3.pkl'), 'rb') as f:
+    #         print('loading train data')
+    #         train_graphs=pickle.load(f)
+    # if not os.path.exists(os.path.join(options.datapath, 'val_data.pkl')):
+    #     with open(os.path.join(options.datapath, 'val_data.pkl'), 'wb') as f:
+    #         pickle.dump(val_graphs, f)
+    # else:
+    #     with open(os.path.join(options.datapath, 'val_data.pkl'), 'rb') as f:
+    #         print('loading val data')
+    #         val_graphs=pickle.load(f)
 
-    if not os.path.exists(os.path.join(options.datapath, 'train_data3.pkl')):
-        with open(os.path.join(options.datapath, 'train_data3.pkl'), 'wb') as f:
-            pickle.dump(train_graphs, f)
-    else:
-        with open(os.path.join(options.datapath, 'train_data3.pkl'), 'rb') as f:
-            print('loading train data')
-            train_graphs=pickle.load(f)
-    if not os.path.exists(os.path.join(options.datapath, 'val_data.pkl')):
-        with open(os.path.join(options.datapath, 'val_data.pkl'), 'wb') as f:
-            pickle.dump(val_graphs, f)
-    else:
-        with open(os.path.join(options.datapath, 'val_data.pkl'), 'rb') as f:
-            print('loading val data')
-            val_graphs=pickle.load(f)
-
-
-    print(len(train_graphs))
     num_train = int(options.train_percent * len(val_graphs))
     #print(options.train_percent,len(val_graphs),num_train)
     #ratio = len(train_graphs)/len(val_graphs)
