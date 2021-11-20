@@ -410,6 +410,7 @@ def load_data(path,options):
             train_graphs,val_graphs = pickle.load(f)
         new_train_graphs,new_val_graphs = [],[]
         for label,g,nids,depth in train_graphs:
+            print(nids)
             nodes = th.reshape(nids,(-1,)).numpy().tolist()
             new_train_graphs.append((label,g,nodes,depth))
         for label,g,nids,depth in val_graphs:
@@ -417,6 +418,8 @@ def load_data(path,options):
             new_val_graphs.append((label,g,nodes,depth))
         train_graphs = new_train_graphs
         val_graphs = new_val_graphs
+        with open(os.path.join(path, 'data.pkl'), 'wb') as f:
+            pickle.dump((train_graphs, val_graphs), f)
     else:
         targets = ['adder', 'multiplier', 'divider', 'subtractor']
         val_graphs = []
