@@ -562,8 +562,8 @@ def train(options):
     val_graphs = []
     train_graphs = []
 
-    train_graphs,val_graphs = load_data('../data/global_ud',options)
-    shuffle(train_graphs)
+    #train_graphs,val_graphs = load_data('../data/global_ud',options)
+    #shuffle(train_graphs)
 
     # if not os.path.exists(os.path.join(options.model_saving_dir, 'train_data.pkl')):
     #     with open(os.path.join(options.model_saving_dir, 'train_data.pkl'), 'wb') as f:
@@ -573,20 +573,20 @@ def train(options):
     #         print('loading train data')
     #         train_graphs=pickle.load(f)
     #
-    # if not os.path.exists(os.path.join(options.datapath, 'train_data3.pkl')):
-    #     with open(os.path.join(options.datapath, 'train_data3.pkl'), 'wb') as f:
-    #         pickle.dump(train_graphs, f)
-    # else:
-    #     with open(os.path.join(options.datapath, 'train_data3.pkl'), 'rb') as f:
-    #         print('loading train data')
-    #         train_graphs=pickle.load(f)
-    # if not os.path.exists(os.path.join(options.datapath, 'val_data.pkl')):
-    #     with open(os.path.join(options.datapath, 'val_data.pkl'), 'wb') as f:
-    #         pickle.dump(val_graphs, f)
-    # else:
-    #     with open(os.path.join(options.datapath, 'val_data.pkl'), 'rb') as f:
-    #         print('loading val data')
-    #         val_graphs=pickle.load(f)
+    if not os.path.exists(os.path.join(options.datapath, 'train_data3.pkl')):
+        with open(os.path.join(options.datapath, 'train_data3.pkl'), 'wb') as f:
+            pickle.dump(train_graphs, f)
+    else:
+        with open(os.path.join(options.datapath, 'train_data3.pkl'), 'rb') as f:
+            print('loading train data')
+            train_graphs=pickle.load(f)
+    if not os.path.exists(os.path.join(options.datapath, 'val_data.pkl')):
+        with open(os.path.join(options.datapath, 'val_data.pkl'), 'wb') as f:
+            pickle.dump(val_graphs, f)
+    else:
+        with open(os.path.join(options.datapath, 'val_data.pkl'), 'rb') as f:
+            print('loading val data')
+            val_graphs=pickle.load(f)
 
     num_train = int(options.train_percent * len(val_graphs))
     #print(options.train_percent,len(val_graphs),num_train)
