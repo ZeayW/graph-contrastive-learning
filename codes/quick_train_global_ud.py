@@ -13,6 +13,7 @@ from random import shuffle
 import itertools
 from networkx import topological_sort
 import random
+import networkx as nx
 # apply oversampling on the dataset
 
 def top_k(evs,k):
