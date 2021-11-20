@@ -68,7 +68,7 @@ def select_nodes(graph,p,k):
             group_evs = evs[group]
             topk_nids = top_k(group_evs,k)
             topk_nids = [nid+start_nid for nid in topk_nids]
-            selected.append(topk_nids)
+            selected.extend(topk_nids)
             start_nid += group_size
 
     return selected
