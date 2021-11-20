@@ -443,7 +443,7 @@ def load_data(path,options):
                     selected_nids = select_nodes(g, 40, 3)
                     #print(g.number_of_edges())
                     temp_graphs.append((label, DAG2UDG(g,options), selected_nids, circuit[2]))
-                    print(selected_nids)
+                    #print(selected_nids)
                     #print(temp_graphs[-1][1].number_of_edges())
                 # shuffle(temp_graphs)
                 if module == 'adder':
