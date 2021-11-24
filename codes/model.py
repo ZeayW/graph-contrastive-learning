@@ -320,13 +320,14 @@ class GNN_1l(nn.Module):
         #h = self.fc_out(h)
         return h.squeeze(1)
 
+# our functional GNN model
 class FuncGCN(nn.Module):
     def __init__(
         self,
         label,
         include,
         device,
-        in_dim,
+        in_dim,         #
         hidden_dim,
         out_dim,
         num_heads,
@@ -342,26 +343,10 @@ class FuncGCN(nn.Module):
         self.in_dim = in_dim
         self.hidden_dim = hidden_dim
         self.out_dim = out_dim
-        self.n_layers = n_layers
         self.dropout = nn.Dropout(p=dropout)
-        self.layers = nn.ModuleList()
         self.fc_out = nn.Linear(hidden_dim,out_dim)
-        # self.gate_functions = nn.ModuleList()
-        # gain = nn.init.calculate_gain('relu')
-        # for i in range(get_options().in_dim):
-        #     #self.gate_functions.append(MLP(in_feats=hidden_dim,out_feats=hidden_dim,n_layers=3))
-        #     self.gate_functions.append(nn.Linear(hidden_dim,hidden_dim))
-        #     #self.gate_functions.append(Parameter(th.Tensor(hidden_dim,hidden_dim)))
-        #     nn.init.xavier_uniform_(self.gate_functions[i].weight, gain=gain)
         in_dim = hidden_dim
 
-        # input layer
-        #print(n_layers)
-        # if n_layers>0:
-        #     self.layers.append(
-        #         SAGEConv(in_dim, hidden_dim, include=include,combine_type = 'sum',aggregator_type=aggregation_type, activation=activation)
-        #     )
-        # hidden layers
         self.conv = FunctionConv(
                     in_dim,
                     hidden_dim,
@@ -372,22 +357,48 @@ class FuncGCN(nn.Module):
                     activation=activation,
                 )
 
-        # output layer
-
 
 
     def forward(self, blocks, features):
+        r"""
+
+        Description
+        -----------
+        forward computation of FGNN
+
+        Parameters
+        ----------
+        blocks : [dgl_block]
+            blocks gives the sampled neighborhood for a batch of target nodes.
+            Given a target node n, its sampled neighborhood is organized in layers
+            depending on the distance to n.
+            A block is a graph that describes the part between two succesive layers,
+            consisting of two sets of nodes: the *input* nodes and *output* nodes.
+            The output nodes of the last block are the target nodes (POs), and
+            the input nodes of the first block are the PIs.
+        feature : torch.Tensor
+            It represents the input (PI) feature of shape :math:`(N, D_{in})`
+            where :math:`D_{in}` is size of input feature, :math:`N` is the number of target nodes (POs).
+
+        Returns
+        -------
+        torch.Tensor
+            The output feature of shape :math:`(N, D_{out})` where :math:`D_{out}`
+            is size of output (PO) feature.
+        """
         depth = len(blocks)
         h = features
+        r"""
+        The message passes through the blocks layer by layer, from the PIs of the blocks to the POs
+        In each iteration, messages are only passed between two successive layers (blocks)
+        """
         for i in range(depth):
             if i != 0:
                 h = self.dropout(h)
+
+            # we do not need activation function in the last iteration
             act_flag = (i != depth - 1)
             h = self.conv(act_flag, blocks[i], h)
-        #     runtime = time()-start
-        #     runtimes.append(runtime)
-        # print(runtimes)
-        # h = self.fc_out(h)
         if self.hidden_dim!=self.out_dim:
             h= self.fc_out(h)
         return h.squeeze(1)
