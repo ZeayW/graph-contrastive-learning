@@ -1,3 +1,7 @@
+r"""
+this script is used to train/fine-tune and validate/test the models
+"""
+
 from dataset_quick import Dataset_q
 from dataset_dc import Dataset_dc
 from options import get_options
@@ -11,29 +15,49 @@ from MyDataLoader_ud import *
 from time import time
 from random import shuffle
 import itertools
+
+
 def DAG2UDG(g):
+    r"""
+
+    used to transform a (directed acyclic graph)DAG into a undirected graph
+
+    :param g: dglGraph
+        the target DAG
+
+    :return:
+        dglGraph
+            the output undirected graph
+    """
     edges = g.edges()
     reverse_edges = (edges[1],edges[0])
+    # add the reversed edges
     new_edges = (th.cat((edges[0],reverse_edges[0])),th.cat((edges[1],reverse_edges[1])))
     udg =  dgl.graph(new_edges,num_nodes=g.num_nodes())
-    # if options.gat:
-    #     udg.add_edges(udg.nodes(),udg.nodes())
+
+    # copy the node features
     for key, value in g.ndata.items():
         # print(key,value)
         udg.ndata[key] = value
-
+    # copy the edge features
     udg.edata['direction'] = th.cat((th.zeros(size=(1,g.number_of_edges())).squeeze(0),th.ones(size=(1,g.number_of_edges())).squeeze(0)))
-    print('edge attribute')
-    print(udg.edata['direction'])
-    # for key, value in g.edata.items():
-    #     value = th.sum(value,dim=1)
-    #     print(key,value)
-        #udg.edata[key] = th.cat((value,value))
 
     return udg
 
 # apply oversampling on the dataset
 def oversample(g,options,in_dim):
+    r"""
+
+    oversample the postive nodes when the dataset is imbalanced
+
+    :param g:
+        the target graph
+    :param options:
+        some args
+    :param in_dim:
+        number of different node types
+    :return:
+    """
     print("oversampling dataset......")
     #print(save_file)
 
@@ -123,62 +147,58 @@ def oversample(g,options,in_dim):
 
 
 def preprocess(data_path,device,options,in_dim):
-    #datapaths = ['../dataset/test/ICCAD2014/v/']
-    # datapaths = ["../dc/boom/implementation/"]
-    #save_file = 'iog_dc_cd5.pkl'
+    r"""
+
+    do some preprocessing work: generate dataset / initialize the model
+
+    :param data_path:
+        the path to save the dataset
+    :param device:
+        the device to load the model
+    :param options:
+        some additional parameters
+    :param in_dim:
+    :return:
+        no return
+    """
 
     Dataset = Dataset_dc
-    #in_dim = get_options().in_dim
-    nlabels = options.nlabels
     label2id = {}
     if os.path.exists(data_path) is False:
         os.makedirs(data_path)
     train_data_file = os.path.join(data_path, 'boom2.pkl')
     val_data_file = os.path.join(data_path, 'rocket2.pkl')
 
+    # generate and save the test dataset if missing
     if os.path.exists(val_data_file) is False:
         datapaths = ["../dc/rocket/implementation/"]
         th.multiprocessing.set_sharing_strategy('file_system')
-        #print(dataset_not_edge.Dataset_n)
         dataset = Dataset("Rocket",datapaths,label2id)
         g = dataset.batch_graph
-        #print(g.ndata)
-        print(g.ndata)
-        #print(g.edata['r'])
         with open(val_data_file,'wb') as f:
             pickle.dump(g,f)
+
+    # generate and save the train dataset if missing
     if os.path.exists(train_data_file) is False:
         datapaths = ["../dc/boom/implementation/"]
         th.multiprocessing.set_sharing_strategy('file_system')
-        #print(dataset_not_edge.Dataset_n)
         dataset = Dataset("BoomCore",datapaths,label2id)
         g = dataset.batch_graph
-        #print(g.ndata)
-        print(g.ndata)
-        #print(g.edata['r'])
         with open(train_data_file,'wb') as f:
             pickle.dump(g,f)
 
-        #split_data(g,split_save_file,options)
-        # with open(save_file, 'rb') as f:
-        #     g = pickle.load(f)
-        # print(g.edata)
-
-    out_dim1 = options.out_dim
-    out_dim2 = out_dim1
-    hidden_dim1 = options.hidden_dim
-    hidden_dim2 = hidden_dim1
-    print(label2id)
     if len(label2id) != 0:
         with open(os.path.join(data_path,'label2id.pkl'),'wb') as f:
             pickle.dump(label2id,f)
 
+    # load a pretrained model (if any)
     with open(os.path.join(options.pre_model_dir,'model.pkl'),'rb') as f:
         if 'proj' in options.pre_model_dir or 'shuffle' in options.pre_model_dir or 'abgnn' in options.pre_model_dir:
             _, model,_ = pickle.load(f)
         else:
             _,model = pickle.load(f)
 
+    # initialize a multlayer perceptron
     mlp = MLP(
         in_dim = model.out_dim,
         out_dim = options.nlabels,
@@ -188,6 +208,7 @@ def preprocess(data_path,device,options,in_dim):
     print(model)
     print(mlp)
     print("creating model in:",options.model_saving_dir)
+    # save the model and create a file a save the results
     if os.path.exists(options.model_saving_dir) is False:
         os.makedirs(options.model_saving_dir)
         with open(os.path.join(options.model_saving_dir, 'model.pkl'), 'wb') as f:
@@ -195,24 +216,38 @@ def preprocess(data_path,device,options,in_dim):
             pickle.dump((parameters, model,mlp), f)
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'w') as f:
             pass
-def load_model(device,options):
 
+
+def load_model(device,options):
+    r"""
+    Load the model
+
+    :param device:
+        the target device that the model is loaded on
+    :param options:
+        some additional parameters
+    :return:
+        param: new options
+        model : loaded model
+        mlp: loaded mlp
+    """
     model_dir = options.model_saving_dir
     if os.path.exists(os.path.join(model_dir, 'model.pkl')) is False:
         return None,None
 
 
     with open(os.path.join(model_dir,'model.pkl'), 'rb') as f:
-        #print(f)
         param, model,mlp = pickle.load(f)
-        #print(classifier)
         param.model_saving_dir = options.model_saving_dir
         model = model.to(device)
+
+        # make some changes to the options
         if options.change_lr:
             param.learning_rate = options.learning_rate
         if options.change_alpha:
             param.alpha = options.alpha
     return param,model,mlp
+
 
 def type_count(ntypes,count):
     for tp in ntypes:
@@ -229,65 +264,79 @@ def cal_ratios(count1,count2):
             ratios.append(round(ratio,4))
     return ratios
 
-def get_reverse_graph(g):
-    edges = g.edges()
-    reverse_edges = (edges[1], edges[0])
 
-    rg = dgl.graph(reverse_edges, num_nodes=g.num_nodes())
-    for key, value in g.ndata.items():
-        # print(key,value)
-        rg.ndata[key] = value
-    for key, value in g.edata.items():
-        # print(key,value)
-        rg.edata[key] = value
-    return rg
 def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embeddings,options):
+    r"""
+
+    validate the model
+
+    :param loaders:
+        the loaders to load the validation dataset
+    :param label_name:
+        target label name
+    :param device:
+        device
+    :param model:
+        trained model
+    :param mlp:
+        trained mlp
+    :param Loss:
+        used loss function
+    :param alpha:
+    :param beta:
+        a hyperparameter that determines the thredshold of binary classification
+    :param train_pos_embeddings:
+    :param options:
+        some parameters
+    :return:
+        result of the validation: loss, acc,recall,precision,F1_score
+    """
 
     total_num, total_loss, correct, fn, fp, tn, tp = 0, 0.0, 0, 0, 0, 0, 0
-
     error_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
-    fp_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
-    fn_count = th.zeros(size=(1, get_options().in_dim)).squeeze(0).numpy().tolist()
     num_errors = 0
     runtime = 0
-    num_batch = 0
+
     with th.no_grad():
         for i,loader in enumerate(loaders):
             for ni, (central_nodes, input_nodes, blocks) in enumerate(loader):
-
-                # continue
-                # print(in_blocks)
                 start = time()
                 blocks = [b.to(device) for b in blocks]
+
+                # get the input features
                 if options.gnn:
                     input_features = blocks[0].srcdata["ntype"]
                 else:
                     input_features = blocks[0].srcdata["f_input"]
+
+                # the central nodes are the output of the final block
                 output_labels = blocks[-1].dstdata[label_name].squeeze(1)
                 total_num += len(output_labels)
+                # get the embeddings of central nodes
                 embedding = model(blocks, input_features)
 
+                #get postive embeddings (emebeddings of nodes with postive label)
+                # and negative embeddings
                 pos_mask = output_labels == 1
                 neg_mask = output_labels == 0
                 pos_embeddings = embedding[pos_mask]
                 neg_embeddings = embedding[neg_mask]
-                if i==0:
-                    pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
 
+                # compute the similarity scores and print
+                pos_sim,neg_sim,cross_sim = check_sim(pos_embeddings, neg_embeddings,train_pos_embeddings)
+
+                # feed the embeddings into the mlp to predict the labels
                 label_hat = mlp(embedding)
-                # if i==1:
-                #     print(label_hat,output_labels)
-                if get_options().nlabels != 1:
-                    pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
-                else:
-                    pos_prob = th.sigmoid(label_hat)
-                #print(pos_prob)
+                pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
+                # adjust the predicted labels based on a given thredshold beta
                 pos_prob[pos_prob >= beta] = 1
                 pos_prob[pos_prob < beta] = 0
-                # pos_prob = label_hat
                 predict_labels = pos_prob
+
                 end = time()
                 runtime += end - start
+
+                # calculate the loss
                 if alpha != 1 :
                     pos_index = (output_labels != 0)
                     neg_index = (output_labels == 0)
@@ -295,37 +344,29 @@ def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embed
                     neg_loss = Loss(label_hat[neg_index], output_labels[neg_index]) * neg_index.sum().item()
                     val_loss = (alpha*pos_loss+neg_loss) / len(output_labels)
                 else: val_loss = Loss(label_hat, output_labels)
-                #print(val_loss)
                 total_loss += val_loss.item() * len(output_labels)
 
+                # get the error samples and print
                 error_mask = predict_labels !=output_labels
                 errors = blocks[-1].dstdata['ntype'][error_mask]
                 if len(errors) != 0 :
                     errors = th.argmax(errors,dim=1)
                     num_errors += len(errors)
                     type_count(errors, error_count)
-                fp_mask = (predict_labels != 0 ) & (output_labels == 0)
-                fn_mask = (predict_labels == 0) & (output_labels != 0)
-                fps = blocks[-1].dstdata['ntype'][fp_mask]
-                if len(fps) != 0: fps = th.argmax(fps,dim=1)
-                fns = blocks[-1].dstdata['ntype'][fn_mask]
-                if len(fns) != 0: fns = th.argmax(fns, dim=1)
-                # type_count(fps,fp_count)
-                # type_count(fns,fn_count)
-
-                #print('predict:',predict_labels)
-                #print("label:",output_labels)
                 correct += (
                         predict_labels == output_labels
                 ).sum().item()
 
-                fn += ((predict_labels == 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 0 的总数
-                tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
-                tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
-                fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
-    #print("validate time:",runtime)
+                # count fake negatives (fn), true negatives (tp), true negatives (tn), true postives (tp)
+                fn += ((predict_labels == 0) & (output_labels != 0)).sum().item()
+                tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()
+                tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()
+                fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()
+
     loss = total_loss / total_num
     acc = correct / total_num
+
+    # calculate recall, precision and F1-score
     recall = 0
     precision = 0
     if tp != 0:
@@ -337,14 +378,13 @@ def validate(loaders,label_name,device,model,mlp,Loss,alpha,beta,train_pos_embed
     print("  validate:")
     print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(precision, 3))
     print("\tloss:{:.3f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(loss, acc,recall, F1_score))
-    #print("toral num error",num_errors)
     print("\terror count:",error_count)
-    #print("or error ratio:",error_count[5]/num_errors)
-
     print('\tavg pos sim :{:.4f}, avg cross sim:{:.4f}, avg neg sim:{:.4f}'.format(pos_sim,cross_sim,neg_sim))
+
     return [loss, acc,recall,precision,F1_score]
 
 def validate_sim(val_graphs,train_pos_embeddings,sampler,device,model,options):
+
     for val_g in val_graphs:
         val_nodes = th.tensor(range(val_g.number_of_nodes()))
         pos_mask = (val_g.ndata['label_o'] == 1).squeeze(1)
@@ -448,38 +488,26 @@ def train(options):
 
     th.multiprocessing.set_sharing_strategy('file_system')
     device = th.device("cuda:"+str(options.gpu) if th.cuda.is_available() else "cpu")
-    # Dump the preprocessing result to save time!
-    #data_path = 'data/region/'
-    #data_path = 'data/boundary/'
+
     freeze = options.freeze
     data_path = options.datapath
     print(data_path)
     train_data_file = os.path.join(data_path,'boom2.pkl')
     val_data_file = os.path.join(data_path,'rocket2.pkl')
-    #split_dir = 'splits/rokcet'
-    if options.region:
-        label_name = 'label_ad'
-    elif options.label == 'in':
-        label_name = 'label_i'
-    else:
-        label_name = 'label_o'
+
+    # preprocess: generate dataset / initialize the model
     if options.preprocess :
         preprocess(data_path,device,options,options.in_dim)
         return
     print(options)
+    # load the model
     options, model,mlp = load_model(device, options)
-    # for i in range(in_nlayers+1):
-    #     model.GCN1.layers[i].weight = model.GCN1.layers[i].weight.to(device)
-    # for i in range(out_nlayers+1):
-    #     model.GCN2.layers[i].weight = model.GCN2.layers[i].weight.to(device)
-
     if model is None:
         print("No model, please prepocess first , or choose a pretrain model")
         return
     print(model)
     mlp = mlp.to(device)
     print(mlp)
-    # for model with reception , in_nlayers is a list; for others , in_nlayers is an integer
 
     in_nlayers = options.in_nlayers if isinstance(options.in_nlayers,int) else options.in_nlayers[0]
     out_nlayers = options.out_nlayers if isinstance(options.out_nlayers,int) else options.out_nlayers[0]
@@ -491,10 +519,6 @@ def train(options):
 
     with open(val_data_file,'rb') as f:
         val_g = pickle.load(f)
-        # val_graphs =dgl.unbatch(val_g)
-        # val_graphs.pop(1)
-        # val_g = dgl.batch(val_graphs)
-
 
     if options.muldiv:
         label_name = 'mul_o'
@@ -523,26 +547,16 @@ def train(options):
             train_g.ndata['label_o'][mask_sub_train] = 1
             val_g.ndata['label_o'][mask_sub_val] = 1
     print('val sub output:',len(val_g.ndata['label_o'][val_g.ndata['label_o']==1]))
-    #print(len(muldiv_nodes))
-    #print(len(train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 0]))
-    #train_remove = train_nids[train_g.ndata['label_o'].squeeze(-1) == -1]
-    #print(train_remove, len(train_remove))
-    #exit()
-    #print(len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) <= 1]))
+
     print(val_g.ndata['ntype'].shape)
     print("num pos1", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) >0]))
 
    # print(val_g.ndata['position'][val_g.ndata['label_o'].squeeze(1) >0])
 
-    # change_label(train_g,'label_o',options)
-    # change_label(val_g,'label_o',options)
-    # replaceDFF(train_g)
-    # replaceDFF(val_g)
+
     if not options.muldiv and not options.sub:
         train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == -1] = 100
         val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == -1] = 100
-    #train_g.ndata['position'][train_g.ndata['label_o'].squeeze(-1) == 0] = 100
-    #val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == 0] = 100
 
     unlabel_low(train_g, options.unlabel)
     unlabel_low(val_g, options.unlabel)
@@ -550,11 +564,6 @@ def train(options):
         label_name = 'label_o'
         train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = 1
         val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = 1
-    # skip muldiv
-    # train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = -1
-    # val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(-1) == 2] = -1
-    # predict muldiv
-
 
     if options.add!=-1:
     #print('muldiv:', len(is_output[is_output == -1]))
@@ -566,13 +575,7 @@ def train(options):
         print('sub_inputs2:', len(train_g.ndata['sub_i'][train_g.ndata['sub_i'] == 2]))
         print('adder_outputs:', len(train_g.ndata['adder_o'][train_g.ndata['adder_o'] == 1]))
         print('adder_inputs:', len(train_g.ndata['adder_i'][train_g.ndata['adder_i'] == 1]))
-    #
-    # print("num pos2", len(val_g.ndata['label_o'][val_g.ndata['label_o'].squeeze(1) == 1]))
 
-
-    #
-    # rates = cal_ratios(neg_count,pos_count)
-    # print("neg/pos rates",rates)
 
     train_g.edata['a'] = th.ones(size=(len(train_g.edata['r']),1))
 
@@ -590,34 +593,10 @@ def train(options):
     print('num 1b0', len(val_g.ndata['ntype2'][val_g.ndata['ntype2']==0]),'num 1b1', len(val_g.ndata['ntype2'][val_g.ndata['ntype2']==1]))
     print('PIs',len(val_g.ndata['ntype2'][val_g.ndata['ntype2']==15]))
     if options.add == 2:
-        #train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1) == 1] = -1
         train_g.ndata['label_o'][train_g.ndata['adder_o'].squeeze(-1)>=1] = -1
-        #val_g.ndata['label_o'][val_g.ndata['adder_o'].squeeze(-1)>=1] = -1
         train_g.ndata['label_o'][train_g.ndata['mul_o'].squeeze(-1) >= 1] = -1
-        #val_g.ndata['label_o'][val_g.ndata['mul_o'].squeeze(-1) >= 1] = -1
-    # if options.add == 1:
-    #     if os.path.exists(os.path.join(data_path,'boom_vals.pkl')):
-    #         with open(os.path.join(data_path,'boom_vals.pkl'),'rb') as f:
-    #             boom_val_nodes = pickle.load(f)
-    #     else:
-    #         boom_val_nodes = split_val(train_g)
-    #         with open(os.path.join(data_path,'boom_vals.pkl'),'wb') as f:
-    #             pickle.dump(boom_val_nodes,f)
-    #     #print(boom_val_nodes)
-    #     #print(len(train_g.ndata['label_o']==0))
-    #     valdataloader2 = MyNodeDataLoader(
-    #         True,
-    #         train_g,
-    #         boom_val_nodes,
-    #         Sampler([None] * (in_nlayers + 1), include_dst_in_src=options.include),
-    #         batch_size=len(boom_val_nodes),
-    #         shuffle=True,
-    #         drop_last=False
-    #     )
-    #
-    #     train_graphs = dgl.unbatch(train_g)
-    #     train_g = dgl.batch(train_graphs)
-    #     train_g.ndata['label_o'][boom_val_nodes] = -1
+
+
 
 
     train_graphs = dgl.unbatch(train_g)
@@ -653,6 +632,8 @@ def train(options):
     print(len(val_nids))
     val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1)!=-1]
     print(len(val_nids))
+
+    # create dataloader for training/validate dataset
     traindataloader = MyNodeDataLoader(
         False,
         train_g,
@@ -673,11 +654,7 @@ def train(options):
         drop_last=False,
     )
     loaders = [valdataloader]
-    # if options.add==1:
-    #     loaders.append(valdataloader2)
-    #print("Data successfully loaded")
 
-    k = options.k
     beta = options.beta
     if options.nlabels!=1 : Loss = nn.CrossEntropyLoss()
     else: Loss = nn.BCEWithLogitsLoss(pos_weight=th.FloatTensor([options.pos_weight]).to(device))
@@ -691,32 +668,14 @@ def train(options):
         mlp.train()
     else:
         optim = th.optim.Adam(
-            # itertools.chain(mlp.parameters(),
-            #                 model.conv.gate_functions[2].parameters(),
-            #                 model.conv.gate_functions[3].parameters(),
-            #                 model.conv.gate_functions[4].parameters(),
-            #                 model.conv.gate_functions[8].parameters()),
             itertools.chain(mlp.parameters(),model.parameters()),
-            #mlp.parameters(),
+
             options.learning_rate, weight_decay=options.weight_decay
         )
 
-        # for i in range(options.in_dim):
-        #     if i in (2,3,4,8):
-        #         model.conv.gate_functions[i].train()
         model.train()
         mlp.train()
-    # if model.GCN1 is not None:model.GCN1.train()
-    # if model.GCN2 is not None:model.GCN2.train()
-    # if model.GCN1 is not None and type(model.GCN1) == FuncGCN:
-    #     is_FuncGCN1 = True
-    #     for i in range(options.in_dim):
-    #         model.GCN1.train()
-    #
-    # if model.GCN2 is not None and type(model.GCN2) == FuncGCN:
-    #     is_FuncGCN2 = True
-    #     for i in range(options.in_dim):
-    #         model.GCN2.gate_functions[i].train()
+
     print(options.alpha)
     
     max_val_recall, max_val_precision = 0.0,0.0
@@ -725,54 +684,48 @@ def train(options):
     pre_loss = 100
     stop_score = 0
     max_F1_score = 0
+
+    # start training
     for epoch in range(options.num_epoch):
         runtime = 0
-        #options, model = load_model(device, options) 
-        #optim = th.optim.Adam(
-        #model.parameters(), options.learning_rate, weight_decay=options.weight_decay
-        #)
-        #model.train()
 
         total_num,total_loss,correct,fn,fp,tn,tp = 0,0.0,0,0,0,0,0
         pos_count , neg_count =0, 0
         pos_embeddings= th.tensor([]).to(device)
-        #neg_embeddings = th.tensor([]).to(device)
         for ni, (central_nodes,input_nodes,blocks) in enumerate(traindataloader):
-
-            #continue
-            #print(in_blocks)
-            # print('freeze gate:',model.conv.gate_functions[11].weight)
-            # print('not freeze gate:', model.conv.gate_functions[2].weight)
-            #print(mlp.layers[2].weight)
             if ni == len(traindataloader)-1:
                 continue
             start_time = time()
+            # put the block to device
             blocks = [b.to(device) for b in blocks]
+
+            # get in input features
             if options.gnn:
                 input_features = blocks[0].srcdata["ntype"]
-                #print(input_features.shape)
             else:
                 input_features = blocks[0].srcdata["f_input"]
+            # the central nodes are the output of the final block
             output_labels = blocks[-1].dstdata[label_name].squeeze(1)
             total_num += len(output_labels)
+            # get the embeddings of central nodes
             embedding = model(blocks,input_features)
+
+            # get postive embeddings (emebeddings of nodes with postive label)
             pos_mask = output_labels == 1
             pos_embeddings = th.cat((pos_embeddings,embedding[pos_mask]),dim=0)
-            #neg_mask = output_labels == 0
-            #neg_embeddings = th.cat((neg_embeddings, embedding[neg_mask]), dim=0)
-            label_hat = mlp(embedding)
 
+            # feed the embeddings into the mlp to predict the labels
+            label_hat = mlp(embedding)
             if get_options().nlabels != 1:
                 pos_prob = nn.functional.softmax(label_hat, 1)[:, 1]
             else:
                 pos_prob = th.sigmoid(label_hat)
+            # adjust the predicted labels based on a given thredshold beta
             pos_prob[pos_prob >= beta] = 1
             pos_prob[pos_prob < beta] = 0
-            # pos_prob = label_hat
-
             predict_labels = pos_prob
-            #print(nn.functional.sigmoid(label_hat),output_labels)
-            #print(label_hat,output_labels)
+
+            # calculate the loss
             if options.alpha != 1 :
                 pos_index = (output_labels != 0)
                 neg_index = (output_labels == 0)
@@ -783,25 +736,23 @@ def train(options):
                 train_loss = (options.alpha*pos_loss+neg_loss) / len(output_labels)
             else:
                 train_loss = Loss(label_hat, output_labels)
-            #print(ni,train_loss.item())
             total_loss += train_loss.item() * len(output_labels)
             endtime = time()
             runtime += endtime - start_time
 
-            # train_loss += loss
             correct += (
                     predict_labels == output_labels
             ).sum().item()
 
-            fn += ((predict_labels == 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 0 的总数
-            tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()  # 原标签为1，预测为 1 的总数
-            tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 0 的总数
-            fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()  # 原标签为0，预测为 1 的总数
-            #print(ni,train_loss.item())
+            # count fake negatives (fn), true negatives (tp), true negatives (tn), true post
+            fn += ((predict_labels == 0) & (output_labels != 0)).sum().item()
+            tp += ((predict_labels != 0) & (output_labels != 0)).sum().item()
+            tn += ((predict_labels == 0) & (output_labels == 0)).sum().item()
+            fp += ((predict_labels != 0) & (output_labels == 0)).sum().item()
+
             start_time = time()
             optim.zero_grad()
             train_loss.backward()
-           # print(model.GCN1.layers[0].attn_n.grad)
             optim.step()
             endtime = time()
             runtime += endtime-start_time
@@ -816,6 +767,8 @@ def train(options):
         else:
             stop_score = 0
             pre_loss = Train_loss
+
+        # calculate accuracy, recall, precision and F1-score
         Train_acc = correct / total_num
         Train_recall = 0
         Train_precision = 0
@@ -831,34 +784,17 @@ def train(options):
             sim = (th.sum(th.cosine_similarity(pos_embeddings[i], pos_embeddings, dim=-1)) - 1) / (num - 1)
             total_pos_sim += sim
 
-        # if is_FuncGCN1:
-        #     print(model.GCN1.conv.gate_functions[13].weight)
         print("epoch[{:d}]".format(epoch))
         print("training runtime: ",runtime)
         print("  train:")
         print("\ttp:", tp, " fp:", fp, " fn:", fn, " tn:", tn, " precision:", round(Train_precision,3))
         print("\tloss:{:.8f}, acc:{:.3f}, recall:{:.3f}, F1 score:{:.3f}".format(Train_loss,Train_acc,Train_recall,Train_F1_score))
         print('\tavg pos_sim:{:.4f}'.format(total_pos_sim.item() / len(pos_embeddings)))
-        #validate_sim([train_g],sampler,device,model)
-        #validate_sim(dgl.unbatch(train_g),pos_embeddings,sampler,device,model)
-        #print("num of pos: ", pos_count, " num of neg: ", neg_count)
-        #if options.weighted:
-            #print('alpha = ',model.alpha)
-        #validate_sim([val_g], pos_embeddings,sampler, device, model)
 
+        # validate
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(loaders,label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta,pos_embeddings,options)
-        #max_F1_score = max(max_F1_score,val_F1_score)
-        #validate_sim(val_graphs, pos_embeddings, sampler, device, model,options)
-        #validate_sim([dgl.batch(val_graphs)],sampler,device,model)
-        #validate_sim(val_graphs, pos_embeddings,sampler, device, model)
 
-        if epoch % 1 == 0 and get_options().rel:
-            if get_options().attn_type == 'node': print(model.GCN1.layers[0].fc_attn_n.weight)
-            #print(model.GCN1.layers[0].attn_e.grad)
-            else: print(model.GCN1.layers[0].fc_attn_e.weight)
-        if options.weighted:
-            print('alpha:',model.fc_combine.weight)
         # save the result of current epoch
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
             f.write(str(round(Train_loss, 8)) + " " + str(round(Train_acc, 3)) + " " + str(
@@ -868,7 +804,6 @@ def train(options):
             f.write('\n')
 
         judgement = val_F1_score > max_F1_score
-        #judgement = True
         if judgement:
            max_F1_score = val_F1_score
            print("Saving model.... ", os.path.join(options.model_saving_dir))
