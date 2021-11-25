@@ -607,7 +607,7 @@ def train(options):
     if options.train_percent == 1:
         train_graphs = [train_graphs[3]]
     else:
-        train_graphs = train_graphs[:options.train_percent]
+        train_graphs = train_graphs[:int(options.train_percent)]
     # temp = []
     # train_graphs.pop(1)
     train_g = dgl.batch(train_graphs)
