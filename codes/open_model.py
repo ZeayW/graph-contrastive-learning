@@ -20,7 +20,7 @@ def load_model(device,options):
         #print(classifier)
         if 'global' in model_dir:
             param, classifier, mlp,combine = pickle.load(f)
-        elif 'gcl' in model_dir:
+        elif 'gcl' in model_dir or 'func' in model_dir:
             param, classifier = pickle.load(f)
         else:
             param, classifier, mlp = pickle.load(f)
