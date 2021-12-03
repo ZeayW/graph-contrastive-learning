@@ -612,6 +612,7 @@ def train(options):
     # train_graphs.pop(1)
     train_g = dgl.batch(train_graphs)
 
+
     positions = train_g.ndata['position'][train_g.ndata['label_o'].squeeze(1) > 0]
     #print(len(positions),positions)
 
@@ -633,6 +634,8 @@ def train(options):
     val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1)!=-1]
     print(len(val_nids))
 
+    val_nids1 = val_nids[:int(len(val_nids)/10)]
+    test_nids = val_nids[int(len(val_nids)/10):]
     # create dataloader for training/validate dataset
     traindataloader = MyNodeDataLoader(
         False,
@@ -647,12 +650,22 @@ def train(options):
     valdataloader = MyNodeDataLoader(
         True,
         val_g,
-        val_nids,
+        val_nids1,
         in_sampler,
         batch_size=val_g.num_nodes(),
         shuffle=True,
         drop_last=False,
     )
+    testdataloader = MyNodeDataLoader(
+        True,
+        val_g,
+        test_nids,
+        in_sampler,
+        batch_size=val_g.num_nodes(),
+        shuffle=True,
+        drop_last=False,
+    )
+    testloader = [testdataloader]
     loaders = [valdataloader]
 
     beta = options.beta
@@ -794,7 +807,8 @@ def train(options):
         # validate
         val_loss, val_acc, val_recall, val_precision, val_F1_score = validate(loaders,label_name, device, model,
                                                                               mlp, Loss, options.alpha, beta,pos_embeddings,options)
-
+        validate(testloader, label_name, device, model,
+                mlp, Loss, options.alpha, beta, pos_embeddings, options)
         # save the result of current epoch
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'a') as f:
             f.write(str(round(Train_loss, 8)) + " " + str(round(Train_acc, 3)) + " " + str(
