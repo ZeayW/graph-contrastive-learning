@@ -633,9 +633,10 @@ def train(options):
     print(len(val_nids))
     val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1)!=-1]
     print(len(val_nids))
-    shuffle(val_nids)
-    val_nids1 = val_nids[:int(len(val_nids)/10)]
-    test_nids = val_nids[int(len(val_nids)/10):]
+    val_nids1 = val_nids.numpy().tolist()
+    shuffle(val_nids1)
+    val_nids = val_nids1[:int(len(val_nids1)/10)]
+    test_nids = val_nids1[int(len(val_nids1)/10):]
     # create dataloader for training/validate dataset
     traindataloader = MyNodeDataLoader(
         False,
@@ -650,7 +651,7 @@ def train(options):
     valdataloader = MyNodeDataLoader(
         True,
         val_g,
-        val_nids1,
+        val_nids,
         in_sampler,
         batch_size=val_g.num_nodes(),
         shuffle=True,
