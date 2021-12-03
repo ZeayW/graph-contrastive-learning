@@ -445,7 +445,7 @@ def check_sim(embeddings,neg_embeddings,train_pos_embeddings):
     #     #print('sample {}, pos sim:{}, neg sim{}'.format(i,sim,neg_sim))
     # print('pos_sim: ',sorted(pos_sims))
     # print('max_neg_sim',sorted(neg_sims))
-    return total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings),total_cross_sim/num
+    return total_pos_sim/len(embeddings),total_neg_sim/len(embeddings),total_cross_sim/num
     #print('avg pos sim :{:.4f}, avg neg sim:{:.4f}'.format(total_pos_sim.item()/len(embeddings),total_neg_sim.item()/len(embeddings)))
 def change_label(g,label_name,options):
     mask_out= g.ndata[label_name].squeeze(1) == 1
