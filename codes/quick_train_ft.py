@@ -612,11 +612,11 @@ def train(options):
     # train_graphs.pop(1)
     train_g = dgl.batch(train_graphs)
 
-    with open('../train_g.pkl','wb') as f:
-        pickle.dump(train_g,f)
-    with open('../val_g.pkl','wb') as f:
-        pickle.dump(val_g,f)
-    exit()
+    # with open('../train_g.pkl','wb') as f:
+    #     pickle.dump(train_g,f)
+    # with open('../val_g.pkl','wb') as f:
+    #     pickle.dump(val_g,f)
+    # exit()
     positions = train_g.ndata['position'][train_g.ndata['label_o'].squeeze(1) > 0]
     #print(len(positions),positions)
 
