@@ -262,7 +262,7 @@ def preprocess(data_path,device,options,in_dim):
         os.makedirs(options.model_saving_dir)
         with open(os.path.join(options.model_saving_dir, 'model.pkl'), 'wb') as f:
             parameters = options
-            pickle.dump((parameters, classifier), f)
+            pickle.dump((parameters, model1), f)
         with open(os.path.join(options.model_saving_dir, 'res.txt'), 'w') as f:
             pass
 def load_model(device,options):
