@@ -633,7 +633,7 @@ def train(options):
     print(len(val_nids))
     val_nids = val_nids[val_g.ndata['label_o'].squeeze(-1)!=-1]
     print(len(val_nids))
-
+    shuffle(val_nids)
     val_nids1 = val_nids[:int(len(val_nids)/10)]
     test_nids = val_nids[int(len(val_nids)/10):]
     # create dataloader for training/validate dataset
