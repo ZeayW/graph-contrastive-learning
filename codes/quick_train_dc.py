@@ -539,7 +539,7 @@ def train(options):
     #val_g.ndata['position'][val_g.ndata['label_o'].squeeze(-1) == 0] = 100
 
     unlabel_low(train_g, options.unlabel)
-    unlabel_low(val_g, options.unlabel)
+    #unlabel_low(val_g, options.unlabel)
     if options.add==-1:
         label_name = 'label_o'
         train_g.ndata['label_o'][train_g.ndata['label_o'].squeeze(-1) == 2] = 1
@@ -604,7 +604,7 @@ def train(options):
     if options.train_percent == 1:
         train_graphs = [train_graphs[3]]
     else:
-        train_graphs = train_graphs[:options.train_percent]
+        train_graphs = train_graphs[:int(options.train_percent)]
     train_g = dgl.batch(train_graphs)
     train_nodes, pos_count, neg_count = oversample(train_g, options, options.in_dim)
     rates = cal_ratios(neg_count, pos_count)
