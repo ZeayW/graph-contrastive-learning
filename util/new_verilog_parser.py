@@ -342,6 +342,8 @@ class DcParser:
                 if len(dp_inputs) != 0 and position[0] not in dp_inputs.keys():
                     return port_info
                 if cell_type == 'add':
+                    if "1'b0" in argname or "1'b1" in argname:
+                        print('constant input')
                     port_info.is_adder_input = True
 
                     # if len(mult_inputs) != 0 and position[0] in mult_inputs:
@@ -939,66 +941,29 @@ class DcParser:
             # if "1'b1" in src :
             #     nodes.append((src,{"type":"1'b1"}))
         #print(pis)
-        if label_region:
-            g = nx.DiGraph()
-            g.add_nodes_from(nodes)
-            g.add_edges_from(edges)
-            rg = g.reverse()
-            internal = set()
+        count = 0
+        for n in nodes:
+            n[1]["is_adder_input"] = n[0] in adder_inputs
+            n[1]["is_adder_output"] = n[0] in adder_outputs
+            n[1]["position"] = positions.get(n[0], None)
+            if n[0] in multdiv:
+                n[1]['is_adder_input'] = -1
+                n[1]['is_adder_output'] = -1
+            n[1]['is_mul_output'] = n[0] in multdiv_outputs
+            if n[0] in muldiv_inputs1:
+                n[1]['is_mul_input'] = 1
+            elif n[0] in muldiv_inputs2:
+                n[1]['is_mul_input'] = 2
+            else:
+                n[1]['is_mul_input'] = 0
 
-            for m in adder_in_dict:
-                in_nodes = list(adder_in_dict[m])
-                out_nodes = list(adder_out_dict[m])
-                forward_reachable = set()
-                backward_reachable = set()
-                for i in in_nodes:
-                    fw = dict(nx.bfs_successors(g, i, 6))
-                    for t in fw.values():
-                        forward_reachable.update(set(t))
-                for o in out_nodes:
-                    bw = dict(nx.bfs_successors(rg, o, 6))
-                    for t in bw.values():
-                        backward_reachable.update(set(t))
-                internal.update(forward_reachable.intersection(backward_reachable))
-                i_not_r = 0
-                o_not_r = 0
-                for i in in_nodes:
-                    if i not in backward_reachable:
-                        print(i)
-                        i_not_r += 1
-                for o in out_nodes:
-                    if o not in forward_reachable:
-                        print(o)
-                        o_not_r += 1
-                # print("{}: iNOT={}, oNOT={}".format(m, i_not_r, o_not_r))
-            for n in nodes:
-                n[1]["is_adder"] = n[0] in internal
-
-        else:
-            count = 0
-            for n in nodes:
-                n[1]["is_adder_input"] = n[0] in adder_inputs
-                n[1]["is_adder_output"] = n[0] in adder_outputs
-                n[1]["position"] = positions.get(n[0],None)
-                if n[0] in multdiv:
-                    n[1]['is_adder_input'] = -1
-                    n[1]['is_adder_output'] = -1
-                n[1]['is_mul_output'] = n[0] in multdiv_outputs
-                if n[0] in muldiv_inputs1:
-                    n[1]['is_mul_input'] = 1
-                elif n[0] in muldiv_inputs2:
-                    n[1]['is_mul_input'] = 2
-                else:
-                    n[1]['is_mul_input'] = 0
-
-                n[1]['is_sub_output'] = n[0] in sub_outputs
-                if n[0] in sub_inputs1:
-                    n[1]['is_sub_input'] = 1
-                elif n[0] in sub_inputs2:
-                    n[1]['is_sub_input'] = 2
-                else:
-                    n[1]['is_sub_input'] = 0
-
+            n[1]['is_sub_output'] = n[0] in sub_outputs
+            if n[0] in sub_inputs1:
+                n[1]['is_sub_input'] = 1
+            elif n[0] in sub_inputs2:
+                n[1]['is_sub_input'] = 2
+            else:
+                n[1]['is_sub_input'] = 0
         print('num adder inputs:', len(adder_inputs))
         print('num adder outputs:', len(adder_outputs))
 
